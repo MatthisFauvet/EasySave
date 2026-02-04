@@ -1,6 +1,9 @@
 ﻿# Default ignored files
 /shelf/
 /workspace.xml
+/obj
+/bin
+
 # Rider ignored files
 /contentModel.xml
 /.idea.EasySave.iml

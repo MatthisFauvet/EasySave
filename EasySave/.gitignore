@@ -1,5 +1,8 @@
 ﻿# Default ignored files
 /shelf/
+/obj
+/bin
+
 /workspace.xml
 # Rider ignored files
 /contentModel.xml
