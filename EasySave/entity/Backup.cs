@@ -1,10 +1,12 @@
-﻿namespace EasySave.Entity;
+﻿using System.Runtime.CompilerServices;
+
+namespace EasySave.Entity;
 
 public class Backup
 {
-    private int _id;
-    private string _name;
-    private string _sourceFilePath;
-    private string _destinationFilePath;
-    private string _timeStamp;
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string SourceFilePath { get; set; }
+    public string DestinationFilePath { get; set; }
+    public string TimeStamp { get; set; }
 }
