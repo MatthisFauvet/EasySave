@@ -1,0 +1,121 @@
+﻿@startuml
+
+package EasySave {
+
+    package Models {
+        class Backup {
+            +int Id
+            +string Name
+            +string SourceFilePath
+            +string DestinationFilePath
+            +DateTime LastBackupDate
+        }
+    
+        enum LogType {
+            ERROR
+            INFO
+            WARN
+        }
+    }
+    
+    package Repositories {
+        
+        interface IBackupRepository {
+            +Add(Backup backup)
+            +Remove(int idBackup)
+            +GetById(int idBackup) : Backup
+            +GetAll() : List<Backup>
+            +Update(Backup backup)
+        }
+    
+        class BackupRepository
+        class JsonBackupRepository
+    }
+    
+    package Services {
+    
+        interface IBackupService {
+            +ExecuteBackup(Backup backup)
+        }
+    
+        class BackupService {
+            +ExecuteBackup(Backup backup)
+        }
+    
+    }
+    
+    package Views {
+    
+        interface IConsoleView {
+            +ShowMenu()
+            +ShowMessage(msg: string)
+        }
+    
+        class ConsoleView {
+            +ShowMenu()
+            +ShowMessage(string)
+        }
+    }
+    
+    package Controllers {
+        class BackupController {
+            -IBackupRepository repository
+            -IBackupService service
+            -IConsoleView view
+            +CreateBackup()
+            +RunBackup()
+            +DeleteBackup()
+            +ListBackups()
+        }
+    }
+}
+
+package EasyLogs 
+{
+
+    class ConsoleLogWriter {
+        +message: string
+        +logType: LogType
+        +datetime: DateTime
+        +write()
+    }
+
+    class FileLogWriter {
+        +message: string
+        +logType: LogType
+        +datetime: DateTime
+        +write()
+    }
+
+    interface ILogWriter {
+        +write()
+        +read()
+    }
+
+    class Logger {
+        +InitWriter()
+        +AddWriter()
+        +Log(message: string, logType: LogType)
+    }
+}
+
+' Relations
+BackupRepository ..|> IBackupRepository
+JsonBackupRepository ..|> IBackupRepository
+
+BackupService ..|> IBackupService
+ConsoleView ..|> IConsoleView
+
+ConsoleLogWriter ..|> ILogWriter
+FileLogWriter ..|> ILogWriter
+
+IBackupRepository "1" --> "*" Backup
+BackupController --> IBackupRepository
+BackupController --> IBackupService
+BackupController --> IConsoleView
+
+BackupService --> Logger
+Logger --> ILogWriter
+Logger --> LogType
+
+@enduml
