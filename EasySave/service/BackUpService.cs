@@ -9,39 +9,48 @@ using System.IO;
 
 public class BackupService : IBackupService
 {
-    private readonly Logger _logger;
-
+    protected Logger _logger;
     public BackupService(Logger logger)
     {
         _logger = logger;
     }
 
-    public bool ExecuteBackup(List<int> backupsIds)
+    //Prendre en parametre une liste de backup et executer la méthode de sauvegarde pour chacun d'entre eux et un string entre 0 et 2
+    public bool ExecuteBackup(List<Backup> backups)
     {   
         bool isSuccessful = true;
         List<int> unvalidBackUps = new List<int>();
-        foreach (int id in backupsIds)
+
+        Logger _logger = new Logger();
+        _logger.InitWriters("logs", "Execution of backups");
+        _logger.Log($"Starting execution of backups.", LogType.Info);
+
+        foreach (Backup backup in backups)
         {
-            _logger.InitWriters();
 
             try
             {
-                ExecuteSingleBackup(id);
-                _logger.Log($"Backup (ID : {id}) completed successfully.", LogType.Info);
+                ExecuteSingleBackup(backup);
+                _logger.Log($"Backup (ID : {backup}) completed successfully.", LogType.Info);
             }
             catch (Exception ex)
             {
-                _logger.Log($"Backup (ID : {id}) failed : {ex.Message}", LogType.Error);
+                _logger.Log($"Backup (ID : {backup}) failed : {ex.Message}", LogType.Error);
+                unvalidBackUps.Add(backup.Id);
                 isSuccessful = false;
             }
+        }
+        if ((!isSuccessful))
+        {
+            _logger.Log($"The following backup(s) failed to execute: {string.Join(", ", unvalidBackUps)}", LogType.Error);
         }
         return isSuccessful;
     }
 
-    private void ExecuteSingleBackup(int backupId)
+    private void ExecuteSingleBackup(Backup backup)
     {
-        _logger.InitWriters();
-        Backup backup = BackupRepository.GetBackupById(backupId);
+        Logger _logger = new Logger();
+        _logger.InitWriters(backup.DestinationFilePath, $"Execution du backup {backup.Id}");
 
         if (!Directory.Exists(backup.SourceFilePath)) {
             _logger.Log($"Source directory not found : {backup.SourceFilePath}", LogType.Error);
@@ -90,7 +99,7 @@ public class BackupService : IBackupService
                 _logger.Log(
                     $"sourcePath: {sourceFile.FullName}, " +
                     $"fileSize: {sourceFile.Length}, " +
-                    $"transferTimeMs: -1, " +
+                    $"transferTimeMs: {-1}, " +
                     $"backupName: {backup.Name}, ",
                     LogType.Error
                 );

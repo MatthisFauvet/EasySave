@@ -1,4 +1,5 @@
 ﻿using EasyLog.writers;
+using EasySave.Entity;
 
 namespace EasySave.service;
 
@@ -10,5 +11,5 @@ public interface IBackupService
     /// </summary>
     /// <param name="backupIds">List of ids for the backups you want to execute</param>
     /// <returns>Return false if issues happened else true</returns>
-    public bool ExecuteBackup(List<int> backupIds);
+    public bool ExecuteBackup(List<Backup> backups);
 }
