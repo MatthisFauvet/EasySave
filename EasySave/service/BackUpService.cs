@@ -49,7 +49,7 @@ public class BackupService : IBackupService
         return isSuccessful;
     }
 
-    private void ExecuteSingleBackup(int backupId)
+    private void ExecuteSingleBackup(Backup backup)
     {
         Logger _logger = new Logger();
         _logger.InitWriters(backup.DestinationFilePath, $"Execution du backup {backup.Id}");
