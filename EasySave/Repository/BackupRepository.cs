@@ -1,4 +1,6 @@
+using System.Security.Cryptography;
 using EasySave.Entity;
+using EasySave.view;
 
 namespace EasySave.Repository;
 
@@ -11,6 +13,9 @@ public class BackupRepository : IBackupRepository
 {
     // Internal storage for Backup entities
     private readonly List<Backup> _backups = new();
+
+    private readonly int MIN_ID = 0;
+    private readonly int MAX_ID = 10000;
 
     /// <summary>
     /// Adds a new Backup to the repository.
@@ -29,17 +34,23 @@ public class BackupRepository : IBackupRepository
     /// <exception cref="InvalidOperationException">
     /// Thrown when a Backup with the same Id already exists.
     /// </exception>
-    public void Add(Backup backup)
+    public void Add(CreateBackupRequest sourceBackup)
     {
-        if (backup == null)
-            throw new ArgumentNullException(nameof(backup));
+        if (sourceBackup == null)
+            throw new ArgumentNullException(nameof(sourceBackup));
 
-        if (_backups.Any(b => b.Id == backup.Id))
+        Random rd = new Random();
+        int Id = rd.Next(MIN_ID, MAX_ID);
+
+        Backup targetBackup = new Backup(Id, sourceBackup.Name, sourceBackup.SourceFilePath, sourceBackup.DestinationFilePath,
+            DateTime.Now, BackupType.Sequential);
+        
+        if (_backups.Any(b => b.Id == Id))
             throw new InvalidOperationException(
-                $"A backup with Id {backup.Id} already exists."
+                $"A backup with Id {Id} already exists."
             );
 
-        _backups.Add(backup);
+        _backups.Add(targetBackup);
     }
 
     /// <summary>

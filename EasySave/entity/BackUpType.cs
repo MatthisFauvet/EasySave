@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace EasySave.Entity
+﻿namespace EasySave.Entity
 {
     /// <summary>
     /// Type de sauvegarde pour un travail de backup.
