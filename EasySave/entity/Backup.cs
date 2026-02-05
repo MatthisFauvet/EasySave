@@ -9,10 +9,12 @@ public class Backup
     public string SourceFilePath { get; set; }
     public string DestinationFilePath { get; set; }
     public string TimeStamp { get; set; }
-    public Backup(int id, string name, string sourceFilePath, string destinationFilePath) { 
-        Id = id;
-        Name = name;
-        SourceFilePath = sourceFilePath;
+    public BackupType Type { get; set; }
+    public Backup(int id, string name, string sourceFilePath, string destinationFilePath, string type) { 
+        Id                  = id;
+        Name                = name;
+        SourceFilePath      = sourceFilePath;
         DestinationFilePath = destinationFilePath;
+        Type                = BackupTypeHelper.FromString(type);
     }
 }

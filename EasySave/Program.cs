@@ -30,10 +30,11 @@ class Program
         BackupService backupService = new BackupService(logger);
 
         // Prépare le backup
-        Backup backup = new Backup(1, "TestBackup", tempSource, tempDest);
+        Backup backup = new Backup(1, "TestBackup", tempSource, tempDest, "full");
+        Backup backup2 = new Backup(2, "TestBackupSequential", tempSource, tempDest, "sequential");
 
         // Exécute le backup
-        bool result = backupService.ExecuteBackup(new List<Backup> { backup });
+        bool result = backupService.ExecuteBackup(new List<Backup> { backup, backup2});
 
         Console.WriteLine($"Backup terminé avec succès ? {result}");
 
