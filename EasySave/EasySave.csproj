@@ -8,9 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="NewFolder1\**" />
-      <EmbeddedResource Remove="NewFolder1\**" />
-      <None Remove="NewFolder1\**" />
+      <ProjectReference Include="..\EasyLog\EasyLog\EasyLog.csproj" />
     </ItemGroup>
 
     <ItemGroup>
