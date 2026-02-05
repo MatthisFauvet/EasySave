@@ -53,7 +53,7 @@ public class JsonBackupRepository : IBackupRepository
     /// - If the Id does not exist, an exception is thrown
     ///   because "Remove(id)" implies the target must exist.
     /// </summary>
-    public void Remove(int id)
+    public bool Remove(int id)
     {
         lock (_sync)
         {
@@ -63,7 +63,9 @@ public class JsonBackupRepository : IBackupRepository
 
             _backups.Remove(existing);
             SaveToFile(_backups);
+            return true;
         }
+       
     }
 
     /// <summary>
@@ -109,7 +111,7 @@ public class JsonBackupRepository : IBackupRepository
     /// Update strategy:
     /// - Full replacement of the entity in the list.
     /// </summary>
-    public void Update(Backup backup)
+    public bool Update(Backup backup)
     {
         if (backup == null)
             throw new ArgumentNullException(nameof(backup));
@@ -122,6 +124,7 @@ public class JsonBackupRepository : IBackupRepository
 
             _backups[index] = backup;
             SaveToFile(_backups);
+            return true;
         }
     }
 
