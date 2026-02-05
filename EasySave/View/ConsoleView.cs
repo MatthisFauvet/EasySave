@@ -11,6 +11,10 @@ namespace EasySave.Views
         private Localizer? _loc;
         private bool _initialized;
 
+        /// <summary>
+        ///     With this method we can change software language Fr or En
+        /// </summary>
+        /// <returns>Return enum object type</returns>
         public UiLanguage AskLanguage()
         {
             while (true)
@@ -38,6 +42,16 @@ namespace EasySave.Views
             }
         }
 
+        /// <summary>
+        /// This method display a list of actions you can perform in the sofwatre
+        /// </summary>
+        /// <returns>
+        ///     0.
+        ///     1.
+        ///     2.
+        ///     3.
+        ///     4.
+        /// </returns>
         public int ShowMenu()
         {
             EnsureInitialized();
@@ -76,7 +90,6 @@ namespace EasySave.Views
                 _ => "prompt.backupId.run"
             };
 
-
             while (true)
             {
                 Console.Write(_loc!.T(key));
@@ -89,7 +102,7 @@ namespace EasySave.Views
             }
         }
 
-        public CreateBackupInput AskCreateBackupInfo()
+        public CreateBackupRequest AskCreateBackupInfo()
         {
             EnsureInitialized();
 
@@ -98,8 +111,70 @@ namespace EasySave.Views
             string dest = AskRequired("prompt.dest");
             BackupType type = AskBackupType();
 
-            return new CreateBackupInput(name, source, dest, type);
+            return new CreateBackupRequest(name, source, dest, type);
         }
+
+        public List<int> SelectBackupToExecute()
+        {
+            while (true)
+            {
+                Console.WriteLine(_loc!.T("prompt.ask.backup.id.exec"));
+                Console.WriteLine(_loc!.T("prompt.ask.backup.id.exec.choice1"));
+                Console.WriteLine(_loc!.T("prompt.ask.backup.id.exec.choice2"));
+
+                var input = Console.ReadLine()?.Trim();
+
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    ShowError("error.invalidChoice");
+                    continue;
+                }
+                
+                if (input.Contains('-'))
+                {
+                    var parts = input.Split('-', StringSplitOptions.RemoveEmptyEntries);
+
+                    if (parts.Length == 2 &&
+                        int.TryParse(parts[0], out int start) &&
+                        int.TryParse(parts[1], out int end) &&
+                        start >= 1 &&
+                        end >= start)
+                    {
+                        return Enumerable.Range(start, end - start + 1).ToList();
+                    }
+                }
+                
+                else if (input.Contains(';'))
+                {
+                    var parts = input.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                    var result = new List<int>();
+                    bool valid = true;
+
+                    foreach (var part in parts)
+                    {
+                        if (int.TryParse(part, out int value) && value >= 1)
+                            result.Add(value);
+                        else
+                        {
+                            valid = false;
+                            break;
+                        }
+                    }
+
+                    if (valid && result.Count > 0)
+                        return result;
+                }
+                
+                else if (int.TryParse(input, out int single) && single >= 1)
+                {
+                    return new List<int> { single };
+                }
+
+                ShowError("error.invalidChoice");
+            }
+        }
+
+
         public string AskNewBackupName()
         {
             EnsureInitialized();
@@ -139,7 +214,7 @@ namespace EasySave.Views
             foreach (Backup b in backups)
             {
                 any = true;
-                Console.WriteLine($"{b.Id,2} | {b.Name,-20} }");
+                Console.WriteLine($"{b.Id,2} | {b.Name,-20} | {b.Type, -10}");
             }
 
             if (!any)
@@ -197,7 +272,7 @@ namespace EasySave.Views
                 var input = Console.ReadLine()?.Trim();
 
                 if (input == "1") return BackupType.Full;
-                if (input == "2") return BackupType.Differential;
+                if (input == "2") return BackupType.Sequential;
 
                 ShowError("error.invalidChoice");
             }

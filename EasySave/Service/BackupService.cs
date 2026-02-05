@@ -1,11 +1,8 @@
-﻿using EasyLog;
+﻿using System.Diagnostics;
+using EasyLog;
 using EasyLog.entity;
 using EasySave.Entity;
 using EasySave.service;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 
 // Service responsable de l'exécution des sauvegardes
 public class BackupService : IBackupService
@@ -19,6 +16,10 @@ public class BackupService : IBackupService
         _logger = logger;
     }
 
+    public BackupService()
+    {
+    }
+
     /// <summary>
     /// Exécute une liste de backups.
     /// Retourne true si tous les backups ont réussi, false sinon.
@@ -27,7 +28,6 @@ public class BackupService : IBackupService
     {
         // Indique si l'exécution globale est un succès
         bool isSuccessful = true;
-
         // Liste des IDs des backups ayant échoué
         List<int> unvalidBackUps = new List<int>();
 
