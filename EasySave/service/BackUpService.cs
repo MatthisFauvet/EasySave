@@ -38,9 +38,10 @@ public class BackupService : IBackupService
         return isSuccessful;
     }
 
-    private void ExecuteSingleBackup(Backup backup)
+    private void ExecuteSingleBackup(int backupId)
     {
         _logger.InitWriters();
+        Backup backup = BackupRepository.GetBackupById(backupId);
 
         if (!Directory.Exists(backup.SourceFilePath)) {
             _logger.Log($"Source directory not found : {backup.SourceFilePath}", LogType.Error);
