@@ -8,9 +8,24 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="NewFolder1\**" />
+      <EmbeddedResource Remove="NewFolder1\**" />
+      <None Remove="NewFolder1\**" />
+    </ItemGroup>
+
+    <ItemGroup>
       <Reference Include="EasyLog">
         <HintPath>..\..\mvvm\EasyLog\EasyLog\bin\Debug\net10.0\EasyLog.dll</HintPath>
       </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Resources\texts.en.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Resources\texts.fr.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>
