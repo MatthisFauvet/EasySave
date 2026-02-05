@@ -8,5 +8,5 @@ public class Backup
     public string Name { get; set; }
     public string SourceFilePath { get; set; }
     public string DestinationFilePath { get; set; }
-    public string TimeStamp { get; set; }
+    public DateTime LastBackupDate { get; set; }
 }
