@@ -20,5 +20,8 @@
   "msg.noBackups": "Aucune sauvegarde disponible.",
   "error.idNotFound": "ID de sauvegarde introuvable.",
   "msg.listTitle": "Liste des sauvegardes :",
-  "msg.running": "Exécution de la sauvegarde..."
+  "msg.running": "Exécution de la sauvegarde...",
+  "prompt.ask.backup.id.exec": "Entrer les ids des backup a exécuter",
+  "prompt.ask.backup.id.exec.choice1": "1;3 --> backup 1 et 3",
+  "prompt.ask.backup.id.exec.choice2": "1-3 --> backup 1 à 3"
 }
