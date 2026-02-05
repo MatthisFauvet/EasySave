@@ -1,4 +1,5 @@
 using EasySave.Entity;
+using EasySave.view;
 
 namespace EasySave.Repository;
 
@@ -18,7 +19,7 @@ public interface IBackupRepository
     /// of the Backup identifier (Id).
     /// </summary>
     /// <param name="backup">Backup entity to add.</param>
-    void Add(Backup backup);
+    void Add(CreateBackupRequest backup);
 
     /// <summary>
     /// Removes a Backup using its unique identifier.
