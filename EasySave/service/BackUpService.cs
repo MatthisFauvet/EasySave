@@ -9,7 +9,8 @@ using System.IO;
 
 public class BackupService : IBackupService
 {
-    protected Logger _logger;
+    private readonly Logger _logger;
+
     public BackupService(Logger logger)
     {
         _logger = logger;
@@ -44,6 +45,7 @@ public class BackupService : IBackupService
         {
             _logger.Log($"The following backup(s) failed to execute: {string.Join(", ", unvalidBackUps)}", LogType.Error);
         }
+        _logger.Log($"Finished execution of backups.", LogType.Info);
         return isSuccessful;
     }
 
