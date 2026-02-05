@@ -54,7 +54,6 @@ public class BackupService : IBackupService
         Logger _logger = new Logger();
         _logger.InitWriters(backup.DestinationFilePath, $"Execution du backup {backup.Id}");
 
-
         if (!Directory.Exists(backup.SourceFilePath)) {
             _logger.Log($"Source directory not found : {backup.SourceFilePath}", LogType.Error);
             throw new DirectoryNotFoundException($"Source not found : {backup.SourceFilePath}");
