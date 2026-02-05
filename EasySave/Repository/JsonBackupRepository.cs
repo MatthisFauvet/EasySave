@@ -1,22 +1,31 @@
 using System.Text.Json;
 using EasySave.Entity;
+using EasySave.view;
 
 namespace EasySave.Repository;
 
 public class JsonBackupRepository : IBackupRepository
 {
     // JSON file path used as persistent storage
-    private readonly string _filePath;
+    private static readonly string FILE_PATH =
+        Path.Combine(
+            AppContext.BaseDirectory,
+            "backups",
+            "backups.json"
+        );
 
     // In-memory cache loaded from the JSON file
     private readonly List<Backup> _backups;
 
     // Simple lock for thread-safety (list + file access)
     private readonly object _sync = new();
-
-    public JsonBackupRepository(string filePath)
+    
+    private readonly int MAX_ID = 4;
+    
+    private readonly int MIN_ID = 0;
+    
+    public JsonBackupRepository()
     {
-        _filePath = filePath ?? throw new ArgumentNullException(nameof(filePath));
         _backups = LoadFromFile();
     }
 
@@ -31,20 +40,35 @@ public class JsonBackupRepository : IBackupRepository
     /// - The repository keeps an in-memory list
     /// - After each change, the full list is serialized and saved to disk
     /// </summary>
-    public void Add(Backup backup)
+    public void Add(CreateBackupRequest backup)
     {
         if (backup == null)
             throw new ArgumentNullException(nameof(backup));
 
         lock (_sync)
         {
-            if (_backups.Any(b => b.Id == backup.Id))
-                throw new InvalidOperationException($"A backup with Id {backup.Id} already exists.");
+            // Limite de 5 backups
+            if (_backups.Count >= 5)
+                throw new InvalidOperationException("Impossible d'ajouter plus de 5 backups.");
 
-            _backups.Add(backup);
+            // Cherche le plus petit ID libre entre 1 et 5
+            int newId = Enumerable.Range(1, 5)
+                .First(id => !_backups.Any(b => b.Id == id));
+
+            Backup targetBackup = new Backup(
+                newId,
+                backup.Name,
+                backup.SourceFilePath,
+                backup.DestinationFilePath,
+                DateTime.Now,
+                backup.Type
+            );
+
+            _backups.Add(targetBackup);
             SaveToFile(_backups);
         }
     }
+
 
     /// <summary>
     /// Removes a Backup by its Id and persists the change.
@@ -55,17 +79,25 @@ public class JsonBackupRepository : IBackupRepository
     /// </summary>
     public bool Remove(int id)
     {
-        lock (_sync)
+        try
         {
-            var existing = _backups.FirstOrDefault(b => b.Id == id);
-            if (existing == null)
-                throw new KeyNotFoundException($"No backup found with Id {id}.");
+            lock (_sync)
+            {
+                var existing = _backups.FirstOrDefault(b => b.Id == id);
+                if (existing == null)
+                    throw new KeyNotFoundException($"No backup found with Id {id}.");
 
-            _backups.Remove(existing);
-            SaveToFile(_backups);
-            return true;
+                _backups.Remove(existing);
+                SaveToFile(_backups);
+                return true;
+            }
         }
-       
+        catch (KeyNotFoundException e)
+        {
+            Console.WriteLine("No backup found with Id {0}.", id);
+            return false;
+        }
+        
     }
 
     /// <summary>
@@ -139,10 +171,10 @@ public class JsonBackupRepository : IBackupRepository
     {
         try
         {
-            if (!File.Exists(_filePath))
+            if (!File.Exists(FILE_PATH))
                 return new List<Backup>();
 
-            var json = File.ReadAllText(_filePath);
+            var json = File.ReadAllText(FILE_PATH);
             if (string.IsNullOrWhiteSpace(json))
                 return new List<Backup>();
 
@@ -152,7 +184,6 @@ public class JsonBackupRepository : IBackupRepository
         catch
         {
             // If JSON is corrupted, we start fresh.
-            // In a real project, log the exception for diagnostics.
             return new List<Backup>();
         }
     }
@@ -168,19 +199,19 @@ public class JsonBackupRepository : IBackupRepository
     /// </summary>
     private void SaveToFile(List<Backup> backups)
     {
-        var directory = Path.GetDirectoryName(_filePath);
+        var directory = Path.GetDirectoryName(FILE_PATH);
         if (!string.IsNullOrWhiteSpace(directory))
             Directory.CreateDirectory(directory);
 
         var json = JsonSerializer.Serialize(backups, GetJsonOptions());
 
-        var tempPath = _filePath + ".tmp";
+        var tempPath = FILE_PATH + ".tmp";
         File.WriteAllText(tempPath, json);
 
-        if (File.Exists(_filePath))
-            File.Delete(_filePath);
+        if (File.Exists(FILE_PATH))
+            File.Delete(FILE_PATH);
 
-        File.Move(tempPath, _filePath);
+        File.Move(tempPath, FILE_PATH);
     }
 
     private static JsonSerializerOptions GetJsonOptions() =>
