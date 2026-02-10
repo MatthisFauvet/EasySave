@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using EasyLog;
 using EasyLog.entity;
+using EasyLog.utils;
 using EasySave.Entity;
 using EasySave.service;
 
@@ -34,7 +35,8 @@ public class BackupService : IBackupService
         // Initialisation du logger global pour l'exécution des backups
         Logger _logger = new Logger();
         _logger.InitWriters("logs", "Execution of backups");
-        _logger.Log("Starting execution of backups.", LogType.Info);
+        _logger.Log(DictionaryManager.SingleStringToDictionary("message", "Starting execution of backups."),
+            LogType.Info);
 
         // Parcours de chaque backup à exécuter
         foreach (Backup backup in backups)
@@ -45,12 +47,14 @@ public class BackupService : IBackupService
                 ExecuteSingleBackup(backup);
 
                 // Log de succès
-                _logger.Log($"Backup (ID : {backup}) completed successfully.", LogType.Info);
+                _logger.Log(DictionaryManager.SingleStringToDictionary("message",
+                    $"Backup (ID : {backup}) completed successfully."), LogType.Info);
             }
             catch (Exception ex)
             {
                 // Log d'erreur en cas d'échec
-                _logger.Log($"Backup (ID : {backup}) failed : {ex.Message}", LogType.Error);
+                _logger.Log(DictionaryManager.SingleStringToDictionary("message",
+                    $"Backup (ID : {backup}) failed : {ex.Message}"), LogType.Error);
 
                 // Ajout de l'ID du backup échoué
                 unvalidBackUps.Add(backup.Id);
@@ -63,14 +67,17 @@ public class BackupService : IBackupService
         // Si au moins un backup a échoué, on log la liste des backups concernés
         if (!isSuccessful)
         {
+            
             _logger.Log(
-                $"The following backup(s) failed to execute: {string.Join(", ", unvalidBackUps)}",
+                DictionaryManager.SingleStringToDictionary("message",
+                $"The following backup(s) failed to execute: {string.Join(", ", unvalidBackUps)}"),
                 LogType.Error
             );
         }
 
         // Fin de l'exécution globale
-        _logger.Log("Finished execution of backups.", LogType.Info);
+        _logger.Log(DictionaryManager.SingleStringToDictionary("Work finished",
+            "Finished execution of backups."), LogType.Info);
 
         return isSuccessful;
     }
@@ -88,7 +95,8 @@ public class BackupService : IBackupService
             $"Execution du backup {backup.Id}"
         );
         _logger.Log(
-            $"Starting backup execution (ID: {backup.Id}, Type: {backup.Type})",
+            DictionaryManager.SingleStringToDictionary("message",
+            $"Starting backup execution (ID: {backup.Id}, Type: {backup.Type})"),
             LogType.Info
         );
 
@@ -96,7 +104,8 @@ public class BackupService : IBackupService
         if (!Directory.Exists(backup.SourceFilePath))
         {
             _logger.Log(
-                $"Source directory not found : {backup.SourceFilePath}",
+                DictionaryManager.SingleStringToDictionary("message",
+                $"Source directory not found : {backup.SourceFilePath}"),
                 LogType.Error
             );
 
@@ -143,27 +152,26 @@ public class BackupService : IBackupService
                 stopwatch.Stop();
 
                 // Log du succès du transfert
-                _logger.Log(
-                    $"sourcePath: {sourceFile.FullName}, " +
-                    $"targetPath: {destinationFilePath}, " +
-                    $"fileSize: {sourceFile.Length}, " +
-                    $"transferTimeMs: {stopwatch.ElapsedMilliseconds}, " +
-                    $"backupName: {backup.Name}",
-                    LogType.Info
-                );
+                Dictionary<string, string> logs = new Dictionary<string, string>();
+                logs.Add("sourcePath", sourceFile.FullName);
+                logs.Add("destinationPath", destinationFilePath);
+                logs.Add("fileSize", sourceFile.Length.ToString());
+                logs.Add("transferTimeMs", stopwatch.ElapsedMilliseconds.ToString());
+                logs.Add("backupName", backup.Name);
+                _logger.Log(logs);
             }
             catch
             {
                 stopwatch.Stop();
 
                 // Log d'erreur si la copie échoue
-                _logger.Log(
-                    $"sourcePath: {sourceFile.FullName}, " +
-                    $"fileSize: {sourceFile.Length}, " +
-                    $"transferTimeMs: {-1}, " +
-                    $"backupName: {backup.Name}",
-                    LogType.Error
-                );
+                
+                Dictionary<string, string> logs = new Dictionary<string, string>();
+                logs.Add("sourcePath", sourceFile.FullName);
+                logs.Add("fileSize", sourceFile.Length.ToString());
+                logs.Add("transferTimeMs", stopwatch.ElapsedMilliseconds.ToString());
+                logs.Add("backupName", backup.Name);
+                _logger.Log(logs);
             }
         }
    }
