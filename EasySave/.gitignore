@@ -16,3 +16,6 @@
 /dataSources.local.xml
 # Editor-based HTTP Client requests
 /httpRequests/
+
+# Ignore Visual Studio folder
+.vs/
