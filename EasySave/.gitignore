@@ -1,3 +1,19 @@
 ﻿# Default ignored files
-.idea/
-.vs/
+.idea
+/shelf/
+EasySave/obj/
+EasySave/bin/
+
+/workspace.xml
+# Rider ignored files
+/contentModel.xml
+/.idea.EasySave.iml
+/modules.xml
+/projectSettingsUpdater.xml
+# Ignored default folder with query files
+/queries/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+# Editor-based HTTP Client requests
+/httpRequests/
