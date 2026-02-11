@@ -1,0 +1,3 @@
+[submodule "EasyLog"]
+	path = EasyLog
+	url = https://github.com/MatthisFauvet/EasyLog
