@@ -5,40 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="312a440a-7f95-4f25-9659-337b41e1dee6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../.gitmodules" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../EasyLog" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave.sln" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave.sln.DotSettings.user" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/App.xaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/App.xaml.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/AssemblyInfo.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/EasySave.csproj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/MainWindow.xaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/MainWindow.xaml.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/Model/Backup.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/Model/BackupCreateRequest.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/Model/BackupType.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/Repository/IBackupRepository.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/Service/IBackupService.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/App.g.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfo.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfoInputs.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.GeneratedMSBuildEditorConfig.editorconfig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.GlobalUsings.g.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.assets.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/MainWindow.g.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/obj/EasySave.csproj.nuget.dgspec.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/obj/EasySave.csproj.nuget.g.props" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/obj/EasySave.csproj.nuget.g.targets" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/obj/project.assets.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/obj/project.nuget.cache" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/obj/project.packagespec.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/obj/rider.project.model.nuget.info" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/obj/rider.project.restore.info" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EasySave/Assets/classDiagram.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EasySave/Repository/JsonBackupRepository.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EasySave/Service/BackupService.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EasySave/View/MainWindow.xaml.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EasySave/ViewModel/Command/RelayCommand.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EasySave/ViewModel/MainViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave.sln.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/MainWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/View/MainWindow.xaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/MainWindow.xaml.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfoInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/MainWindow.g.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/obj/EasySave.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/EasySave.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/project.packagespec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/rider.project.model.nuget.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/rider.project.restore.info" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,6 +54,12 @@
     <setting file="file://$PROJECT_DIR$/EasySave/Model/BackupType.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EasySave/Repository/IBackupRepository.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EasySave/Service/IBackupService.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/EasySave/View/MainWindow.xaml.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/EasySave/ViewModel/Command/RelayCommand.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/App.g.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/EasySave/obj/EasySave.csproj.nuget.dgspec.json" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/EasySave/obj/project.assets.json" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/EasySave/obj/project.packagespec.json" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
@@ -126,7 +117,110 @@
       <workItem from="1770806262786" duration="6183000" />
       <workItem from="1770817232585" duration="157000" />
       <workItem from="1770817441494" duration="268000" />
+      <workItem from="1770817849226" duration="5624000" />
+      <workItem from="1770883174622" duration="6666000" />
+      <workItem from="1770901852749" duration="3054000" />
+      <workItem from="1770917104113" duration="201000" />
+      <workItem from="1770917324137" duration="112000" />
+      <workItem from="1770917451793" duration="3965000" />
     </task>
+    <task id="LOCAL-00001" summary=":see_no_evil: Added .gitignore">
+      <option name="closed" value="true" />
+      <created>1770818000481</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1770818000481</updated>
+    </task>
+    <task id="LOCAL-00002" summary=":heavy_plus_sign: Added git modules">
+      <option name="closed" value="true" />
+      <created>1770818020295</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1770818020295</updated>
+    </task>
+    <task id="LOCAL-00003" summary=":tada: Initial commit">
+      <option name="closed" value="true" />
+      <created>1770818162692</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1770818162692</updated>
+    </task>
+    <task id="LOCAL-00004" summary=":tada: Created C# Desktop project">
+      <option name="closed" value="true" />
+      <created>1770818207752</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1770818207752</updated>
+    </task>
+    <task id="LOCAL-00005" summary=":building_construction: Created data type (model / entity) and interfaces">
+      <option name="closed" value="true" />
+      <created>1770818286866</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1770818286866</updated>
+    </task>
+    <task id="LOCAL-00006" summary=":heavy_plus_sign: Added git submodules">
+      <option name="closed" value="true" />
+      <created>1770921960330</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1770921960330</updated>
+    </task>
+    <task id="LOCAL-00007" summary=":art: Created new desktop solution">
+      <option name="closed" value="true" />
+      <created>1770922018500</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1770922018500</updated>
+    </task>
+    <task id="LOCAL-00008" summary=":bento: Added class diagram">
+      <option name="closed" value="true" />
+      <created>1770922056225</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1770922056225</updated>
+    </task>
+    <task id="LOCAL-00009" summary=":wrench: Configuration files">
+      <option name="closed" value="true" />
+      <created>1770922096890</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1770922096890</updated>
+    </task>
+    <task id="LOCAL-00010" summary=":heavy_plus_sign: Added git submodules">
+      <option name="closed" value="true" />
+      <created>1770922226756</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1770922226756</updated>
+    </task>
+    <task id="LOCAL-00011" summary=":heavy_plus_sign: Added git submodules">
+      <option name="closed" value="true" />
+      <created>1770922272204</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1770922272204</updated>
+    </task>
+    <task id="LOCAL-00012" summary=":art: Created new desktop solution">
+      <option name="closed" value="true" />
+      <created>1770922319202</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1770922319202</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -136,6 +230,16 @@
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value=":see_no_evil: Added .gitignore" />
+    <MESSAGE value=":heavy_plus_sign: Added git modules" />
+    <MESSAGE value=":tada: Initial commit" />
+    <MESSAGE value=":tada: Created C# Desktop project" />
+    <MESSAGE value=":building_construction: Created data type (model / entity) and interfaces" />
+    <MESSAGE value=":bento: Added class diagram" />
+    <MESSAGE value=":wrench: Configuration files" />
+    <MESSAGE value=":heavy_plus_sign: Added git submodules" />
+    <MESSAGE value=":art: Created new desktop solution" />
+    <option name="LAST_COMMIT_MESSAGE" value=":art: Created new desktop solution" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
