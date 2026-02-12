@@ -1,0 +1,174 @@
+@startuml
+
+package EasySave {
+
+    package Services {
+    
+        interface IBackupService {
+            +ExecuteBackup(backup)
+        }
+    
+        class BackupService {
+            -logger: ILogger
+            +ExecuteBackup(backup)
+            +Add(Backup backup)
+            +Remove(int idBackup)
+            +GetByld(int idBackup) : Backup
+            +GetAlI(int page) : Page<Backup>
+            +Update(Backup backup)
+        }
+    
+    }
+
+    package ViewModel {
+        
+        class ViewModel {
+            -List<Backup> backups;
+            -IBackupService _serviceBackup;
+            +ExecuteBackup(List<Backup> backups);
+            +CreateBackup(CreateBackupRequest createBackupRequest);
+            +ListBackup();
+        }
+        
+        folder Command {
+        
+            class RelayCommand
+            {
+            
+            }
+            
+        }
+    
+    }
+
+    package Model {
+    
+        class Backup {
+            +int Id
+            +string Name
+            +string SourceFilePath
+            +string DestinationFilePath
+            +DateTime LastBackupDate
+        }
+        
+        enum BackupType {
+            Unknown
+            Full
+            Sequential
+        }
+    
+    }
+        
+    package Repository {
+      
+        interface IBackupRepository {
+            +Add(Backup backup)
+            +Remove(int idBackup)
+            +GetByld(int idBackup) : Backup
+            +GetAlI(int page) : Page<Backup>
+            +Update(Backup backup)
+        }
+          
+        class JsonBackupRepository
+        
+    }
+    
+    package Services {
+    
+        interface IBackupService {
+            +ExecuteBackup(Backup backup)
+        }
+    
+        class BackupService {
+            +ExecuteBackup(Backup backup)
+        }
+    
+    }
+    
+    package View {
+    
+        class MainView {
+        
+        }
+    
+    }
+    
+}
+
+package EasyLog
+{
+    
+    enum LogType {
+            ERROR
+            INFO
+            WARN
+        }
+
+    class ConsoleLogWriter {
+        +message: string
+        +logType: LogType
+        +datetime: DateTime
+        +write()
+    }
+
+    class FileLogWriter {
+        +message: string
+        +logType: LogType
+        +datetime: DateTime
+        +write()
+    }
+    
+    class JsonFileLogWriter {
+        +message: string
+        +logType: LogType
+        +datetime: DateTime
+        +write()
+    }
+    
+    class XmlLogWriter {
+        +message: string
+        +logType: LogType
+        +datetime: DateTime
+        +write()
+    }
+
+    interface ILogWriter {
+        +write()
+        +read()
+    }
+
+    class Logger {
+        +InitWriter()
+        +AddWriter()
+        +Log(message: string, logType: LogType)
+    }
+    
+}
+
+
+package CryptoSoft
+{
+    
+}
+
+
+' Relations
+JsonBackupRepository ..|> IBackupRepository
+
+BackupService ..|> IBackupService
+
+ConsoleLogWriter ..|> ILogWriter
+FileLogWriter ..|> ILogWriter
+XmlLogWriter ..|> ILogWriter
+JsonFileLogWriter ..|> ILogWriter
+
+
+IBackupRepository "1" --> "*" Backup
+
+BackupService --> Logger
+BackupService --> IBackupRepository
+Logger --> ILogWriter
+Logger --> LogType
+
+
+@enduml
