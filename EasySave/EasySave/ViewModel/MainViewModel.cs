@@ -1,23 +1,24 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
-
 using EasySave.Model;
 using EasySave.Service;
+using EasySave.ViewModel.Command;
 
 namespace EasySave.ViewModel;
 
 public class MainViewModel : INotifyPropertyChanged
 {
-    //Just to clarify something, all these comments have been written by hand. I mean, I'm writing them with a
-    //computer so it's not really handwritten, but it's not generate by IA.
-    
-    //First we define all private variable 
     private readonly IBackupService _backupService;
 
-    private int _pageIndex; 
-    
+    private int _pageIndex;
     private int _pageSize;
-    
+
+    public RelayCommand ExecuteBackupsCommand { get; set; }
+    public RelayCommand CreateBackupCommand { get; set; }
+
     private BackupCreateRequest _newBackupCreateRequest;
 
     public BackupCreateRequest BackupCreateRequest
@@ -26,9 +27,10 @@ public class MainViewModel : INotifyPropertyChanged
         set
         {
             _newBackupCreateRequest = value;
+            OnPropertyChanged();
         }
     }
-    
+
     private List<Backup> _backups;
 
     public List<Backup> Backups
@@ -41,17 +43,28 @@ public class MainViewModel : INotifyPropertyChanged
         }
     }
 
+    // Liste des types pour le ComboBox
+    public List<BackupType> BackupTypes { get; set; }
+
     public MainViewModel()
     {
-        //Here is a template of how to use RelayCommand
-        //LoadUserCommand = new RelayCommand(ReloadUser);
-        //  Binding Name        Object     Method to execute 
-        
-        //TODO : Here, create an instance of BackupService.
-        //Backups = LoadBackups();
-        
         _backupService = new BackupService();
-        CreateBackup();
+        Backups = LoadBackups();
+
+        // Initialiser les types pour le ComboBox
+        BackupTypes = Enum.GetValues(typeof(BackupType)).Cast<BackupType>().ToList();
+
+        // Initialiser un objet vide pour le formulaire
+        BackupCreateRequest = new BackupCreateRequest("", "", "", BackupType.Full);
+
+        ExecuteBackupsCommand = new RelayCommand(ExecuteBackup);
+        CreateBackupCommand = new RelayCommand(CreateBackup);
+    }
+
+    private void ExecuteBackup()
+    {
+        var selectedBackups = Backups.Where(b => b.IsSelected).ToList();
+        _backupService.ExecuteBackup(selectedBackups);
     }
 
     private List<Backup> LoadBackups()
@@ -61,14 +74,23 @@ public class MainViewModel : INotifyPropertyChanged
 
     private void CreateBackup()
     {
-        //BackupCreateRequest createBackup = new BackupCreateRequest();
-        BackupCreateRequest = new BackupCreateRequest("Caca", "zizi", "iei", BackupType.Full);
+        // Validation minimale
+        if (string.IsNullOrWhiteSpace(BackupCreateRequest.Name) ||
+            string.IsNullOrWhiteSpace(BackupCreateRequest.SourceFilePath) ||
+            string.IsNullOrWhiteSpace(BackupCreateRequest.DestinationFilePath))
+        {
+            Console.WriteLine("Tous les champs doivent être remplis !");
+            return;
+        }
+        
+        _backupService.CreateBackup(BackupCreateRequest);
+
+        LoadBackups();
+        BackupCreateRequest = new BackupCreateRequest("", "", "", BackupType.Full);
     }
-    
-    
+
     public event PropertyChangedEventHandler? PropertyChanged;
-    
+
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
 }

@@ -31,4 +31,5 @@ public class Backup
     public string DestinationFilePath { get; set; }
     public DateTime LastBackupDateTime { get; set; }
     public BackupType Type { get; set; }
+    public bool IsSelected { get; set; }
 }
