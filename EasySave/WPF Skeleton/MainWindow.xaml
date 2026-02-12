@@ -1,0 +1,71 @@
+<Window x:Class="WpfSkeleton.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="EasySave - WPF Skeleton" 
+        MinHeight="500" MinWidth="700"
+        Height="600" Width="900"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource BackgroundBrush}">
+
+    <Grid>
+        <!-- TEMPLATE 1: Navbar a gauche -->
+        <Grid x:Name="Template1" Visibility="Visible">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200" MinWidth="150" MaxWidth="250"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Navbar gauche -->
+            <StackPanel Grid.Column="0" Background="{DynamicResource NavbarBackgroundBrush}">
+                <TextBlock x:Name="NavTitle1" Text="Navigation" FontWeight="Bold" FontSize="16" 
+                           Margin="10,20,10,10" HorizontalAlignment="Center"
+                           Foreground="{DynamicResource ForegroundBrush}"
+                           TextWrapping="Wrap"/>
+                <Button x:Name="BtnHome1" Content="Home" Click="NavHome_Click" 
+                        Margin="10,5" Padding="10,8" MinHeight="30"/>
+                <Button x:Name="BtnSaves1" Content="Saves" Click="NavSaves_Click" 
+                        Margin="10,5" Padding="10,8" MinHeight="30"/>
+                <Button x:Name="BtnHistory1" Content="History" Click="NavHistory_Click" 
+                        Margin="10,5" Padding="10,8" MinHeight="30"/>
+                <Button x:Name="BtnSettings1" Content="Settings" Click="NavSettings_Click" 
+                        Margin="10,5" Padding="10,8" MinHeight="30"/>
+            </StackPanel>
+
+            <!-- Contenu principal Template 1 -->
+            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" 
+                          HorizontalScrollBarVisibility="Disabled">
+                <ContentControl x:Name="ContentTemplate1" Margin="15"/>
+            </ScrollViewer>
+        </Grid>
+
+        <!-- TEMPLATE 2: Onglets en haut -->
+        <Grid x:Name="Template2" Visibility="Collapsed">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Barre d'onglets en haut -->
+            <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Auto" 
+                          VerticalScrollBarVisibility="Disabled">
+                <StackPanel Orientation="Horizontal" Background="{DynamicResource NavbarBackgroundBrush}" 
+                            MinHeight="45">
+                    <Button x:Name="BtnHome2" Content="Home" Click="NavHome_Click" 
+                            Margin="5" Padding="20,10" MinWidth="80" MinHeight="35"/>
+                    <Button x:Name="BtnSaves2" Content="Saves" Click="NavSaves_Click" 
+                            Margin="5" Padding="20,10" MinWidth="80" MinHeight="35"/>
+                    <Button x:Name="BtnHistory2" Content="History" Click="NavHistory_Click" 
+                            Margin="5" Padding="20,10" MinWidth="80" MinHeight="35"/>
+                    <Button x:Name="BtnSettings2" Content="Settings" Click="NavSettings_Click" 
+                            Margin="5" Padding="20,10" MinWidth="80" MinHeight="35"/>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Contenu principal Template 2 -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" 
+                          HorizontalScrollBarVisibility="Disabled">
+                <ContentControl x:Name="ContentTemplate2" Margin="15"/>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Window>

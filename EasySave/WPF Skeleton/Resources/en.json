@@ -1,0 +1,70 @@
+{
+  "App": {
+    "Title": "EasySave - WPF Skeleton"
+  },
+  "Navigation": {
+    "Title": "Navigation",
+    "Home": "Home",
+    "Saves": "Saves",
+    "History": "History",
+    "Settings": "Settings"
+  },
+  "Home": {
+    "Title": "HOME - Main page",
+    "Welcome": "Welcome to EasySave!\nUse the navigation to access different sections."
+  },
+  "Saves": {
+    "Title": "SAVES - Work management",
+    "CreateWork": "Create a work",
+    "ExecuteWorks": "Execute works",
+    "WorksList": "List of works with tracking and status:",
+    "Work": "Work",
+    "Pending": "Pending",
+    "InProgress": "In progress",
+    "Completed": "Completed"
+  },
+  "History": {
+    "Title": "HISTORY - Backup history",
+    "Description": "History of backup actions (Success/Fail/Abort):",
+    "Success": "Success",
+    "Fail": "Fail",
+    "Abort": "Abort"
+  },
+  "Settings": {
+    "Title": "SETTINGS",
+    "General": "General:",
+    "TemplateApp": "Template app:",
+    "Template1": "Template 1 - Left navbar",
+    "Template2": "Template 2 - Top tabs",
+    "ThemeApp": "Theme app:",
+    "Light": "Light",
+    "Dark": "Dark",
+    "Language": "Language:",
+    "French": "French",
+    "English": "English",
+    "Saves": "Saves:",
+    "ExecutionMode": "Execution mode:",
+    "Manual": "Manual",
+    "Auto": "Auto",
+    "Logs": "Logs:",
+    "FileType": "File type:",
+    "JSON": "JSON",
+    "XML": "XML"
+  },
+  "CreateWork": {
+    "Title": "Create a new work",
+    "WorkName": "Work name:",
+    "SourcePath": "Source path:",
+    "DestinationPath": "Destination path:",
+    "SaveType": "Save type:",
+    "Complete": "Complete",
+    "Incremental": "Incremental",
+    "Browse": "Browse...",
+    "Create": "Create",
+    "Cancel": "Cancel",
+    "ErrorTitle": "Error",
+    "ErrorEmptyFields": "Please fill all fields.",
+    "SuccessTitle": "Success",
+    "SuccessMessage": "The work has been created successfully!"
+  }
+}
