@@ -1,3 +1,9 @@
 [submodule "EasyLog"]
 	path = EasyLog
 	url = https://github.com/MatthisFauvet/EasyLog
+[submodule "EasySave/EasyLog"]
+	path = EasySave/EasyLog
+	url = https://github.com/MatthisFauvet/EasyLog
+[submodule "CryptoSoft"]
+	path = CryptoSoft
+	url = https://github.com/MatthisFauvet/CryptoSoft
