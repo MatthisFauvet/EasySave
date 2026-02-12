@@ -5,7 +5,8 @@
         MinHeight="500" MinWidth="700"
         Height="600" Width="900"
         WindowStartupLocation="CenterScreen"
-        Background="{DynamicResource BackgroundBrush}">
+        Background="{DynamicResource AppBackgroundBrush}">
+
 
     <Grid>
         <!-- TEMPLATE 1: Navbar a gauche -->
@@ -16,27 +17,85 @@
             </Grid.ColumnDefinitions>
 
             <!-- Navbar gauche -->
-            <StackPanel Grid.Column="0" Background="{DynamicResource NavbarBackgroundBrush}">
-                <TextBlock x:Name="NavTitle1" Text="Navigation" FontWeight="Bold" FontSize="16" 
-                           Margin="10,20,10,10" HorizontalAlignment="Center"
-                           Foreground="{DynamicResource ForegroundBrush}"
-                           TextWrapping="Wrap"/>
-                <Button x:Name="BtnHome1" Content="Home" Click="NavHome_Click" 
-                        Margin="10,5" Padding="10,8" MinHeight="30"/>
-                <Button x:Name="BtnSaves1" Content="Saves" Click="NavSaves_Click" 
-                        Margin="10,5" Padding="10,8" MinHeight="30"/>
-                <Button x:Name="BtnHistory1" Content="History" Click="NavHistory_Click" 
-                        Margin="10,5" Padding="10,8" MinHeight="30"/>
-                <Button x:Name="BtnSettings1" Content="Settings" Click="NavSettings_Click" 
-                        Margin="10,5" Padding="10,8" MinHeight="30"/>
+            <StackPanel Grid.Column="0" Background="{DynamicResource SidebarBackgroundBrush}">
+                <TextBlock x:Name="NavTitle1"
+                           Text="Backup"
+                           FontWeight="SemiBold"
+                           FontSize="16"
+                           Margin="16,18,16,18"
+                           Foreground="White"/>
+
+                <!-- DASHBOARD (selected by default) -->
+                <RadioButton x:Name="NavDashboard1" 
+                             Style="{StaticResource SidebarNavItemStyle}"
+                             GroupName="Nav"
+                             IsChecked="True"
+                             Click="NavHome_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE80F;" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0,0,10,0"/>
+                        <TextBlock x:Name="NavDashboardText1" Text="Dashboard" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </RadioButton>
+
+                <RadioButton x:Name="NavBackups1"
+                             Style="{StaticResource SidebarNavItemStyle}"
+                             GroupName="Nav"
+                             Click="NavSaves_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0,0,10,0"/>
+                        <TextBlock x:Name="NavBackupsText1" Text="My Backups" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </RadioButton>
+
+                <RadioButton x:Name="NavSchedule1"
+                             Style="{StaticResource SidebarNavItemStyle}"
+                             GroupName="Nav"
+                             Click="NavHistory_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE787;" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0,0,10,0"/>
+                        <TextBlock x:Name="NavScheduleText1" Text="Schedule" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </RadioButton>
+
+                <RadioButton x:Name="NavLogs1"
+                             Style="{StaticResource SidebarNavItemStyle}"
+                             GroupName="Nav"
+                             Click="NavHistory_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0,0,10,0"/>
+                        <TextBlock x:Name="NavLogsText1" Text="Logs" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </RadioButton>
+
+                <RadioButton x:Name="NavSettings1"
+                             Style="{StaticResource SidebarNavItemStyle}"
+                             GroupName="Nav"
+                             Click="NavSettings_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="16" Margin="0,0,10,0"/>
+                        <TextBlock x:Name="NavSettingsText1" Text="Settings" FontWeight="SemiBold"/>
+                    </StackPanel>
+                </RadioButton>
             </StackPanel>
 
             <!-- Contenu principal Template 1 -->
-            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto" 
-                          HorizontalScrollBarVisibility="Disabled">
-                <ContentControl x:Name="ContentTemplate1" Margin="15"/>
-            </ScrollViewer>
-        </Grid>
+        <ScrollViewer Grid.Column="1"
+              VerticalScrollBarVisibility="Auto"
+              HorizontalScrollBarVisibility="Disabled"
+              Background="{DynamicResource AppBackgroundBrush}">
+            <Border Background="{DynamicResource CardBackgroundBrush}"
+            CornerRadius="6"
+            Margin="20"
+            Padding="18">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="16" ShadowDepth="2" Opacity="0.12"/>
+                </Border.Effect>
+
+                <ContentControl x:Name="ContentTemplate1"/>
+            </Border>
+        </ScrollViewer>
+
+    </Grid>
 
         <!-- TEMPLATE 2: Onglets en haut -->
         <Grid x:Name="Template2" Visibility="Collapsed">

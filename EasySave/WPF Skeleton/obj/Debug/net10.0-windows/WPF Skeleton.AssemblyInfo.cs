@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("WPF Skeleton")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8f1f9b07aa4a0403099afb1ce70c18947791bdc0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+231ca1f15b8c3681088cfd70f2c1f026561bd34c")]
 [assembly: System.Reflection.AssemblyProductAttribute("WPF Skeleton")]
 [assembly: System.Reflection.AssemblyTitleAttribute("WPF Skeleton")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

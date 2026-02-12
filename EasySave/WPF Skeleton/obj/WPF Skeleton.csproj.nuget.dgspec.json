@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Kaizz\\source\\repos\\Project-GLexp\\EasySave\\WPF Skeleton\\WPF Skeleton.csproj": {}
+    "C:\\Users\\kaout\\Desktop\\EasySave\\EasySave\\EasySave\\WPF Skeleton\\WPF Skeleton.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Kaizz\\source\\repos\\Project-GLexp\\EasySave\\WPF Skeleton\\WPF Skeleton.csproj": {
+    "C:\\Users\\kaout\\Desktop\\EasySave\\EasySave\\EasySave\\WPF Skeleton\\WPF Skeleton.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Kaizz\\source\\repos\\Project-GLexp\\EasySave\\WPF Skeleton\\WPF Skeleton.csproj",
+        "projectUniqueName": "C:\\Users\\kaout\\Desktop\\EasySave\\EasySave\\EasySave\\WPF Skeleton\\WPF Skeleton.csproj",
         "projectName": "WPF Skeleton",
-        "projectPath": "C:\\Users\\Kaizz\\source\\repos\\Project-GLexp\\EasySave\\WPF Skeleton\\WPF Skeleton.csproj",
-        "packagesPath": "C:\\Users\\Kaizz\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Kaizz\\source\\repos\\Project-GLexp\\EasySave\\WPF Skeleton\\obj\\",
+        "projectPath": "C:\\Users\\kaout\\Desktop\\EasySave\\EasySave\\EasySave\\WPF Skeleton\\WPF Skeleton.csproj",
+        "packagesPath": "C:\\Users\\kaout\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\kaout\\Desktop\\EasySave\\EasySave\\EasySave\\WPF Skeleton\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Kaizz\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\kaout\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -69,7 +69,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",

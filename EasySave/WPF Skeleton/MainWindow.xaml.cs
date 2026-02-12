@@ -49,11 +49,15 @@ namespace WpfSkeleton
             Title = LanguageManager.Get("App.Title");
             
             NavTitle1.Text = LanguageManager.Get("Navigation.Title");
-            BtnHome1.Content = LanguageManager.Get("Navigation.Home");
-            BtnSaves1.Content = LanguageManager.Get("Navigation.Saves");
-            BtnHistory1.Content = LanguageManager.Get("Navigation.History");
-            BtnSettings1.Content = LanguageManager.Get("Navigation.Settings");
             
+            // Template 1 - Sidebar navigation
+            NavDashboardText1.Text = LanguageManager.Get("Navigation.Dashboard");
+            NavBackupsText1.Text = LanguageManager.Get("Navigation.MyBackups");
+            NavScheduleText1.Text = LanguageManager.Get("Navigation.Schedule");
+            NavLogsText1.Text = LanguageManager.Get("Navigation.Logs");
+            NavSettingsText1.Text = LanguageManager.Get("Navigation.Settings");
+            
+            // Template 2 - Top navigation buttons
             BtnHome2.Content = LanguageManager.Get("Navigation.Home");
             BtnSaves2.Content = LanguageManager.Get("Navigation.Saves");
             BtnHistory2.Content = LanguageManager.Get("Navigation.History");

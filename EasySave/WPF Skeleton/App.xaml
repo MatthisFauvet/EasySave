@@ -3,12 +3,80 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <!-- Theme Colors -->
-        <SolidColorBrush x:Key="BackgroundBrush" Color="White"/>
-        <SolidColorBrush x:Key="ForegroundBrush" Color="Black"/>
-        <SolidColorBrush x:Key="NavbarBackgroundBrush" Color="LightGray"/>
-        <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="#FFE6E6E6"/>
-        <SolidColorBrush x:Key="ButtonHoverBrush" Color="#FFC8C8C8"/>
+        <!-- App background like the screenshot -->
+        <SolidColorBrush x:Key="AppBackgroundBrush" Color="#EEF1F5"/>
+
+        <!-- Sidebar -->
+        <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="#2F435D"/>
+        <SolidColorBrush x:Key="SidebarItemForegroundBrush" Color="#D8E1EE"/>
+        <SolidColorBrush x:Key="SidebarItemHoverBrush" Color="#24374F"/>
+        <SolidColorBrush x:Key="SidebarItemSelectedBrush" Color="#22344A"/>
+        <SolidColorBrush x:Key="SidebarAccentBrush" Color="#2F80FF"/>
+
+        <!-- Main content -->
+        <SolidColorBrush x:Key="CardBackgroundBrush" Color="White"/>
+        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#1F2937"/>
+        <SolidColorBrush x:Key="SeparatorBrush" Color="#E6EAF0"/>
+
+        <!-- Keep your old keys if used elsewhere -->
+        <!--<SolidColorBrush x:Key="BackgroundBrush" Color="{Binding Color, Source={StaticResource AppBackgroundBrush}}"/>
+        <SolidColorBrush x:Key="ForegroundBrush" Color="{Binding Color, Source={StaticResource TextPrimaryBrush}}"/> -->
+
+        <Style x:Key="SidebarNavItemStyle" TargetType="{x:Type RadioButton}">
+            <Setter Property="Foreground" Value="{DynamicResource SidebarItemForegroundBrush}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="14,10"/>
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RadioButton}">
+                        <Border x:Name="Root"
+                        Background="{TemplateBinding Background}">
+                            <Grid>
+                                <!-- Left accent bar -->
+                                <Border x:Name="Accent"
+                                Width="3"
+                                Background="Transparent"
+                                HorizontalAlignment="Left"/>
+
+                                <!-- Content layout (icon + text) -->
+                                <ContentPresenter Margin="16,0,10,0"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Left"/>
+                            </Grid>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+
+                            <!-- Hover -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="{DynamicResource SidebarItemHoverBrush}"/>
+                            </Trigger>
+
+                            <!-- Selected (stays) -->
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="{DynamicResource SidebarItemSelectedBrush}"/>
+                                <Setter TargetName="Accent" Property="Background" Value="{DynamicResource SidebarAccentBrush}"/>
+                            </Trigger>
+
+                            <!-- Disabled -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        
+        
     </Application.Resources>
+
 </Application>
 

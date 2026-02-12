@@ -5,7 +5,11 @@
   "Navigation": {
     "Title": "Navigation",
     "Home": "Accueil",
+    "Dashboard": "Tableau de bord",
     "Saves": "Sauvegardes",
+    "MyBackups": "Mes sauvegardes",
+    "Schedule": "Planification",
+    "Logs": "Journaux",
     "History": "Historique",
     "Settings": "Parametres"
   },

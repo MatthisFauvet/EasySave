@@ -5,7 +5,11 @@
   "Navigation": {
     "Title": "Navigation",
     "Home": "Home",
+    "Dashboard": "Dashboard",
     "Saves": "Saves",
+    "MyBackups": "My Backups",
+    "Schedule": "Schedule",
+    "Logs": "Logs",
     "History": "History",
     "Settings": "Settings"
   },

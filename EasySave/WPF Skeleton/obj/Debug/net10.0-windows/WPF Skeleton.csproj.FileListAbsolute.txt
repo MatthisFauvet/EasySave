@@ -48,3 +48,28 @@ C:\Users\Kaizz\source\repos\Project-GLexp\EasySave\WPF Skeleton\obj\Debug\net10.
 C:\Users\Kaizz\source\repos\Project-GLexp\EasySave\WPF Skeleton\obj\Debug\net10.0-windows\WPF Skeleton.pdb
 C:\Users\Kaizz\source\repos\Project-GLexp\EasySave\WPF Skeleton\obj\Debug\net10.0-windows\WPF Skeleton.genruntimeconfig.cache
 C:\Users\Kaizz\source\repos\Project-GLexp\EasySave\WPF Skeleton\obj\Debug\net10.0-windows\ref\WPF Skeleton.dll
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\obj\Debug\net10.0-windows\CreateWorkDialog.baml
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\obj\Debug\net10.0-windows\App.baml
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\obj\Debug\net10.0-windows\CreateWorkDialog.g.cs
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\obj\Debug\net10.0-windows\App.g.cs
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\obj\Debug\net10.0-windows\WPF Skeleton_MarkupCompile.cache
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\obj\Debug\net10.0-windows\WPF Skeleton.dll
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\obj\Debug\net10.0-windows\refint\WPF Skeleton.dll
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\obj\Debug\net10.0-windows\WPF Skeleton.pdb
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\obj\Debug\net10.0-windows\MainWindow.baml
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\obj\Debug\net10.0-windows\MainWindow.g.cs
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\obj\Debug\net10.0-windows\WPF Skeleton.g.resources
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\obj\Debug\net10.0-windows\WPF Skeleton.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\obj\Debug\net10.0-windows\WPF Skeleton.AssemblyInfoInputs.cache
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\obj\Debug\net10.0-windows\WPF Skeleton.AssemblyInfo.cs
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\obj\Debug\net10.0-windows\WPF Skeleton.csproj.CoreCompileInputs.cache
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\obj\Debug\net10.0-windows\WPF Skeleton.sourcelink.json
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\bin\Debug\net10.0-windows\Resources\en.json
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\bin\Debug\net10.0-windows\Resources\fr.json
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\bin\Debug\net10.0-windows\WPF Skeleton.exe
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\bin\Debug\net10.0-windows\WPF Skeleton.deps.json
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\bin\Debug\net10.0-windows\WPF Skeleton.runtimeconfig.json
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\bin\Debug\net10.0-windows\WPF Skeleton.dll
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\bin\Debug\net10.0-windows\WPF Skeleton.pdb
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\obj\Debug\net10.0-windows\WPF Skeleton.genruntimeconfig.cache
+C:\Users\kaout\Desktop\EasySave\EasySave\EasySave\WPF Skeleton\obj\Debug\net10.0-windows\ref\WPF Skeleton.dll
