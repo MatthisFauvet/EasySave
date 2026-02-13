@@ -1,0 +1,98 @@
+{
+  "App": {
+    "Title": "EasySave",
+    "Version": "v.2"
+  },
+  "Navigation": {
+    "Title": "NAVIGATION",
+    "Home": "Accueil",
+    "Saves": "Sauvegardes",
+    "History": "Historique",
+    "Settings": "Parametres"
+  },
+  "Storage": {
+    "Title": "Stockage",
+    "Calculating": "Calcul...",
+    "NotAvailable": "Non disponible",
+    "ReadError": "Erreur de lecture"
+  },
+  "Home": {
+    "Title": "ACCUEIL - Page principale",
+    "Welcome": "Bienvenue sur EasySave!\nUtilisez la navigation pour acceder aux differentes sections.",
+    "ActiveJobs": "Travaux actifs",
+    "Completed": "Completes",
+    "Pending": "En attente",
+    "Errors": "Erreurs",
+    "RecentActivity": "Activite recente",
+    "QuickActions": "Actions rapides",
+    "StartBackup": "Demarrer sauvegarde",
+    "ViewLogs": "Voir les logs",
+    "Settings": "Parametres",
+    "AmountOfBackup": "Nombre de backups"
+  },
+  "Saves": {
+    "Title": "SAUVEGARDES - Gestion des travaux",
+    "Subtitle": "Gerez vos travaux de sauvegarde",
+    "CreateWork": "Creer un travail",
+    "ExecuteWorks": "Executer les travaux",
+    "WorksList": "Liste des travaux",
+    "Work": "Travail",
+    "Pending": "En attente",
+    "InProgress": "En cours",
+    "Completed": "Termine"
+  },
+  "History": {
+    "Title": "HISTORIQUE - Historique des sauvegardes",
+    "Description": "Historique des actions de sauvegardes",
+    "Success": "Succes",
+    "Fail": "Echec",
+    "Abort": "Annule"
+  },
+  "Settings": {
+    "Title": "PARAMETRES",
+    "Subtitle": "Configurez l'application selon vos preferences",
+    "General": "General",
+    "TemplateApp": "Template de l'application",
+    "TemplateDescription": "Disposition de l'interface",
+    "Template1": "Template 1 - Navbar a gauche",
+    "Template2": "Template 2 - Onglets en haut",
+    "ThemeApp": "Theme de l'application",
+    "ThemeDescription": "Apparence de l'application",
+    "Light": "Clair",
+    "Dark": "Sombre",
+    "Language": "Langue",
+    "LanguageDescription": "Langue de l'interface",
+    "French": "Francais",
+    "English": "Anglais",
+    "Saves": "Sauvegardes",
+    "ExecutionMode": "Mode d'execution",
+    "ExecutionDescription": "Mode d'execution des sauvegardes",
+    "Manual": "Manuel",
+    "Auto": "Automatique",
+    "Logs": "Logs",
+    "FileType": "Format de fichier de log",
+    "FileTypeDescription": "Format des fichiers de log",
+    "JSON": "JSON",
+    "XML": "XML"
+  },
+  "CreateWork": {
+    "Title": "Nouveau travail",
+    "WorkName": "Nom du travail",
+    "SourcePath": "Chemin source",
+    "DestinationPath": "Chemin destination",
+    "SaveType": "Type de sauvegarde",
+    "Complete": "Complete",
+    "Incremental": "Incrementale",
+    "Browse": "Parcourir",
+    "Create": "Creer",
+    "Cancel": "Annuler",
+    "ErrorRequired": "est requis",
+    "ErrorNotExists": "n'existe pas",
+    "ErrorSameFolder": "La destination doit etre differente de la source",
+    "ErrorWorkName": "Le nom du travail",
+    "ErrorSourcePath": "Le chemin source",
+    "ErrorSourceNotExists": "Le dossier source",
+    "ErrorDestPath": "Le chemin destination",
+    "ErrorDestNotExists": "Le dossier destination"
+  }
+}

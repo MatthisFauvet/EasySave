@@ -9,8 +9,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="ViewModel\" />
-      <Folder Include="View\" />
+      <ProjectReference Include="..\..\EasyLog\EasyLog\EasyLog.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="Resources\*.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>

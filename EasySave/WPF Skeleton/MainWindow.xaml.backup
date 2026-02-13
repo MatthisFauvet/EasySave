@@ -1,0 +1,360 @@
+<Window x:Class="WpfSkeleton.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="EasySave"
+        MinHeight="600" MinWidth="900"
+        Height="700" Width="1100"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource BackgroundBrush}"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResizeWithGrip">
+
+	<Window.Resources>
+		<!-- Console text colors -->
+		<SolidColorBrush x:Key="LogInfo"    Color="{Binding Source={StaticResource InfoBrush}, Path=Color}"/>
+		<SolidColorBrush x:Key="LogSuccess" Color="{Binding Source={StaticResource SuccessBrush}, Path=Color}"/>
+		<SolidColorBrush x:Key="LogWarning" Color="{Binding Source={StaticResource WarningBrush}, Path=Color}"/>
+		<SolidColorBrush x:Key="LogError"   Color="{Binding Source={StaticResource ErrorBrush}, Path=Color}"/>
+	</Window.Resources>
+
+	<Border CornerRadius="8"
+            Background="{DynamicResource BackgroundBrush}"
+            BorderBrush="{DynamicResource BorderBrush}"
+            BorderThickness="1">
+		<Grid>
+			<Grid.RowDefinitions>
+				<!-- Custom title bar -->
+				<RowDefinition Height="40"/>
+				<!-- Main content -->
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+
+			<!-- CUSTOM TITLE BAR -->
+			<Border Grid.Row="0"
+                    Background="{DynamicResource NavbarBackgroundBrush}"
+                    MouseLeftButtonDown="TitleBar_MouseLeftButtonDown"
+                    CornerRadius="8,8,0,0">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+
+					<!-- App branding -->
+					<StackPanel Grid.Column="0" Orientation="Horizontal"
+                                VerticalAlignment="Center" Margin="16,0,0,0">
+						<!-- Green dot indicator -->
+						<Ellipse Width="8" Height="8" Margin="0,0,8,0">
+							<Ellipse.Fill>
+								<SolidColorBrush Color="#34D399"/>
+							</Ellipse.Fill>
+						</Ellipse>
+						<TextBlock Text="EasySave"
+                                   FontFamily="{StaticResource AppFont}"
+                                   FontSize="13" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource ForegroundBrush}"
+                                   VerticalAlignment="Center"/>
+						<TextBlock x:Name="TitleVersion" Text="  v.2"
+                                   FontFamily="{StaticResource AppFont}"
+                                   FontSize="11"
+                                   Foreground="{DynamicResource ForegroundSecondaryBrush}"
+                                   VerticalAlignment="Center"/>
+					</StackPanel>
+
+					<!-- Window controls -->
+					<StackPanel Grid.Column="2" Orientation="Horizontal"
+                                VerticalAlignment="Center" Margin="0,0,8,0">
+						<Button x:Name="BtnMinimize" Content="&#x2015;"
+                                Click="BtnMinimize_Click"
+                                Width="32" Height="28" Padding="0"
+                                FontSize="10" BorderThickness="0"
+                                Background="Transparent"/>
+						<Button x:Name="BtnMaximize" Content="&#x25A1;"
+                                Click="BtnMaximize_Click"
+                                Width="32" Height="28" Padding="0"
+                                FontSize="11" BorderThickness="0"
+                                Background="Transparent"/>
+						<Button x:Name="BtnClose" Content="&#x2715;"
+                                Click="BtnClose_Click"
+                                Width="32" Height="28" Padding="0"
+                                FontSize="10" BorderThickness="0"
+                                Background="Transparent"/>
+					</StackPanel>
+				</Grid>
+			</Border>
+
+			<!-- MAIN LAYOUT -->
+			<Grid Grid.Row="1">
+
+				<!-- TEMPLATE 1: Sidebar navigation -->
+				<Grid x:Name="Template1" Visibility="Visible">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="220" MinWidth="180" MaxWidth="280"/>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+
+					<!-- SIDEBAR -->
+					<Border Grid.Column="0"
+                            Background="{DynamicResource NavbarBackgroundBrush}"
+                            BorderBrush="{DynamicResource BorderSubtleBrush}"
+                            BorderThickness="0,0,1,0">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="*"/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+
+							<!-- Section label -->
+							<TextBlock x:Name="NavTitle1" Text="NAVIGATION"
+                                       Grid.Row="0"
+                                       FontFamily="{StaticResource AppFont}"
+                                       FontSize="10" FontWeight="Bold"
+                                       Foreground="{DynamicResource ForegroundSecondaryBrush}"
+                                       Margin="22,20,10,10"/>
+
+							<!-- Nav items -->
+							<StackPanel Grid.Row="1" Margin="6,0">
+								<Button x:Name="BtnHome1" Content="Accueil"
+                                        Click="NavHome_Click"
+                                        Style="{StaticResource NavButtonActive}"
+                                        Margin="0,1" HorizontalAlignment="Stretch"/>
+								<Button x:Name="BtnSaves1" Content="Sauvegardes"
+                                        Click="NavSaves_Click"
+                                        Style="{StaticResource NavButton}"
+                                        Margin="0,1" HorizontalAlignment="Stretch"/>
+								<Button x:Name="BtnHistory1" Content="Historique"
+                                        Click="NavHistory_Click"
+                                        Style="{StaticResource NavButton}"
+                                        Margin="0,1" HorizontalAlignment="Stretch"/>
+								<Button x:Name="BtnSettings1" Content="Parametres"
+                                        Click="NavSettings_Click"
+                                        Style="{StaticResource NavButton}"
+                                        Margin="0,1" HorizontalAlignment="Stretch"/>
+							</StackPanel>
+
+							<!-- Bottom info -->
+							<Border Grid.Row="2"
+                                    BorderBrush="{DynamicResource BorderSubtleBrush}"
+                                    BorderThickness="0,1,0,0"
+                                    Padding="16,12">
+								<StackPanel>
+									<TextBlock Text="Stockage"
+                                               FontFamily="{StaticResource AppFont}"
+                                               FontSize="11"
+                                               Foreground="{DynamicResource ForegroundSecondaryBrush}"
+                                               Margin="0,0,0,6"/>
+									<ProgressBar Value="62" Maximum="100" Height="4" Margin="0,0,0,4"/>
+									<TextBlock Text="248 Go / 400 Go"
+                                               FontFamily="{StaticResource AppFont}"
+                                               FontSize="10"
+                                               Foreground="{DynamicResource ForegroundSecondaryBrush}"/>
+								</StackPanel>
+							</Border>
+						</Grid>
+					</Border>
+
+					<!-- Separator -->
+					<GridSplitter Grid.Column="1" Width="1"
+                                  Background="{DynamicResource BorderSubtleBrush}"
+                                  HorizontalAlignment="Center"/>
+
+					<!-- CONTENT + CONSOLE -->
+					<Grid Grid.Column="2">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="*"/>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition x:Name="ConsoleRow" Height="180"/>
+						</Grid.RowDefinitions>
+
+						<!-- Main content area -->
+						<ScrollViewer Grid.Row="0"
+                                      VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled">
+							<ContentControl x:Name="ContentTemplate1" Margin="24,20"/>
+						</ScrollViewer>
+
+						<!-- Console separator -->
+						<GridSplitter Grid.Row="1" Height="1"
+                                      Background="{DynamicResource BorderSubtleBrush}"
+                                      HorizontalAlignment="Stretch"/>
+
+						<!-- INTEGRATED CONSOLE -->
+						<Border Grid.Row="2"
+                                Background="{DynamicResource ConsoleBrush}">
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="*"/>
+								</Grid.RowDefinitions>
+
+								<!-- Console header -->
+								<Border Grid.Row="0"
+                                        BorderBrush="{DynamicResource BorderSubtleBrush}"
+                                        BorderThickness="0,0,0,1"
+                                        Padding="12,6">
+									<Grid>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="*"/>
+											<ColumnDefinition Width="Auto"/>
+										</Grid.ColumnDefinitions>
+
+										<StackPanel Grid.Column="0" Orientation="Horizontal"
+                                                    VerticalAlignment="Center">
+											<TextBlock Text="CONSOLE"
+                                                       FontFamily="{StaticResource MonoFont}"
+                                                       FontSize="10" FontWeight="Bold"
+                                                       Foreground="{DynamicResource ForegroundSecondaryBrush}"
+                                                       VerticalAlignment="Center"/>
+											<Ellipse Width="6" Height="6" Margin="8,0,0,0"
+                                                     VerticalAlignment="Center">
+												<Ellipse.Fill>
+													<SolidColorBrush Color="#34D399"/>
+												</Ellipse.Fill>
+											</Ellipse>
+										</StackPanel>
+
+										<StackPanel Grid.Column="1" Orientation="Horizontal">
+											<Button x:Name="BtnConsoleClear" Content="Vider"
+                                                    Click="BtnConsoleClear_Click"
+                                                    Padding="8,3" FontSize="10"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    Foreground="{DynamicResource ForegroundSecondaryBrush}"/>
+											<Button x:Name="BtnConsoleToggle" Content="&#x25BC;"
+                                                    Click="BtnConsoleToggle_Click"
+                                                    Padding="8,3" FontSize="10"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    Foreground="{DynamicResource ForegroundSecondaryBrush}"/>
+										</StackPanel>
+									</Grid>
+								</Border>
+
+								<!-- Console output -->
+								<ScrollViewer x:Name="ConsoleScroller" Grid.Row="1"
+                                              VerticalScrollBarVisibility="Auto"
+                                              Padding="12,8">
+									<StackPanel x:Name="ConsoleOutput">
+										<!-- Console logs are added programmatically -->
+									</StackPanel>
+								</ScrollViewer>
+							</Grid>
+						</Border>
+					</Grid>
+				</Grid>
+
+				<!-- TEMPLATE 2: Tab navigation -->
+				<Grid x:Name="Template2" Visibility="Collapsed">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition x:Name="ConsoleRow2" Height="180"/>
+					</Grid.RowDefinitions>
+
+					<!-- Tab bar -->
+					<Border Grid.Row="0"
+                            Background="{DynamicResource NavbarBackgroundBrush}"
+                            BorderBrush="{DynamicResource BorderSubtleBrush}"
+                            BorderThickness="0,0,0,1"
+                            Padding="8,0">
+						<StackPanel Orientation="Horizontal" MinHeight="42">
+							<Button x:Name="BtnHome2" Content="Accueil"
+                                    Click="NavHome_Click"
+                                    Style="{StaticResource NavButtonActive}"
+                                    Margin="2,6"/>
+							<Button x:Name="BtnSaves2" Content="Sauvegardes"
+                                    Click="NavSaves_Click"
+                                    Style="{StaticResource NavButton}"
+                                    Margin="2,6"/>
+							<Button x:Name="BtnHistory2" Content="Historique"
+                                    Click="NavHistory_Click"
+                                    Style="{StaticResource NavButton}"
+                                    Margin="2,6"/>
+							<Button x:Name="BtnSettings2" Content="Parametres"
+                                    Click="NavSettings_Click"
+                                    Style="{StaticResource NavButton}"
+                                    Margin="2,6"/>
+						</StackPanel>
+					</Border>
+
+					<!-- Content -->
+					<ScrollViewer Grid.Row="1"
+                                  VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+						<ContentControl x:Name="ContentTemplate2" Margin="24,20"/>
+					</ScrollViewer>
+
+					<!-- Console separator -->
+					<GridSplitter Grid.Row="2" Height="1"
+                                  Background="{DynamicResource BorderSubtleBrush}"
+                                  HorizontalAlignment="Stretch"/>
+
+					<!-- Console (Template 2) -->
+					<Border Grid.Row="3"
+                            Background="{DynamicResource ConsoleBrush}">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="*"/>
+							</Grid.RowDefinitions>
+
+							<Border Grid.Row="0"
+                                    BorderBrush="{DynamicResource BorderSubtleBrush}"
+                                    BorderThickness="0,0,0,1"
+                                    Padding="12,6">
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*"/>
+										<ColumnDefinition Width="Auto"/>
+									</Grid.ColumnDefinitions>
+
+									<StackPanel Grid.Column="0" Orientation="Horizontal"
+                                                VerticalAlignment="Center">
+										<TextBlock Text="CONSOLE"
+                                                   FontFamily="{StaticResource MonoFont}"
+                                                   FontSize="10" FontWeight="Bold"
+                                                   Foreground="{DynamicResource ForegroundSecondaryBrush}"
+                                                   VerticalAlignment="Center"/>
+										<Ellipse Width="6" Height="6" Margin="8,0,0,0"
+                                                 VerticalAlignment="Center">
+											<Ellipse.Fill>
+												<SolidColorBrush Color="#34D399"/>
+											</Ellipse.Fill>
+										</Ellipse>
+									</StackPanel>
+
+									<StackPanel Grid.Column="1" Orientation="Horizontal">
+										<Button x:Name="BtnConsoleClear2" Content="Vider"
+                                                Click="BtnConsoleClear_Click"
+                                                Padding="8,3" FontSize="10"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Foreground="{DynamicResource ForegroundSecondaryBrush}"/>
+										<Button x:Name="BtnConsoleToggle2" Content="&#x25BC;"
+                                                Click="BtnConsoleToggle_Click"
+                                                Padding="8,3" FontSize="10"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Foreground="{DynamicResource ForegroundSecondaryBrush}"/>
+									</StackPanel>
+								</Grid>
+							</Border>
+
+							<ScrollViewer x:Name="ConsoleScroller2" Grid.Row="1"
+                                          VerticalScrollBarVisibility="Auto"
+                                          Padding="12,8">
+								<StackPanel x:Name="ConsoleOutput2">
+								</StackPanel>
+							</ScrollViewer>
+						</Grid>
+					</Border>
+				</Grid>
+			</Grid>
+		</Grid>
+	</Border>
+</Window>

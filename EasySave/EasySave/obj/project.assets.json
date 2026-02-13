@@ -1,11 +1,30 @@
 {
   "version": 3,
   "targets": {
-    "net10.0-windows7.0": {}
+    "net10.0-windows7.0": {
+      "EasyLog/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "compile": {
+          "bin/placeholder/EasyLog.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/EasyLog.dll": {}
+        }
+      }
+    }
   },
-  "libraries": {},
+  "libraries": {
+    "EasyLog/1.0.0": {
+      "type": "project",
+      "path": "../../EasyLog/EasyLog/EasyLog.csproj",
+      "msbuildProject": "../../EasyLog/EasyLog/EasyLog.csproj"
+    }
+  },
   "projectFileDependencyGroups": {
-    "net10.0-windows7.0": []
+    "net10.0-windows7.0": [
+      "EasyLog >= 1.0.0"
+    ]
   },
   "packageFolders": {
     "C:\\Users\\matth\\.nuget\\packages\\": {}
@@ -31,7 +50,11 @@
       "frameworks": {
         "net10.0-windows7.0": {
           "targetAlias": "net10.0-windows",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj": {
+              "projectPath": "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj"
+            }
+          }
         }
       },
       "warningProperties": {

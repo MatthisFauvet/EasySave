@@ -9,6 +9,11 @@ public class BackupCreateRequest
         DestinationFilePath = destinationFilePath;
         Type = type;
     }
+
+    public BackupCreateRequest()
+    {
+    }
+
     public string Name { get; set; }
     public string SourceFilePath { get; set; }
     public string DestinationFilePath { get; set; }
