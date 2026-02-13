@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -13,6 +16,9 @@ namespace WpfSkeleton
         private AppSettings _settings;
         private bool _isInitializing = true;
         private string _currentSection = "home";
+        private List<WorkItemData> _workItems = new List<WorkItemData>();
+        private Button _btnExecuteSelected;
+        private Button _btnSelectAll;
         // Console removed - private bool _consoleCollapsed = false;
 
         public MainWindow()
@@ -465,6 +471,7 @@ namespace WpfSkeleton
         {
             UpdateNavStyles("saves");
 
+            _workItems.Clear();
             var content = new StackPanel();
 
             var title = new TextBlock
@@ -511,21 +518,50 @@ namespace WpfSkeleton
             };
             btnExecuteWorks.Click += BtnExecuteWorks_Click;
             btnPanel.Children.Add(btnExecuteWorks);
+
+            // Nouveau bouton pour exécuter les travaux sélectionnés
+            _btnExecuteSelected = new Button
+            {
+                Content = LanguageManager.Get("Saves.ExecuteSelected"),
+                Margin = new Thickness(0, 0, 10, 0),
+                IsEnabled = false
+            };
+            _btnExecuteSelected.Click += BtnExecuteSelected_Click;
+            btnPanel.Children.Add(_btnExecuteSelected);
+
             content.Children.Add(btnPanel);
 
-            // Works list header
+            // Header avec "Works list" et bouton sélectionner tout
+            var headerGrid = new Grid { Margin = new Thickness(0, 10, 0, 10) };
+            headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
             var listTitle = new TextBlock
             {
                 Text = LanguageManager.Get("Saves.WorksList"),
                 FontSize = 15,
                 FontWeight = FontWeights.SemiBold,
-                Margin = new Thickness(0, 10, 0, 10),
+                VerticalAlignment = VerticalAlignment.Center,
                 FontFamily = (FontFamily)FindResource("AppFont")
             };
             listTitle.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
-            content.Children.Add(listTitle);
+            Grid.SetColumn(listTitle, 0);
+            headerGrid.Children.Add(listTitle);
 
-            // Works list as styled cards instead of plain ListBox
+            // Bouton pour tout sélectionner/désélectionner
+            _btnSelectAll = new Button
+            {
+                Content = LanguageManager.Get("Saves.SelectAll"),
+                Padding = new Thickness(12, 6, 12, 6),
+                FontSize = 12
+            };
+            _btnSelectAll.Click += BtnSelectAll_Click;
+            Grid.SetColumn(_btnSelectAll, 1);
+            headerGrid.Children.Add(_btnSelectAll);
+
+            content.Children.Add(headerGrid);
+
+            // Works list as styled cards with checkboxes
             AddWorkItem(content, $"{LanguageManager.Get("Saves.Work")} 1 - Documents", LanguageManager.Get("Saves.Pending"), "warning", 0);
             AddWorkItem(content, $"{LanguageManager.Get("Saves.Work")} 2 - Projet Dev", LanguageManager.Get("Saves.InProgress"), "info", 67);
             AddWorkItem(content, $"{LanguageManager.Get("Saves.Work")} 3 - Photos", LanguageManager.Get("Saves.Completed"), "success", 100);
@@ -536,6 +572,15 @@ namespace WpfSkeleton
 
         private void AddWorkItem(StackPanel parent, string name, string status, string type, int progress)
         {
+            var workData = new WorkItemData
+            {
+                Name = name,
+                Status = status,
+                Type = type,
+                Progress = progress,
+                IsSelected = false
+            };
+
             var card = new Border
             {
                 CornerRadius = new CornerRadius(8),
@@ -546,7 +591,27 @@ namespace WpfSkeleton
             card.SetResourceReference(Border.BackgroundProperty, "CardBrush");
             card.SetResourceReference(Border.BorderBrushProperty, "BorderBrush");
 
+            var mainGrid = new Grid();
+            mainGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // Checkbox
+            mainGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(10) }); // Spacing
+            mainGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // Content
+            mainGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // Actions
+
+            // Checkbox
+            var checkbox = new CheckBox
+            {
+                VerticalAlignment = VerticalAlignment.Top,
+                Margin = new Thickness(0, 2, 0, 0)
+            };
+            checkbox.Checked += (s, e) => { workData.IsSelected = true; UpdateExecuteSelectedButton(); };
+            checkbox.Unchecked += (s, e) => { workData.IsSelected = false; UpdateExecuteSelectedButton(); };
+            workData.CheckBox = checkbox;
+            Grid.SetColumn(checkbox, 0);
+            mainGrid.Children.Add(checkbox);
+
+            // Content stack
             var stack = new StackPanel();
+            Grid.SetColumn(stack, 2);
 
             // Top row: name + status
             var topRow = new Grid();
@@ -605,8 +670,137 @@ namespace WpfSkeleton
                 stack.Children.Add(progressBar);
             }
 
-            card.Child = stack;
+            mainGrid.Children.Add(stack);
+
+            // Actions panel (Play button + Menu button)
+            var actionsPanel = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                VerticalAlignment = VerticalAlignment.Top,
+                Margin = new Thickness(10, 0, 0, 0)
+            };
+            Grid.SetColumn(actionsPanel, 3);
+
+            // Play button avec icône compatible
+            var btnPlay = new Button
+            {
+                Width = 32,
+                Height = 32,
+                Padding = new Thickness(0),
+                ToolTip = "Exécuter ce travail",
+                Margin = new Thickness(0, 0, 4, 0),
+                Style = (Style)FindResource("PlayButton")
+            };
+            
+            // Utiliser un TextBlock avec Segoe UI Symbol pour meilleure compatibilité
+            var playIcon = new TextBlock
+            {
+                Text = "\uE102", // Play icon from Segoe MDL2 Assets
+                FontFamily = new FontFamily("Segoe MDL2 Assets"),
+                FontSize = 12,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            btnPlay.Content = playIcon;
+            btnPlay.Click += (s, e) => ExecuteWork(workData);
+            actionsPanel.Children.Add(btnPlay);
+
+            // Menu button
+            var btnMenu = new Button
+            {
+                Content = "•••",
+                Width = 32,
+                Height = 32,
+                Padding = new Thickness(0),
+                FontSize = 14,
+                FontWeight = FontWeights.Bold,
+                ToolTip = "Options",
+                Style = (Style)FindResource("ActionButton")
+            };
+            btnMenu.Click += (s, e) => ShowWorkMenu(btnMenu, workData, parent, card);
+            actionsPanel.Children.Add(btnMenu);
+
+            mainGrid.Children.Add(actionsPanel);
+
+            card.Child = mainGrid;
             parent.Children.Add(card);
+            _workItems.Add(workData);
+        }
+
+        private void UpdateExecuteSelectedButton()
+        {
+            if (_btnExecuteSelected != null)
+            {
+                _btnExecuteSelected.IsEnabled = _workItems.Any(w => w.IsSelected);
+            }
+        }
+
+        private void ExecuteWork(WorkItemData work)
+        {
+            // TODO: Implémenter l'exécution du travail
+            // Pour le moment, rien ne se passe (front-end only)
+        }
+
+        private void ShowWorkMenu(Button menuButton, WorkItemData work, StackPanel parent, Border card)
+        {
+            var menu = new ContextMenu();
+            
+            var deleteItem = new MenuItem
+            {
+                Header = LanguageManager.Get("Saves.Delete"),
+                Style = (Style)FindResource("DeleteMenuItem")
+            };
+            deleteItem.Click += (s, e) =>
+            {
+                // Suppression directe sans confirmation
+                parent.Children.Remove(card);
+                _workItems.Remove(work);
+                UpdateExecuteSelectedButton();
+                UpdateSelectAllButton();
+            };
+            menu.Items.Add(deleteItem);
+
+            menu.PlacementTarget = menuButton;
+            menu.Placement = PlacementMode.Bottom;
+            menu.IsOpen = true;
+        }
+
+        private void BtnSelectAll_Click(object sender, RoutedEventArgs e)
+        {
+            bool allSelected = _workItems.All(w => w.IsSelected);
+            
+            foreach (var work in _workItems)
+            {
+                work.IsSelected = !allSelected;
+                if (work.CheckBox != null)
+                {
+                    work.CheckBox.IsChecked = work.IsSelected;
+                }
+            }
+
+            UpdateSelectAllButton();
+            UpdateExecuteSelectedButton();
+        }
+
+        private void UpdateSelectAllButton()
+        {
+            if (_btnSelectAll != null && _workItems.Any())
+            {
+                bool allSelected = _workItems.All(w => w.IsSelected);
+                _btnSelectAll.Content = allSelected 
+                    ? LanguageManager.Get("Saves.DeselectAll") 
+                    : LanguageManager.Get("Saves.SelectAll");
+            }
+        }
+
+        private void BtnExecuteSelected_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedWorks = _workItems.Where(w => w.IsSelected).ToList();
+            if (selectedWorks.Any())
+            {
+                // TODO: Implémenter l'exécution des travaux sélectionnés
+                // Pour le moment, rien ne se passe (front-end only)
+            }
         }
 
         private void SectionHistory()
@@ -962,17 +1156,9 @@ namespace WpfSkeleton
 
             if (dialog.ShowDialog() == true)
             {
+                // TODO: Ajouter le travail créé à la liste
+                // Pour le moment, rien ne se passe (front-end only)
                 // AddConsoleLog($"Travail cree: {dialog.WorkName} ({dialog.SaveType})", "success");
-
-                MessageBox.Show(
-                    LanguageManager.Get("CreateWork.SuccessMessage") +
-                    $"\n\n{LanguageManager.Get("CreateWork.WorkName")} {dialog.WorkName}" +
-                    $"\n{LanguageManager.Get("CreateWork.SourcePath")} {dialog.SourcePath}" +
-                    $"\n{LanguageManager.Get("CreateWork.DestinationPath")} {dialog.DestinationPath}" +
-                    $"\n{LanguageManager.Get("CreateWork.SaveType")} {dialog.SaveType}",
-                    LanguageManager.Get("CreateWork.SuccessTitle"),
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Information);
             }
             else
             {
@@ -1065,5 +1251,16 @@ namespace WpfSkeleton
         }
 
         #endregion
+    }
+
+    // Classe pour représenter un travail avec son état de sélection
+    internal class WorkItemData
+    {
+        public string Name { get; set; }
+        public string Status { get; set; }
+        public string Type { get; set; }
+        public int Progress { get; set; }
+        public bool IsSelected { get; set; }
+        public CheckBox CheckBox { get; set; }
     }
 }
