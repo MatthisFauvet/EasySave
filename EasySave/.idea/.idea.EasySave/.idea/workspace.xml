@@ -5,19 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="312a440a-7f95-4f25-9659-337b41e1dee6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/EasySave/Assets/classDiagram.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/Repository/JsonBackupRepository.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/Service/BackupService.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/View/MainWindow.xaml.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/ViewModel/Command/RelayCommand.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/ViewModel/MainViewModel.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../CryptoSoft" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/CryptoSoft.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/CryptoSoft.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.AssemblyInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.AssemblyInfoInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.GeneratedMSBuildEditorConfig.editorconfig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.assets.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/project.packagespec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/rider.project.model.nuget.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/rider.project.restore.info" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasySave.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave.sln.DotSettings.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasySave/MainWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/View/MainWindow.xaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasySave/MainWindow.xaml.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasyLog" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave.sln" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/EasySave.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/EasySave.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/View/MainWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/View/MainWindow.xaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/ViewModel/MainViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/ViewModel/MainViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfo.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfoInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/MainWindow.g.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/EasySave/obj/EasySave.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/EasySave.csproj.nuget.dgspec.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EasySave/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/project.assets.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EasySave/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/project.nuget.cache" afterDir="false" />
@@ -56,12 +62,16 @@
     <setting file="file://$PROJECT_DIR$/EasySave/Service/IBackupService.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EasySave/View/MainWindow.xaml.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EasySave/ViewModel/Command/RelayCommand.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/EasySave/bin/Debug/net10.0-windows/backups/backups.json" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/App.g.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EasySave/obj/EasySave.csproj.nuget.dgspec.json" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EasySave/obj/project.assets.json" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EasySave/obj/project.packagespec.json" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="Toolset" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
@@ -70,20 +80,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;.NET Project.EasySave.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;com.github.patou.gitmoji.migration-offered&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.appearance&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    ".NET Project.EasySave.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "com.github.patou.gitmoji.migration-offered": "true",
+    "git-widget-placeholder": "feature/adde-temp-view",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "configurable.group.appearance",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="EasySave" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
@@ -123,6 +134,8 @@
       <workItem from="1770917104113" duration="201000" />
       <workItem from="1770917324137" duration="112000" />
       <workItem from="1770917451793" duration="3965000" />
+      <workItem from="1770967919167" duration="417000" />
+      <workItem from="1770968481305" duration="512000" />
     </task>
     <task id="LOCAL-00001" summary=":see_no_evil: Added .gitignore">
       <option name="closed" value="true" />
@@ -220,7 +233,31 @@
       <option name="project" value="LOCAL" />
       <updated>1770922319202</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary=":wrench: Configuration files">
+      <option name="closed" value="true" />
+      <created>1770932323025</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1770932323025</updated>
+    </task>
+    <task id="LOCAL-00014" summary=":art: Created an interface (basic as possible) and implemented Repositories">
+      <option name="closed" value="true" />
+      <created>1770932688705</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1770932688705</updated>
+    </task>
+    <task id="LOCAL-00015" summary=":art: Created an interface (basic as possible) and implemented Repositories">
+      <option name="closed" value="true" />
+      <created>1770932864473</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1770932864473</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -236,10 +273,11 @@
     <MESSAGE value=":tada: Created C# Desktop project" />
     <MESSAGE value=":building_construction: Created data type (model / entity) and interfaces" />
     <MESSAGE value=":bento: Added class diagram" />
-    <MESSAGE value=":wrench: Configuration files" />
     <MESSAGE value=":heavy_plus_sign: Added git submodules" />
     <MESSAGE value=":art: Created new desktop solution" />
-    <option name="LAST_COMMIT_MESSAGE" value=":art: Created new desktop solution" />
+    <MESSAGE value=":wrench: Configuration files" />
+    <MESSAGE value=":art: Created an interface (basic as possible) and implemented Repositories" />
+    <option name="LAST_COMMIT_MESSAGE" value=":art: Created an interface (basic as possible) and implemented Repositories" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
