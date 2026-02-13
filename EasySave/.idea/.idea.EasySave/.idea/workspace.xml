@@ -5,29 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="312a440a-7f95-4f25-9659-337b41e1dee6" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../CryptoSoft" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/CryptoSoft.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/CryptoSoft.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.AssemblyInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.AssemblyInfoInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.GeneratedMSBuildEditorConfig.editorconfig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.assets.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.assets.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/project.assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/project.packagespec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/rider.project.model.nuget.info" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/rider.project.restore.info" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasyLog" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasySave.sln" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasySave/EasySave.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/EasySave.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasySave/View/MainWindow.xaml" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/View/MainWindow.xaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasySave/ViewModel/MainViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/ViewModel/MainViewModel.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EasySave/Assets/UML - Diagramme de séquence - Execution de backups.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EasySave/Model/PagedResult.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EasySave/Repository/IBackupIdFactory.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EasySave/Repository/IncrementalBackupIdFactory.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/App.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/App.xaml.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/Repository/IBackupRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/Repository/IBackupRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/Repository/JsonBackupRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/Repository/JsonBackupRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/Service/BackupService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/Service/BackupService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfo.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfoInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasySave/obj/EasySave.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/EasySave.csproj.nuget.dgspec.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasySave/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/project.assets.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasySave/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/project.nuget.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasySave/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/project.packagespec.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EasySave/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/rider.project.model.nuget.info" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EasySave/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/rider.project.restore.info" afterDir="false" />
     </list>
@@ -39,8 +26,17 @@
   <component name="DpaMonitoringSettings">
     <option name="firstShow" value="false" />
   </component>
+  <component name="Git.Merge.Settings">
+    <option name="BRANCH" value="feature/merged-new-ui-and-solution" />
+  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="dev" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -59,9 +55,11 @@
     <setting file="file://$PROJECT_DIR$/EasySave/Model/Backup.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EasySave/Model/BackupType.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EasySave/Repository/IBackupRepository.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/EasySave/Repository/JsonBackupRepository.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EasySave/Service/IBackupService.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EasySave/View/MainWindow.xaml.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EasySave/ViewModel/Command/RelayCommand.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/EasySave/ViewModel/MainViewModel.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EasySave/bin/Debug/net10.0-windows/backups/backups.json" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/App.g.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EasySave/obj/EasySave.csproj.nuget.dgspec.json" root0="FORCE_HIGHLIGHTING" />
@@ -89,7 +87,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "com.github.patou.gitmoji.migration-offered": "true",
-    "git-widget-placeholder": "feature/adde-temp-view",
+    "git-widget-placeholder": "Merging feature/merged-new-ui-and-solution",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "configurable.group.appearance",
     "vue.rearranger.settings.migration": "true"
@@ -136,6 +134,7 @@
       <workItem from="1770917451793" duration="3965000" />
       <workItem from="1770967919167" duration="417000" />
       <workItem from="1770968481305" duration="512000" />
+      <workItem from="1771017040532" duration="595000" />
     </task>
     <task id="LOCAL-00001" summary=":see_no_evil: Added .gitignore">
       <option name="closed" value="true" />
