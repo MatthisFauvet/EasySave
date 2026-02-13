@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using EasySave.Model;
 using EasySave.Service;
@@ -10,81 +11,104 @@ public class MainViewModel : INotifyPropertyChanged
 {
     private readonly IBackupService _backupService;
 
-    private int _pageIndex;
-    private int _pageSize;
+    private int _pageIndex = 0;
+    private int _pageSize = 50;
 
-    public RelayCommand ExecuteBackupsCommand { get; set; }
-    public RelayCommand CreateBackupCommand { get; set; }
+    // ==========================
+    // Commands
+    // ==========================
 
-    private BackupCreateRequest _newBackupCreateRequest;
+    public RelayCommand ExecuteBackupsCommand { get; }
+    public RelayCommand CreateBackupCommand { get; }
+    public RelayCommand OpenCreateBackupDialogCommand { get; }
+
+    public event Action? OpenCreateBackupDialogRequested;
+
+    // ==========================
+    // Bindings
+    // ==========================
+
+    private BackupCreateRequest _backupCreateRequest;
 
     public BackupCreateRequest BackupCreateRequest
     {
-        get => _newBackupCreateRequest;
+        get => _backupCreateRequest;
         set
         {
-            _newBackupCreateRequest = value;
+            _backupCreateRequest = value;
             OnPropertyChanged();
         }
     }
 
-    private List<Backup> _backups;
+    // 🔥 ObservableCollection pour le dynamisme
+    public ObservableCollection<Backup> Backups { get; }
 
-    public List<Backup> Backups
-    {
-        get => _backups;
-        set
-        {
-            _backups = value;
-            OnPropertyChanged();
-        }
-    }
+    public List<BackupType> BackupTypes { get; }
 
-    // Liste des types pour le ComboBox
-    public List<BackupType> BackupTypes { get; set; }
+    // ==========================
+    // Constructor
+    // ==========================
 
     public MainViewModel()
     {
         _backupService = new BackupService();
-        Backups = LoadBackups();
 
-        // Initialiser les types pour le ComboBox
-        BackupTypes = Enum.GetValues(typeof(BackupType)).Cast<BackupType>().ToList();
+        Backups = new ObservableCollection<Backup>();
 
-        // Initialiser un objet vide pour le formulaire
         BackupCreateRequest = new BackupCreateRequest("", "", "", BackupType.Full);
 
+        BackupTypes = Enum.GetValues(typeof(BackupType)).Cast<BackupType>().ToList();
+
+        LoadBackups();
+
+        OpenCreateBackupDialogCommand = new RelayCommand(() =>
+            OpenCreateBackupDialogRequested?.Invoke());
+
         ExecuteBackupsCommand = new RelayCommand(ExecuteBackup);
+
         CreateBackupCommand = new RelayCommand(CreateBackup);
     }
 
-    private void ExecuteBackup()
-    {
-        var selectedBackups = Backups.Where(b => b.IsSelected).ToList();
-        _backupService.ExecuteBackup(selectedBackups);
-    }
+    // ==========================
+    // Methods
+    // ==========================
 
-    private List<Backup> LoadBackups()
+    private void LoadBackups()
     {
-        return _backupService.GetBackups(_pageIndex, _pageSize);
+        Backups.Clear();
+
+        var backupsFromService = _backupService.GetBackups(_pageIndex, _pageSize);
+
+        foreach (var backup in backupsFromService)
+        {
+            Backups.Add(backup);
+        }
     }
 
     private void CreateBackup()
     {
-        // Validation minimale
-        if (string.IsNullOrWhiteSpace(BackupCreateRequest.Name) ||
-            string.IsNullOrWhiteSpace(BackupCreateRequest.SourceFilePath) ||
-            string.IsNullOrWhiteSpace(BackupCreateRequest.DestinationFilePath))
-        {
-            Console.WriteLine("Tous les champs doivent être remplis !");
-            return;
-        }
-        
         _backupService.CreateBackup(BackupCreateRequest);
 
-        LoadBackups();
+        foreach (var backup in _backupService.GetBackups(_pageIndex, _pageSize))
+        {
+            if (!Backups.Contains(backup))
+            {
+                Backups.Add(backup);
+            }
+        }
+
         BackupCreateRequest = new BackupCreateRequest("", "", "", BackupType.Full);
     }
+
+
+    private void ExecuteBackup()
+    {
+        _backupService.ExecuteBackup(Backups.ToList());
+    }
+
+    // ==========================
+    // INotifyPropertyChanged
+    // ==========================
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

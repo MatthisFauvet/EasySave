@@ -9,15 +9,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Page Update="View\MainWindow.xaml">
-        <Generator>MSBuild:Compile</Generator>
-        <XamlRuntime>Wpf</XamlRuntime>
-        <SubType>Designer</SubType>
-      </Page>
+      <ProjectReference Include="..\..\EasyLog\EasyLog\EasyLog.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\EasyLog\EasyLog\EasyLog.csproj" />
+        <None Include="Resources\*.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project>
