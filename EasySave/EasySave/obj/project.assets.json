@@ -17,8 +17,8 @@
   "libraries": {
     "EasyLog/1.0.0": {
       "type": "project",
-      "path": "../EasyLog/EasyLog/EasyLog.csproj",
-      "msbuildProject": "../EasyLog/EasyLog/EasyLog.csproj"
+      "path": "../../EasyLog/EasyLog/EasyLog.csproj",
+      "msbuildProject": "../../EasyLog/EasyLog/EasyLog.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -51,8 +51,8 @@
         "net10.0-windows7.0": {
           "targetAlias": "net10.0-windows",
           "projectReferences": {
-            "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj": {
-              "projectPath": "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj"
+            "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj": {
+              "projectPath": "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj"
             }
           }
         }

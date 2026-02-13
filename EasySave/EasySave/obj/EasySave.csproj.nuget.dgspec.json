@@ -4,14 +4,14 @@
     "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasySave\\EasySave\\EasySave.csproj": {}
   },
   "projects": {
-    "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj": {
+    "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj",
+        "projectUniqueName": "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj",
         "projectName": "EasyLog",
-        "projectPath": "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj",
+        "projectPath": "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj",
         "packagesPath": "C:\\Users\\matth\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasySave\\EasyLog\\EasyLog\\obj\\",
+        "outputPath": "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasyLog\\EasyLog\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\matth\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -359,8 +359,8 @@
           "net10.0-windows7.0": {
             "targetAlias": "net10.0-windows",
             "projectReferences": {
-              "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj": {
-                "projectPath": "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj"
+              "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj": {
+                "projectPath": "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj"
               }
             }
           }

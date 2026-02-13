@@ -9,15 +9,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\EasyLog\EasyLog\EasyLog.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Page Update="View\MainWindow.xaml">
         <Generator>MSBuild:Compile</Generator>
         <XamlRuntime>Wpf</XamlRuntime>
         <SubType>Designer</SubType>
       </Page>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\EasyLog\EasyLog\EasyLog.csproj" />
     </ItemGroup>
 
 </Project>
