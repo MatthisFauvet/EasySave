@@ -997,19 +997,15 @@ namespace WpfSkeleton
             _settings.AppTemplate = combo.SelectedIndex + 1;
             SettingsManager.Save(_settings);
 
-            var currentSection = ContentTemplate1.Content ?? ContentTemplate2.Content;
             ApplyTemplate(_settings.AppTemplate);
 
-            if (currentSection != null)
+            // Recharger la section actuelle après le changement de template
+            switch (_currentSection)
             {
-                if (Template1.Visibility == Visibility.Visible)
-                {
-                    ContentTemplate1.Content = currentSection;
-                }
-                else
-                {
-                    ContentTemplate2.Content = currentSection;
-                }
+                case "home": SectionHome(); break;
+                case "saves": SectionSaves(); break;
+                case "history": SectionHistory(); break;
+                case "settings": SectionSettings(); break;
             }
 
             // AddConsoleLog($"Template change: {_settings.AppTemplate}", "info");
