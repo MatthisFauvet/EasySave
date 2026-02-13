@@ -1,21 +1,23 @@
-﻿using System.Diagnostics;
-using System.IO;
-using EasyLog;
+﻿using EasyLog;
 using EasyLog.entity;
 using EasyLog.utils;
 using EasySave.Model;
 using EasySave.Repository;
 using EasySave.Service;
+using System.Diagnostics;
+using System.IO;
 
 // Service responsable de l'exécution des sauvegardes
 public class BackupService : IBackupService
 {
-    
     // Logger utilisé pour écrire les logs
     private readonly Logger _logger;
 
     private IBackupRepository _backupRepository;
-    
+
+    // Nom du processus du logiciel métier (ex: "Calculatrice" pour démonstration)
+    private readonly string _businessProcessName = "CalculatorApp";
+
     // Constructeur avec injection du logger
     public BackupService(Logger logger)
     {
@@ -25,12 +27,36 @@ public class BackupService : IBackupService
 
     public BackupService()
     {
+        _logger = new Logger();
         InitializeBackupRepository();
     }
 
     private void InitializeBackupRepository()
     {
         _backupRepository = new JsonBackupRepository();
+    }
+
+    /// <summary>
+    /// Détecte si le logiciel métier est en cours d'exécution
+    /// </summary>
+    private bool IsBusinessSoftwareRunning()
+    {
+        try
+        {
+            // Vérifie si le processus du logiciel métier est en cours d'exécution
+            return Process.GetProcessesByName(_businessProcessName).Any();
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(
+                DictionaryManager.SingleStringToDictionary(
+                    "message",
+                    $"Error checking business software process: {ex.Message}"
+                ),
+                LogType.Error
+            );
+            return false;
+        }
     }
 
     /// <summary>
@@ -45,10 +71,15 @@ public class BackupService : IBackupService
         List<int> unvalidBackUps = new List<int>();
 
         // Initialisation du logger global pour l'exécution des backups
-        Logger _logger = new Logger();
-        _logger.InitWriters("logs", "Execution of backups");
-        _logger.Log(DictionaryManager.SingleStringToDictionary("message", "Starting execution of backups."),
-            LogType.Info);
+        Logger executionLogger = new Logger();
+        executionLogger.InitWriters("logs", "Execution of backups");
+        executionLogger.Log(
+            DictionaryManager.SingleStringToDictionary(
+                "message",
+                "Starting execution of backups."
+            ),
+            LogType.Info
+        );
 
         // Parcours de chaque backup à exécuter
         foreach (Backup backup in backups)
@@ -59,18 +90,27 @@ public class BackupService : IBackupService
                 ExecuteSingleBackup(backup);
 
                 // Log de succès
-                _logger.Log(DictionaryManager.SingleStringToDictionary("message",
-                    $"Backup (ID : {backup}) completed successfully."), LogType.Info);
+                executionLogger.Log(
+                    DictionaryManager.SingleStringToDictionary(
+                        "message",
+                        $"Backup (ID : {backup.Id}) completed successfully."
+                    ),
+                    LogType.Info
+                );
             }
             catch (Exception ex)
             {
                 // Log d'erreur en cas d'échec
-                _logger.Log(DictionaryManager.SingleStringToDictionary("message",
-                    $"Backup (ID : {backup}) failed : {ex.Message}"), LogType.Error);
+                executionLogger.Log(
+                    DictionaryManager.SingleStringToDictionary(
+                        "message",
+                        $"Backup (ID : {backup.Id}) failed : {ex.Message}"
+                    ),
+                    LogType.Error
+                );
 
                 // Ajout de l'ID du backup échoué
                 unvalidBackUps.Add(backup.Id);
-
                 // Marque l'exécution globale comme échouée
                 isSuccessful = false;
             }
@@ -79,17 +119,23 @@ public class BackupService : IBackupService
         // Si au moins un backup a échoué, on log la liste des backups concernés
         if (!isSuccessful)
         {
-            
-            _logger.Log(
-                DictionaryManager.SingleStringToDictionary("message",
-                $"The following backup(s) failed to execute: {string.Join(", ", unvalidBackUps)}"),
+            executionLogger.Log(
+                DictionaryManager.SingleStringToDictionary(
+                    "message",
+                    $"The following backup(s) failed to execute: {string.Join(", ", unvalidBackUps)}"
+                ),
                 LogType.Error
             );
         }
 
         // Fin de l'exécution globale
-        _logger.Log(DictionaryManager.SingleStringToDictionary("Work finished",
-            "Finished execution of backups."), LogType.Info);
+        executionLogger.Log(
+            DictionaryManager.SingleStringToDictionary(
+                "message",
+                "Finished execution of backups."
+            ),
+            LogType.Info
+        );
 
         return isSuccessful;
     }
@@ -123,29 +169,48 @@ public class BackupService : IBackupService
     /// Exécute un backup individuel :
     /// copie récursivement tous les fichiers du dossier source vers le dossier destination.
     /// </summary>
-   private void ExecuteSingleBackup(Backup backup)
+    private void ExecuteSingleBackup(Backup backup)
     {
         // Initialisation du logger spécifique à ce backup
-        Logger _logger = new Logger();
-        _logger.InitWriters(
+        Logger backupLogger = new Logger();
+        backupLogger.InitWriters(
             backup.DestinationFilePath,
             $"Execution du backup {backup.Id}"
         );
-        _logger.Log(
-            DictionaryManager.SingleStringToDictionary("message",
-            $"Starting backup execution (ID: {backup.Id}, Type: {backup.Type})"),
+
+        backupLogger.Log(
+            DictionaryManager.SingleStringToDictionary(
+                "message",
+                $"Starting backup execution (ID: {backup.Id}, Type: {backup.Type})"
+            ),
             LogType.Info
         );
+
+        // Vérification du logiciel métier avant démarrage
+        if (IsBusinessSoftwareRunning())
+        {
+            backupLogger.Log(
+                DictionaryManager.SingleStringToDictionary(
+                    "message",
+                    $"Backup will be stopped : business software detected ({_businessProcessName})"
+                ),
+                LogType.Warning
+            );
+           throw new InvalidOperationException(
+                $"Backup cannot be executed : business software detected ({_businessProcessName})"
+            );
+        }
 
         // Vérifie que le dossier source existe
         if (!Directory.Exists(backup.SourceFilePath))
         {
-            _logger.Log(
-                DictionaryManager.SingleStringToDictionary("message",
-                $"Source directory not found : {backup.SourceFilePath}"),
+            backupLogger.Log(
+                DictionaryManager.SingleStringToDictionary(
+                    "message",
+                    $"Source directory not found : {backup.SourceFilePath}"
+                ),
                 LogType.Error
             );
-
             // Stoppe l'exécution du backup
             throw new DirectoryNotFoundException(
                 $"Source not found : {backup.SourceFilePath}"
@@ -156,8 +221,8 @@ public class BackupService : IBackupService
         Directory.CreateDirectory(backup.DestinationFilePath);
 
         // Récupère tous les fichiers du dossier source (récursivement)
-        var sourceDirectory = new DirectoryInfo(backup.SourceFilePath);
-        var files = sourceDirectory.GetFiles("*", SearchOption.AllDirectories);
+        DirectoryInfo sourceDirectory = new DirectoryInfo(backup.SourceFilePath);
+        FileInfo[] files = sourceDirectory.GetFiles("*", SearchOption.AllDirectories);
 
         // Parcours de chaque fichier à sauvegarder
         foreach (FileInfo sourceFile in files)
@@ -189,27 +254,44 @@ public class BackupService : IBackupService
                 stopwatch.Stop();
 
                 // Log du succès du transfert
-                Dictionary<string, string> logs = new Dictionary<string, string>();
-                logs.Add("sourcePath", sourceFile.FullName);
-                logs.Add("destinationPath", destinationFilePath);
-                logs.Add("fileSize", sourceFile.Length.ToString());
-                logs.Add("transferTimeMs", stopwatch.ElapsedMilliseconds.ToString());
-                logs.Add("backupName", backup.Name);
-                _logger.Log(logs);
+                Dictionary<string, string> logs = new Dictionary<string, string>
+                {
+                    { "sourcePath", sourceFile.FullName },
+                    { "destinationPath", destinationFilePath },
+                    { "fileSize", sourceFile.Length.ToString() },
+                    { "transferTimeMs", stopwatch.ElapsedMilliseconds.ToString() },
+                    { "backupName", backup.Name }
+                };
+
+                backupLogger.Log(logs);
+
+                // Vérification du logiciel métier après chaque fichier copié
+                if (IsBusinessSoftwareRunning())
+                {
+                    backupLogger.Log(
+                        DictionaryManager.SingleStringToDictionary(
+                            "message",
+                            $"Backup stopped after finishing file {sourceFile.FullName} : business software detected ({_businessProcessName})"
+                        ),
+                        LogType.Error
+                    );
+                    return;
+                }
             }
             catch
             {
                 stopwatch.Stop();
-
                 // Log d'erreur si la copie échoue
-                
-                Dictionary<string, string> logs = new Dictionary<string, string>();
-                logs.Add("sourcePath", sourceFile.FullName);
-                logs.Add("fileSize", sourceFile.Length.ToString());
-                logs.Add("transferTimeMs", stopwatch.ElapsedMilliseconds.ToString());
-                logs.Add("backupName", backup.Name);
-                _logger.Log(logs);
+                Dictionary<string, string> logs = new Dictionary<string, string>
+                {
+                    { "sourcePath", sourceFile.FullName },
+                    { "fileSize", sourceFile.Length.ToString() },
+                    { "transferTimeMs", stopwatch.ElapsedMilliseconds.ToString() },
+                    { "backupName", backup.Name }
+                };
+
+                backupLogger.Log(logs, LogType.Error);
             }
         }
-   }
+    }
 }
