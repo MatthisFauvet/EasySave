@@ -8,13 +8,17 @@ namespace WpfSkeleton
     public static class LanguageManager
     {
         private static Dictionary<string, JsonElement> _translations = new();
-        private static string _currentLanguage = "Français";
+        private static string _currentLanguage = "Franï¿½ais";
 
         public static void LoadLanguage(string language)
         {
             _currentLanguage = language;
-            string fileName = language == "Français" ? "fr.json" : "en.json";
-            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", fileName);
+            string fileName = language == "Franï¿½ais" ? "fr.json" : "en.json";
+            string filePath = Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                "Resources",
+                fileName
+            );
 
             try
             {
@@ -41,7 +45,8 @@ namespace WpfSkeleton
             try
             {
                 var keys = key.Split('.');
-                if (keys.Length == 0) return key;
+                if (keys.Length == 0)
+                    return key;
 
                 if (!_translations.ContainsKey(keys[0]))
                     return key;

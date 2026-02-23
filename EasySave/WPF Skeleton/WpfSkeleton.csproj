@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
@@ -8,5 +7,4 @@
     <RootNamespace>WpfSkeleton</RootNamespace>
     <AssemblyName>WpfSkeleton</AssemblyName>
   </PropertyGroup>
-
 </Project>

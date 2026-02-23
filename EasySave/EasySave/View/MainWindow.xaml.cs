@@ -26,7 +26,7 @@ namespace EasySave.View
             {
                 BtnCreateWork_Click();
             };
-            
+
             InitializeComponent();
 
             _settings = SettingsManager.Load();
@@ -38,8 +38,7 @@ namespace EasySave.View
             UpdateUILanguage();
             UpdateStorageInfo();
             SectionHome();
-            
-            
+
             _isInitializing = false;
         }
 
@@ -64,9 +63,8 @@ namespace EasySave.View
 
         private void BtnMaximize_Click(object sender, RoutedEventArgs e)
         {
-            WindowState = WindowState == WindowState.Maximized
-                ? WindowState.Normal
-                : WindowState.Maximized;
+            WindowState =
+                WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
         }
 
         private void BtnClose_Click(object sender, RoutedEventArgs e)
@@ -101,7 +99,7 @@ namespace EasySave.View
             try
             {
                 var systemDrive = DriveInfo.GetDrives()[0];
-                
+
                 if (systemDrive.IsReady)
                 {
                     long totalBytes = systemDrive.TotalSize;
@@ -147,14 +145,22 @@ namespace EasySave.View
             BtnSettings2.Content = LanguageManager.Get("Navigation.Settings");
 
             StorageTitleBlock.Text = LanguageManager.Get("Storage.Title");
-            
+
             // Refresh current section to update its content
             switch (_currentSection)
             {
-                case "home": SectionHome(); break;
-                case "saves": SectionSaves(); break;
-                case "history": SectionHistory(); break;
-                case "settings": SectionSettings(); break;
+                case "home":
+                    SectionHome();
+                    break;
+                case "saves":
+                    SectionSaves();
+                    break;
+                case "history":
+                    SectionHistory();
+                    break;
+                case "settings":
+                    SectionSettings();
+                    break;
             }
         }
 
@@ -167,16 +173,32 @@ namespace EasySave.View
             _currentSection = section;
 
             // Template 1 buttons
-            BtnHome1.Style = (Style)FindResource(section == "home" ? "NavButtonActive" : "NavButton");
-            BtnSaves1.Style = (Style)FindResource(section == "saves" ? "NavButtonActive" : "NavButton");
-            BtnHistory1.Style = (Style)FindResource(section == "history" ? "NavButtonActive" : "NavButton");
-            BtnSettings1.Style = (Style)FindResource(section == "settings" ? "NavButtonActive" : "NavButton");
+            BtnHome1.Style = (Style)FindResource(
+                section == "home" ? "NavButtonActive" : "NavButton"
+            );
+            BtnSaves1.Style = (Style)FindResource(
+                section == "saves" ? "NavButtonActive" : "NavButton"
+            );
+            BtnHistory1.Style = (Style)FindResource(
+                section == "history" ? "NavButtonActive" : "NavButton"
+            );
+            BtnSettings1.Style = (Style)FindResource(
+                section == "settings" ? "NavButtonActive" : "NavButton"
+            );
 
             // Template 2 buttons
-            BtnHome2.Style = (Style)FindResource(section == "home" ? "NavButtonActive" : "NavButton");
-            BtnSaves2.Style = (Style)FindResource(section == "saves" ? "NavButtonActive" : "NavButton");
-            BtnHistory2.Style = (Style)FindResource(section == "history" ? "NavButtonActive" : "NavButton");
-            BtnSettings2.Style = (Style)FindResource(section == "settings" ? "NavButtonActive" : "NavButton");
+            BtnHome2.Style = (Style)FindResource(
+                section == "home" ? "NavButtonActive" : "NavButton"
+            );
+            BtnSaves2.Style = (Style)FindResource(
+                section == "saves" ? "NavButtonActive" : "NavButton"
+            );
+            BtnHistory2.Style = (Style)FindResource(
+                section == "history" ? "NavButtonActive" : "NavButton"
+            );
+            BtnSettings2.Style = (Style)FindResource(
+                section == "settings" ? "NavButtonActive" : "NavButton"
+            );
         }
 
         private void NavHome_Click(object sender, RoutedEventArgs e)
@@ -211,7 +233,9 @@ namespace EasySave.View
 
             // Header row
             var headerGrid = new Grid { Margin = new Thickness(0, 0, 0, 28) };
-            headerGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            headerGrid.ColumnDefinitions.Add(
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+            );
 
             var headerStack = new StackPanel();
             var title = new TextBlock
@@ -219,7 +243,7 @@ namespace EasySave.View
                 Text = LanguageManager.Get("Home.Title"),
                 FontSize = 26,
                 FontWeight = FontWeights.Bold,
-                FontFamily = (FontFamily)FindResource("AppFont")
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
             title.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             headerStack.Children.Add(title);
@@ -229,7 +253,7 @@ namespace EasySave.View
                 Text = LanguageManager.Get("Home.Welcome"),
                 FontSize = 13,
                 Margin = new Thickness(0, 6, 0, 0),
-                FontFamily = (FontFamily)FindResource("AppFont")
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
             subtitle.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
             headerStack.Children.Add(subtitle);
@@ -238,15 +262,29 @@ namespace EasySave.View
 
             // Stats cards
             var statsGrid = new Grid { Margin = new Thickness(0, 0, 0, 24) };
-            statsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            statsGrid.ColumnDefinitions.Add(
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+            );
             statsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(12) });
-            statsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            statsGrid.ColumnDefinitions.Add(
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+            );
             statsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(12) });
-            statsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            statsGrid.ColumnDefinitions.Add(
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+            );
             statsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(12) });
-            statsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            statsGrid.ColumnDefinitions.Add(
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+            );
 
-            AddStatCard(statsGrid, 0, _vm.Backups.Count().ToString(), LanguageManager.Get("Home.AmountOfBackup"), "#34D399");
+            AddStatCard(
+                statsGrid,
+                0,
+                _vm.Backups.Count().ToString(),
+                LanguageManager.Get("Home.AmountOfBackup"),
+                "#34D399"
+            );
             //AddStatCard(statsGrid, 2, "128", LanguageManager.Get("Home.Completed"), "#60A5FA");
 
             content.Children.Add(statsGrid);
@@ -258,25 +296,31 @@ namespace EasySave.View
                 FontSize = 15,
                 FontWeight = FontWeights.SemiBold,
                 Margin = new Thickness(0, 0, 0, 12),
-                FontFamily = (FontFamily)FindResource("AppFont")
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
             recentTitle.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             content.Children.Add(recentTitle);
 
             // Recent items in cards
             //AddRecentItem(content, "Sauvegarde Documents", "Termine - il y a 2h", "success");
-            
+
             SetContent(content);
             // AddConsoleLog("Navigation vers Accueil.", "info");
         }
 
-        private void AddStatCard(Grid parent, int column, string value, string label, string colorHex)
+        private void AddStatCard(
+            Grid parent,
+            int column,
+            string value,
+            string label,
+            string colorHex
+        )
         {
             var card = new Border
             {
                 CornerRadius = new CornerRadius(8),
                 Padding = new Thickness(16, 14, 16, 14),
-                BorderThickness = new Thickness(1)
+                BorderThickness = new Thickness(1),
             };
             card.SetResourceReference(Border.BackgroundProperty, "CardBrush");
             card.SetResourceReference(Border.BorderBrushProperty, "BorderBrush");
@@ -289,7 +333,7 @@ namespace EasySave.View
                 FontSize = 28,
                 FontWeight = FontWeights.Bold,
                 Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString(colorHex)),
-                FontFamily = (FontFamily)FindResource("AppFont")
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
             stack.Children.Add(valBlock);
 
@@ -298,9 +342,12 @@ namespace EasySave.View
                 Text = label,
                 FontSize = 11,
                 Margin = new Thickness(0, 4, 0, 0),
-                FontFamily = (FontFamily)FindResource("AppFont")
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
-            labelBlock.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
+            labelBlock.SetResourceReference(
+                TextBlock.ForegroundProperty,
+                "ForegroundSecondaryBrush"
+            );
             stack.Children.Add(labelBlock);
 
             card.Child = stack;
@@ -315,13 +362,15 @@ namespace EasySave.View
                 CornerRadius = new CornerRadius(6),
                 Padding = new Thickness(14, 10, 14, 10),
                 Margin = new Thickness(0, 0, 0, 6),
-                BorderThickness = new Thickness(1)
+                BorderThickness = new Thickness(1),
             };
             card.SetResourceReference(Border.BackgroundProperty, "CardBrush");
             card.SetResourceReference(Border.BorderBrushProperty, "BorderSubtleBrush");
 
             var grid = new Grid();
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            grid.ColumnDefinitions.Add(
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+            );
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
             var nameBlock = new TextBlock
@@ -329,7 +378,7 @@ namespace EasySave.View
                 Text = name,
                 FontSize = 13,
                 VerticalAlignment = VerticalAlignment.Center,
-                FontFamily = (FontFamily)FindResource("AppFont")
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
             nameBlock.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             Grid.SetColumn(nameBlock, 0);
@@ -338,10 +387,18 @@ namespace EasySave.View
             Color statusColor;
             switch (type)
             {
-                case "success": statusColor = (Color)ColorConverter.ConvertFromString("#34D399"); break;
-                case "warning": statusColor = (Color)ColorConverter.ConvertFromString("#FBBF24"); break;
-                case "error": statusColor = (Color)ColorConverter.ConvertFromString("#F87171"); break;
-                default: statusColor = (Color)ColorConverter.ConvertFromString("#60A5FA"); break;
+                case "success":
+                    statusColor = (Color)ColorConverter.ConvertFromString("#34D399");
+                    break;
+                case "warning":
+                    statusColor = (Color)ColorConverter.ConvertFromString("#FBBF24");
+                    break;
+                case "error":
+                    statusColor = (Color)ColorConverter.ConvertFromString("#F87171");
+                    break;
+                default:
+                    statusColor = (Color)ColorConverter.ConvertFromString("#60A5FA");
+                    break;
             }
 
             var statusBlock = new TextBlock
@@ -350,7 +407,7 @@ namespace EasySave.View
                 FontSize = 11,
                 Foreground = new SolidColorBrush(statusColor),
                 VerticalAlignment = VerticalAlignment.Center,
-                FontFamily = (FontFamily)FindResource("AppFont")
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
             Grid.SetColumn(statusBlock, 1);
             grid.Children.Add(statusBlock);
@@ -371,7 +428,7 @@ namespace EasySave.View
                 FontSize = 26,
                 FontWeight = FontWeights.Bold,
                 Margin = new Thickness(0, 0, 0, 6),
-                FontFamily = (FontFamily)FindResource("AppFont")
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
             title.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             content.Children.Add(title);
@@ -381,7 +438,7 @@ namespace EasySave.View
                 Text = LanguageManager.Get("Saves.Subtitle"),
                 FontSize = 13,
                 Margin = new Thickness(0, 0, 0, 24),
-                FontFamily = (FontFamily)FindResource("AppFont")
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
             subtitle.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
             content.Children.Add(subtitle);
@@ -390,33 +447,45 @@ namespace EasySave.View
             var btnPanel = new StackPanel
             {
                 Orientation = Orientation.Horizontal,
-                Margin = new Thickness(0, 0, 0, 20)
+                Margin = new Thickness(0, 0, 0, 20),
             };
 
             var btnCreateWork = new Button
             {
                 Content = LanguageManager.Get("Saves.CreateWork"),
                 Style = (Style)FindResource("PrimaryButton"),
-                Margin = new Thickness(0, 0, 10, 0)
+                Margin = new Thickness(0, 0, 10, 0),
             };
-            
-            btnCreateWork.SetBinding(Button.CommandProperty, 
-                new Binding("OpenCreateBackupDialogCommand"));
-            
+
+            btnCreateWork.SetBinding(
+                Button.CommandProperty,
+                new Binding("OpenCreateBackupDialogCommand")
+            );
+
             btnPanel.Children.Add(btnCreateWork);
 
             var btnExecuteWorks = new Button
             {
                 Content = LanguageManager.Get("Saves.ExecuteWorks"),
-                Margin = new Thickness(0, 0, 10, 0)
+                Margin = new Thickness(0, 0, 10, 0),
             };
-            
-            btnExecuteWorks.SetBinding(Button.CommandProperty, 
-                new Binding("ExecuteBackupsCommand"));
-            
+
+            btnExecuteWorks.SetBinding(
+                Button.CommandProperty,
+                new Binding("ExecuteBackupsCommand")
+            );
+
             btnPanel.Children.Add(btnExecuteWorks);
             content.Children.Add(btnPanel);
-
+            var statusText = new TextBlock
+            {
+                FontSize = 12,
+                Margin = new Thickness(0, 6, 0, 0),
+                FontFamily = (FontFamily)FindResource("AppFont"),
+            };
+            statusText.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
+            statusText.SetBinding(TextBlock.TextProperty, new Binding("ExecutionStatus"));
+            content.Children.Add(statusText);
             // Works list header
             var listTitle = new TextBlock
             {
@@ -424,7 +493,7 @@ namespace EasySave.View
                 FontSize = 15,
                 FontWeight = FontWeights.SemiBold,
                 Margin = new Thickness(0, 10, 0, 10),
-                FontFamily = (FontFamily)FindResource("AppFont")
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
             listTitle.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             content.Children.Add(listTitle);
@@ -445,30 +514,30 @@ namespace EasySave.View
                     }
                 }
             };
-            
+
             SetContent(content);
             // AddConsoleLog("Navigation vers Sauvegardes.", "info");
         }
-        
+
         private void AddWorkItemFromBackup(StackPanel content, Backup backup)
         {
-            AddWorkItem(
-                content,
-                $"{backup.Name}",
-                $"{backup.Type}",
-                "warning",
-                100
-            );
+            AddWorkItem(content, $"{backup.Name}", $"{backup.Type}", "warning", 100);
         }
 
-        private void AddWorkItem(StackPanel parent, string name, string status, string type, int progress)
+        private void AddWorkItem(
+            StackPanel parent,
+            string name,
+            string status,
+            string type,
+            int progress
+        )
         {
             var card = new Border
             {
                 CornerRadius = new CornerRadius(8),
                 Padding = new Thickness(16, 12, 16, 12),
                 Margin = new Thickness(0, 0, 0, 8),
-                BorderThickness = new Thickness(1)
+                BorderThickness = new Thickness(1),
             };
             card.SetResourceReference(Border.BackgroundProperty, "CardBrush");
             card.SetResourceReference(Border.BorderBrushProperty, "BorderBrush");
@@ -477,7 +546,9 @@ namespace EasySave.View
 
             // Top row: name + status
             var topRow = new Grid();
-            topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            topRow.ColumnDefinitions.Add(
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+            );
             topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
             var nameBlock = new TextBlock
@@ -485,7 +556,7 @@ namespace EasySave.View
                 Text = name,
                 FontSize = 13,
                 FontWeight = FontWeights.SemiBold,
-                FontFamily = (FontFamily)FindResource("AppFont")
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
             nameBlock.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             Grid.SetColumn(nameBlock, 0);
@@ -494,9 +565,15 @@ namespace EasySave.View
             Color statusColor;
             switch (type)
             {
-                case "success": statusColor = (Color)ColorConverter.ConvertFromString("#34D399"); break;
-                case "warning": statusColor = (Color)ColorConverter.ConvertFromString("#FBBF24"); break;
-                default: statusColor = (Color)ColorConverter.ConvertFromString("#60A5FA"); break;
+                case "success":
+                    statusColor = (Color)ColorConverter.ConvertFromString("#34D399");
+                    break;
+                case "warning":
+                    statusColor = (Color)ColorConverter.ConvertFromString("#FBBF24");
+                    break;
+                default:
+                    statusColor = (Color)ColorConverter.ConvertFromString("#60A5FA");
+                    break;
             }
 
             // Status badge
@@ -504,7 +581,9 @@ namespace EasySave.View
             {
                 CornerRadius = new CornerRadius(10),
                 Padding = new Thickness(8, 3, 8, 3),
-                Background = new SolidColorBrush(Color.FromArgb(30, statusColor.R, statusColor.G, statusColor.B))
+                Background = new SolidColorBrush(
+                    Color.FromArgb(30, statusColor.R, statusColor.G, statusColor.B)
+                ),
             };
             var statusText = new TextBlock
             {
@@ -512,7 +591,7 @@ namespace EasySave.View
                 FontSize = 10,
                 Foreground = new SolidColorBrush(statusColor),
                 FontWeight = FontWeights.SemiBold,
-                FontFamily = (FontFamily)FindResource("AppFont")
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
             badge.Child = statusText;
             Grid.SetColumn(badge, 1);
@@ -527,7 +606,7 @@ namespace EasySave.View
                     Value = progress,
                     Maximum = 100,
                     Height = 3,
-                    Margin = new Thickness(0, 8, 0, 0)
+                    Margin = new Thickness(0, 8, 0, 0),
                 };
                 stack.Children.Add(progressBar);
             }
@@ -548,7 +627,7 @@ namespace EasySave.View
                 FontSize = 26,
                 FontWeight = FontWeights.Bold,
                 Margin = new Thickness(0, 0, 0, 6),
-                FontFamily = (FontFamily)FindResource("AppFont")
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
             title.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             content.Children.Add(title);
@@ -558,33 +637,46 @@ namespace EasySave.View
                 Text = LanguageManager.Get("History.Description"),
                 FontSize = 13,
                 Margin = new Thickness(0, 0, 0, 24),
-                FontFamily = (FontFamily)FindResource("AppFont")
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
-            description.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
+            description.SetResourceReference(
+                TextBlock.ForegroundProperty,
+                "ForegroundSecondaryBrush"
+            );
             content.Children.Add(description);
 
             // History items as cards
             //AddHistoryItem(content, "2024-01-15 10:30", $"{LanguageManager.Get("Saves.Work")} 1", LanguageManager.Get("History.Success"), "success", "1.2 Go", "2m 34s");
-           
+
             SetContent(content);
             // AddConsoleLog("Navigation vers Historique.", "info");
         }
 
-        private void AddHistoryItem(StackPanel parent, string date, string work, string status, string type, string size, string duration)
+        private void AddHistoryItem(
+            StackPanel parent,
+            string date,
+            string work,
+            string status,
+            string type,
+            string size,
+            string duration
+        )
         {
             var card = new Border
             {
                 CornerRadius = new CornerRadius(6),
                 Padding = new Thickness(14, 10, 14, 10),
                 Margin = new Thickness(0, 0, 0, 4),
-                BorderThickness = new Thickness(1)
+                BorderThickness = new Thickness(1),
             };
             card.SetResourceReference(Border.BackgroundProperty, "CardBrush");
             card.SetResourceReference(Border.BorderBrushProperty, "BorderSubtleBrush");
 
             var grid = new Grid();
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(130) }); // Date
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }); // Name
+            grid.ColumnDefinitions.Add(
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+            ); // Name
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(80) }); // Size
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(80) }); // Duration
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100) }); // Status
@@ -594,9 +686,12 @@ namespace EasySave.View
                 Text = date,
                 FontSize = 11,
                 VerticalAlignment = VerticalAlignment.Center,
-                FontFamily = (FontFamily)FindResource("MonoFont")
+                FontFamily = (FontFamily)FindResource("MonoFont"),
             };
-            dateBlock.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
+            dateBlock.SetResourceReference(
+                TextBlock.ForegroundProperty,
+                "ForegroundSecondaryBrush"
+            );
             Grid.SetColumn(dateBlock, 0);
             grid.Children.Add(dateBlock);
 
@@ -605,7 +700,7 @@ namespace EasySave.View
                 Text = work,
                 FontSize = 13,
                 VerticalAlignment = VerticalAlignment.Center,
-                FontFamily = (FontFamily)FindResource("AppFont")
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
             workBlock.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             Grid.SetColumn(workBlock, 1);
@@ -616,9 +711,12 @@ namespace EasySave.View
                 Text = size,
                 FontSize = 11,
                 VerticalAlignment = VerticalAlignment.Center,
-                FontFamily = (FontFamily)FindResource("MonoFont")
+                FontFamily = (FontFamily)FindResource("MonoFont"),
             };
-            sizeBlock.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
+            sizeBlock.SetResourceReference(
+                TextBlock.ForegroundProperty,
+                "ForegroundSecondaryBrush"
+            );
             Grid.SetColumn(sizeBlock, 2);
             grid.Children.Add(sizeBlock);
 
@@ -627,19 +725,30 @@ namespace EasySave.View
                 Text = duration,
                 FontSize = 11,
                 VerticalAlignment = VerticalAlignment.Center,
-                FontFamily = (FontFamily)FindResource("MonoFont")
+                FontFamily = (FontFamily)FindResource("MonoFont"),
             };
-            durationBlock.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
+            durationBlock.SetResourceReference(
+                TextBlock.ForegroundProperty,
+                "ForegroundSecondaryBrush"
+            );
             Grid.SetColumn(durationBlock, 3);
             grid.Children.Add(durationBlock);
 
             Color statusColor;
             switch (type)
             {
-                case "success": statusColor = (Color)ColorConverter.ConvertFromString("#34D399"); break;
-                case "warning": statusColor = (Color)ColorConverter.ConvertFromString("#FBBF24"); break;
-                case "error": statusColor = (Color)ColorConverter.ConvertFromString("#F87171"); break;
-                default: statusColor = (Color)ColorConverter.ConvertFromString("#60A5FA"); break;
+                case "success":
+                    statusColor = (Color)ColorConverter.ConvertFromString("#34D399");
+                    break;
+                case "warning":
+                    statusColor = (Color)ColorConverter.ConvertFromString("#FBBF24");
+                    break;
+                case "error":
+                    statusColor = (Color)ColorConverter.ConvertFromString("#F87171");
+                    break;
+                default:
+                    statusColor = (Color)ColorConverter.ConvertFromString("#60A5FA");
+                    break;
             }
 
             var statusBadge = new Border
@@ -647,7 +756,9 @@ namespace EasySave.View
                 CornerRadius = new CornerRadius(10),
                 Padding = new Thickness(8, 2, 8, 2),
                 HorizontalAlignment = HorizontalAlignment.Right,
-                Background = new SolidColorBrush(Color.FromArgb(25, statusColor.R, statusColor.G, statusColor.B))
+                Background = new SolidColorBrush(
+                    Color.FromArgb(25, statusColor.R, statusColor.G, statusColor.B)
+                ),
             };
             var statusText = new TextBlock
             {
@@ -655,7 +766,7 @@ namespace EasySave.View
                 FontSize = 10,
                 FontWeight = FontWeights.SemiBold,
                 Foreground = new SolidColorBrush(statusColor),
-                FontFamily = (FontFamily)FindResource("AppFont")
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
             statusBadge.Child = statusText;
             Grid.SetColumn(statusBadge, 4);
@@ -671,7 +782,7 @@ namespace EasySave.View
 
             var scrollViewer = new ScrollViewer
             {
-                VerticalScrollBarVisibility = ScrollBarVisibility.Auto
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
             };
 
             var content = new StackPanel();
@@ -682,7 +793,7 @@ namespace EasySave.View
                 FontSize = 26,
                 FontWeight = FontWeights.Bold,
                 Margin = new Thickness(0, 0, 0, 6),
-                FontFamily = (FontFamily)FindResource("AppFont")
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
             title.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             content.Children.Add(title);
@@ -692,7 +803,7 @@ namespace EasySave.View
                 Text = LanguageManager.Get("Settings.Subtitle"),
                 FontSize = 13,
                 Margin = new Thickness(0, 0, 0, 28),
-                FontFamily = (FontFamily)FindResource("AppFont")
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
             subtitle.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
             content.Children.Add(subtitle);
@@ -705,7 +816,7 @@ namespace EasySave.View
                 CornerRadius = new CornerRadius(8),
                 Padding = new Thickness(20, 16, 20, 16),
                 Margin = new Thickness(0, 0, 0, 20),
-                BorderThickness = new Thickness(1)
+                BorderThickness = new Thickness(1),
             };
             generalCard.SetResourceReference(Border.BackgroundProperty, "CardBrush");
             generalCard.SetResourceReference(Border.BorderBrushProperty, "BorderBrush");
@@ -718,7 +829,12 @@ namespace EasySave.View
             comboTemplate.Items.Add(LanguageManager.Get("Settings.Template2"));
             comboTemplate.SelectedIndex = _settings.AppTemplate - 1;
             comboTemplate.SelectionChanged += ComboTemplate_Changed;
-            AddSettingRow(generalStack, LanguageManager.Get("Settings.TemplateApp"), LanguageManager.Get("Settings.TemplateDescription"), comboTemplate);
+            AddSettingRow(
+                generalStack,
+                LanguageManager.Get("Settings.TemplateApp"),
+                LanguageManager.Get("Settings.TemplateDescription"),
+                comboTemplate
+            );
 
             // Theme
             var comboTheme = new ComboBox { Width = 220, MinHeight = 32 };
@@ -726,7 +842,12 @@ namespace EasySave.View
             comboTheme.Items.Add(LanguageManager.Get("Settings.Dark"));
             comboTheme.SelectedIndex = _settings.AppTheme == "Light" ? 0 : 1;
             comboTheme.SelectionChanged += ComboTheme_Changed;
-            AddSettingRow(generalStack, LanguageManager.Get("Settings.ThemeApp"), LanguageManager.Get("Settings.ThemeDescription"), comboTheme);
+            AddSettingRow(
+                generalStack,
+                LanguageManager.Get("Settings.ThemeApp"),
+                LanguageManager.Get("Settings.ThemeDescription"),
+                comboTheme
+            );
 
             // Language
             var comboLanguage = new ComboBox { Width = 220, MinHeight = 32 };
@@ -734,7 +855,13 @@ namespace EasySave.View
             comboLanguage.Items.Add(LanguageManager.Get("Settings.English"));
             comboLanguage.SelectedIndex = _settings.Language == "Fran\u00e7ais" ? 0 : 1;
             comboLanguage.SelectionChanged += ComboLanguage_Changed;
-            AddSettingRow(generalStack, LanguageManager.Get("Settings.Language"), LanguageManager.Get("Settings.LanguageDescription"), comboLanguage, false);
+            AddSettingRow(
+                generalStack,
+                LanguageManager.Get("Settings.Language"),
+                LanguageManager.Get("Settings.LanguageDescription"),
+                comboLanguage,
+                false
+            );
 
             generalCard.Child = generalStack;
             content.Children.Add(generalCard);
@@ -747,7 +874,7 @@ namespace EasySave.View
                 CornerRadius = new CornerRadius(8),
                 Padding = new Thickness(20, 16, 20, 16),
                 Margin = new Thickness(0, 0, 0, 20),
-                BorderThickness = new Thickness(1)
+                BorderThickness = new Thickness(1),
             };
             savesCard.SetResourceReference(Border.BackgroundProperty, "CardBrush");
             savesCard.SetResourceReference(Border.BorderBrushProperty, "BorderBrush");
@@ -759,7 +886,13 @@ namespace EasySave.View
             comboExecution.Items.Add(LanguageManager.Get("Settings.Auto"));
             comboExecution.SelectedIndex = _settings.AutoExecute ? 1 : 0;
             comboExecution.SelectionChanged += ComboExecution_Changed;
-            AddSettingRow(savesStack, LanguageManager.Get("Settings.ExecutionMode"), LanguageManager.Get("Settings.ExecutionDescription"), comboExecution, false);
+            AddSettingRow(
+                savesStack,
+                LanguageManager.Get("Settings.ExecutionMode"),
+                LanguageManager.Get("Settings.ExecutionDescription"),
+                comboExecution,
+                false
+            );
 
             savesCard.Child = savesStack;
             content.Children.Add(savesCard);
@@ -772,7 +905,7 @@ namespace EasySave.View
                 CornerRadius = new CornerRadius(8),
                 Padding = new Thickness(20, 16, 20, 16),
                 Margin = new Thickness(0, 0, 0, 20),
-                BorderThickness = new Thickness(1)
+                BorderThickness = new Thickness(1),
             };
             logsCard.SetResourceReference(Border.BackgroundProperty, "CardBrush");
             logsCard.SetResourceReference(Border.BorderBrushProperty, "BorderBrush");
@@ -784,7 +917,13 @@ namespace EasySave.View
             comboLogType.Items.Add(LanguageManager.Get("Settings.XML"));
             comboLogType.SelectedIndex = _settings.LogFileType == "JSON" ? 0 : 1;
             comboLogType.SelectionChanged += ComboLogType_Changed;
-            AddSettingRow(logsStack, LanguageManager.Get("Settings.FileType"), LanguageManager.Get("Settings.FileTypeDescription"), comboLogType, false);
+            AddSettingRow(
+                logsStack,
+                LanguageManager.Get("Settings.FileType"),
+                LanguageManager.Get("Settings.FileTypeDescription"),
+                comboLogType,
+                false
+            );
 
             logsCard.Child = logsStack;
             content.Children.Add(logsCard);
@@ -802,16 +941,24 @@ namespace EasySave.View
                 FontSize = 15,
                 FontWeight = FontWeights.SemiBold,
                 Margin = new Thickness(0, 0, 0, 10),
-                FontFamily = (FontFamily)FindResource("AppFont")
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
             header.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             parent.Children.Add(header);
         }
 
-        private void AddSettingRow(StackPanel parent, string label, string description, UIElement control, bool hasSeparator = true)
+        private void AddSettingRow(
+            StackPanel parent,
+            string label,
+            string description,
+            UIElement control,
+            bool hasSeparator = true
+        )
         {
             var row = new Grid { Margin = new Thickness(0, 0, 0, hasSeparator ? 14 : 0) };
-            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            row.ColumnDefinitions.Add(
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+            );
             row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
             var textStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
@@ -821,7 +968,7 @@ namespace EasySave.View
                 Text = label,
                 FontSize = 13,
                 FontWeight = FontWeights.Medium,
-                FontFamily = (FontFamily)FindResource("AppFont")
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
             labelBlock.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             textStack.Children.Add(labelBlock);
@@ -831,9 +978,12 @@ namespace EasySave.View
                 Text = description,
                 FontSize = 11,
                 Margin = new Thickness(0, 2, 0, 0),
-                FontFamily = (FontFamily)FindResource("AppFont")
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
-            descBlock.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
+            descBlock.SetResourceReference(
+                TextBlock.ForegroundProperty,
+                "ForegroundSecondaryBrush"
+            );
             textStack.Children.Add(descBlock);
 
             Grid.SetColumn(textStack, 0);
@@ -848,11 +998,7 @@ namespace EasySave.View
 
             if (hasSeparator)
             {
-                var sep = new Border
-                {
-                    Height = 1,
-                    Margin = new Thickness(0, 0, 0, 0)
-                };
+                var sep = new Border { Height = 1, Margin = new Thickness(0, 0, 0, 0) };
                 sep.SetResourceReference(Border.BackgroundProperty, "BorderSubtleBrush");
                 parent.Children.Add(sep);
             }
@@ -873,13 +1019,10 @@ namespace EasySave.View
         #endregion
 
         #region Event Handlers - Saves Section
-        
+
         private void BtnCreateWork_Click()
         {
-            var dialog = new CreateWorkDialog()
-            {
-                Owner = this
-            };
+            var dialog = new CreateWorkDialog() { Owner = this };
 
             if (dialog.ShowDialog() == true)
             {
@@ -888,16 +1031,13 @@ namespace EasySave.View
                     Name = dialog.WorkName,
                     SourceFilePath = dialog.SourcePath,
                     DestinationFilePath = dialog.DestinationPath,
-                    Type = dialog.SaveType == "Complete"
-                        ? BackupType.Full
-                        : BackupType.Sequential
+                    Type = dialog.SaveType == "Complete" ? BackupType.Full : BackupType.Sequential,
                 };
-                
+
                 _vm.BackupCreateRequest = backupRequest;
                 _vm.CreateBackupCommand.Execute(null);
             }
         }
-        
 
         private void BtnExecuteWorks_Click(object sender, RoutedEventArgs e)
         {
@@ -910,7 +1050,8 @@ namespace EasySave.View
 
         private void ComboTemplate_Changed(object sender, SelectionChangedEventArgs e)
         {
-            if (_isInitializing) return;
+            if (_isInitializing)
+                return;
 
             var combo = (ComboBox)sender;
             _settings.AppTemplate = combo.SelectedIndex + 1;
@@ -936,7 +1077,8 @@ namespace EasySave.View
 
         private void ComboTheme_Changed(object sender, SelectionChangedEventArgs e)
         {
-            if (_isInitializing) return;
+            if (_isInitializing)
+                return;
 
             var combo = (ComboBox)sender;
             _settings.AppTheme = combo.SelectedIndex == 0 ? "Light" : "Dark";
@@ -948,7 +1090,8 @@ namespace EasySave.View
 
         private void ComboLanguage_Changed(object sender, SelectionChangedEventArgs e)
         {
-            if (_isInitializing) return;
+            if (_isInitializing)
+                return;
 
             var combo = (ComboBox)sender;
             _settings.Language = combo.SelectedIndex == 0 ? "Français" : "English";
@@ -965,7 +1108,8 @@ namespace EasySave.View
 
         private void ComboExecution_Changed(object sender, SelectionChangedEventArgs e)
         {
-            if (_isInitializing) return;
+            if (_isInitializing)
+                return;
 
             var combo = (ComboBox)sender;
             _settings.AutoExecute = combo.SelectedIndex == 1;
@@ -976,7 +1120,8 @@ namespace EasySave.View
 
         private void ComboLogType_Changed(object sender, SelectionChangedEventArgs e)
         {
-            if (_isInitializing) return;
+            if (_isInitializing)
+                return;
 
             var combo = (ComboBox)sender;
             _settings.LogFileType = combo.SelectedIndex == 0 ? "JSON" : "XML";
