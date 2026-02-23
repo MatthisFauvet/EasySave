@@ -6,6 +6,7 @@ using EasySave.Repository;
 using EasySave.Service;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 
 // Service responsable de l'exécution des sauvegardes
 public class BackupService : IBackupService
@@ -293,5 +294,76 @@ public class BackupService : IBackupService
                 backupLogger.Log(logs, LogType.Error);
             }
         }
+    }
+    
+    public bool ExecuteFromFlag(string flag)
+    {
+        if (string.IsNullOrWhiteSpace(flag))
+            throw new ArgumentException("Flag cannot be empty.");
+
+        flag = flag.Trim().ToLower();
+
+        List<Backup> backupsToExecute = new List<Backup>();
+        List<Backup> allBackups = _backupRepository.GetAllBackups();
+
+        // ALL
+        if (flag == "all")
+        {
+            backupsToExecute = allBackups;
+        }
+
+        // SINGLE NUMBER (ex: "1")
+        else if (Regex.IsMatch(flag, @"^\d+$"))
+        {
+            int id = int.Parse(flag);
+            Backup? backup = _backupRepository.GetBackupById(id);
+
+            if (backup == null)
+                throw new ArgumentException($"Backup with id {id} not found.");
+
+            backupsToExecute.Add(backup);
+        }
+
+        // RANGE (ex: "1-3")
+        else if (Regex.IsMatch(flag, @"^\d+\s*-\s*\d+$"))
+        {
+            string[] parts = flag.Split('-');
+            int start = int.Parse(parts[0].Trim());
+            int end = int.Parse(parts[1].Trim());
+
+            if (start > end)
+                throw new ArgumentException("Invalid range: start must be <= end.");
+
+            backupsToExecute = allBackups
+                .Where(b => b.Id >= start && b.Id <= end)
+                .ToList();
+        }
+
+        // MULTIPLE IDS (ex: "1;3;4")
+        else if (Regex.IsMatch(flag, @"^(\d+\s*;\s*)+\d+$"))
+        {
+            string[] parts = flag.Split(';');
+
+            foreach (string part in parts)
+            {
+                int id = int.Parse(part.Trim());
+                Backup? backup = _backupRepository.GetBackupById(id);
+
+                if (backup == null)
+                    throw new ArgumentException($"Backup with id {id} not found.");
+
+                backupsToExecute.Add(backup);
+            }
+        }
+
+        else
+        {
+            throw new ArgumentException("Invalid flag format.");
+        }
+
+        if (!backupsToExecute.Any())
+            throw new ArgumentException("No backups match the given flag.");
+
+        return ExecuteBackup(backupsToExecute);
     }
 }
