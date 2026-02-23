@@ -5,18 +5,79 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="312a440a-7f95-4f25-9659-337b41e1dee6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/EasySave/Assets/UML - Diagramme de séquence - Execution de backups.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/Model/PagedResult.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/Repository/IBackupIdFactory.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/Repository/IncrementalBackupIdFactory.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.AssemblyInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.AssemblyInfoInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/rider.project.model.nuget.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/rider.project.restore.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EasySave/App.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/App.xaml.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasySave/Repository/IBackupRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/Repository/IBackupRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasySave/Repository/JsonBackupRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/Repository/JsonBackupRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/Model/Backup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/Model/Backup.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EasySave/Service/BackupService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/Service/BackupService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfo.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfoInputs.cache" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EasySave/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/rider.project.model.nuget.info" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EasySave/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/rider.project.restore.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/App.xaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/App.xaml.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/AppSettings.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/CreateWorkDialog.xaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/CreateWorkDialog.xaml.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/LanguageManager.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/MainWindow.xaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/MainWindow.xaml.backup" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/MainWindow.xaml.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/Resources/README_TRANSLATIONS.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/Resources/en.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/Resources/fr.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/SettingsManager.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/ThemeManager.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/WPF Skeleton.csproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/WPF Skeleton.csproj.user" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/WpfSkeleton.csproj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/bin/Debug/net10.0-windows/Resources/en.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/bin/Debug/net10.0-windows/Resources/fr.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/bin/Debug/net10.0-windows/WPF Skeleton.deps.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/bin/Debug/net10.0-windows/WPF Skeleton.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/bin/Debug/net10.0-windows/WPF Skeleton.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/bin/Debug/net10.0-windows/WPF Skeleton.pdb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/bin/Debug/net10.0-windows/WPF Skeleton.runtimeconfig.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/.NETCoreApp,Version=v10.0.AssemblyAttributes.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/App.baml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/App.g.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/App.g.i.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/CreateWorkDialog.baml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/CreateWorkDialog.g.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/CreateWorkDialog.g.i.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/MainWindow.baml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/MainWindow.g.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/MainWindow.g.i.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/MainWindow_temp.g.i.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/WPF Skeleton.AssemblyInfo.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/WPF Skeleton.AssemblyInfoInputs.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/WPF Skeleton.GeneratedMSBuildEditorConfig.editorconfig" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/WPF Skeleton.GlobalUsings.g.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/WPF Skeleton.assets.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/WPF Skeleton.csproj.BuildWithSkipAnalyzers" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/WPF Skeleton.csproj.CoreCompileInputs.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/WPF Skeleton.csproj.FileListAbsolute.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/WPF Skeleton.designer.deps.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/WPF Skeleton.designer.runtimeconfig.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/WPF Skeleton.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/WPF Skeleton.g.resources" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/WPF Skeleton.genruntimeconfig.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/WPF Skeleton.pdb" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/WPF Skeleton.sourcelink.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/WPF Skeleton_MarkupCompile.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/WPF Skeleton_MarkupCompile.i.cache" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/apphost.exe" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/ref/WPF Skeleton.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/Debug/net10.0-windows/refint/WPF Skeleton.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/WPF Skeleton.csproj.nuget.dgspec.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/WPF Skeleton.csproj.nuget.g.props" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/WPF Skeleton.csproj.nuget.g.targets" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/project.assets.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPF Skeleton/obj/project.nuget.cache" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,21 +139,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Project.EasySave.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "com.github.patou.gitmoji.migration-offered": "true",
-    "git-widget-placeholder": "Merging feature/merged-new-ui-and-solution",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "configurable.group.appearance",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Project.EasySave.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;com.github.patou.gitmoji.migration-offered&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.appearance&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="EasySave" type="DotNetProject" factoryName=".NET Project">
       <option name="EXE_PATH" value="" />
@@ -135,6 +196,10 @@
       <workItem from="1770967919167" duration="417000" />
       <workItem from="1770968481305" duration="512000" />
       <workItem from="1771017040532" duration="595000" />
+      <workItem from="1771022623144" duration="350000" />
+      <workItem from="1771247866081" duration="1229000" />
+      <workItem from="1771494327155" duration="142000" />
+      <workItem from="1771834212722" duration="8357000" />
     </task>
     <task id="LOCAL-00001" summary=":see_no_evil: Added .gitignore">
       <option name="closed" value="true" />
