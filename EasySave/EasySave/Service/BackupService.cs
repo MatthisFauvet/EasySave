@@ -163,6 +163,8 @@ public class BackupService : IBackupService
     {
         return _backupRepository.GetBackupsPage(pageIndex, pageSize);
     }
+    public PagedResult<Backup> SearchBackupsPage(string? query, int pageIndex, int pageSize)
+    => _backupRepository.SearchBackupsPage(query, pageIndex, pageSize);
 
     public void UpdateBackup(Backup backup)
     {

@@ -162,6 +162,49 @@ namespace EasySave.Repository
                 };
             }
         }
+        public PagedResult<Backup> SearchBackupsPage(string? query, int pageIndex, int pageSize)
+        {
+            if (pageIndex < 1) throw new ArgumentOutOfRangeException(nameof(pageIndex));
+            if (pageSize < 1) throw new ArgumentOutOfRangeException(nameof(pageSize));
+
+            query = (query ?? "").Trim();
+
+            lock (_sync)
+            {
+                IEnumerable<Backup> filtered = _backups;
+
+                if (!string.IsNullOrWhiteSpace(query))
+                {
+                    bool isId = int.TryParse(query, out int idExact);
+
+                    filtered = filtered.Where(b =>
+                        // ID exact si la query est un nombre
+                        (isId && b.Id == idExact)
+                        // ou ID partiel (ex: "1" match 10, 21...)
+                        || b.Id.ToString().Contains(query, StringComparison.OrdinalIgnoreCase)
+                        // Name contains (case-insensitive)
+                        || (!string.IsNullOrWhiteSpace(b.Name)
+                            && b.Name.Contains(query, StringComparison.OrdinalIgnoreCase))
+                    );
+                }
+
+                int total = filtered.Count();
+
+                var items = filtered
+                    .OrderBy(b => b.Id)
+                    .Skip((pageIndex - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+
+                return new PagedResult<Backup>
+                {
+                    Items = items,
+                    TotalCount = total,
+                    PageIndex = pageIndex,
+                    PageSize = pageSize
+                };
+            }
+        }
 
         private List<Backup> LoadFromFile()
         {

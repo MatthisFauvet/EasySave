@@ -50,4 +50,6 @@ public interface IBackupService
 
     PagedResult<Backup> GetBackupsPage(int pageIndex, int pageSize);
 
+    PagedResult<Backup> SearchBackupsPage(string? query, int pageIndex, int pageSize);
+
 }

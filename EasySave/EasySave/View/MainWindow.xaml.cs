@@ -429,7 +429,38 @@ namespace EasySave.View
             listTitle.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             content.Children.Add(listTitle);
 
-            
+            var searchRow = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                Margin = new Thickness(0, 0, 0, 14)
+            };
+
+            var tbSearch = new TextBox
+            {
+                Width = 260,
+                MinHeight = 32,
+                Margin = new Thickness(0, 0, 10, 0)
+            };
+
+            // Live search
+            tbSearch.SetBinding(TextBox.TextProperty, new Binding("SearchQuery")
+            {
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+
+            searchRow.Children.Add(tbSearch);
+
+            var btnClear = new Button
+            {
+                Content = "Reset",
+                MinHeight = 32
+            };
+            btnClear.Click += (_, __) => _vm.SearchQuery = "";
+
+            searchRow.Children.Add(btnClear);
+
+            content.Children.Add(searchRow);
+
 
             // =========================
             // LIST PANEL (NEW)

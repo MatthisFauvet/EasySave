@@ -73,4 +73,7 @@ public interface IBackupRepository
     /// <returns>A paginated result containing the backups for the page and pagination metadata.</returns>
     PagedResult<Backup> GetBackupsPage(int pageIndex, int pageSize);
 
+
+
+    PagedResult<Backup> SearchBackupsPage(string? query, int pageIndex, int pageSize);
 }

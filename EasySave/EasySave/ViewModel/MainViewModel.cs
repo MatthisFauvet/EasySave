@@ -40,6 +40,21 @@ public class MainViewModel : INotifyPropertyChanged
         set { _backupCreateRequest = value; OnPropertyChanged(); }
     }
 
+    private string _searchQuery = "";
+    public string SearchQuery
+    {
+        get => _searchQuery;
+        set
+        {
+            if (_searchQuery == value) return;
+            _searchQuery = value;
+            OnPropertyChanged();
+
+            // Recherche live : revenir à la page 1 quand la saisie change
+            LoadPage(1);
+        }
+    }
+
     // Backups = page courante (on garde ton nom pour éviter de toucher la view)
     public ObservableCollection<Backup> Backups { get; }
 
@@ -131,7 +146,7 @@ public class MainViewModel : INotifyPropertyChanged
         if (pageIndex < 1) pageIndex = 1;
 
         // IMPORTANT: needs a paged result (Items + TotalCount)
-        var page = _backupService.GetBackupsPage(pageIndex, PageSize);
+        var page = _backupService.SearchBackupsPage(SearchQuery, pageIndex, PageSize);
 
         Backups.Clear();
         foreach (var b in page.Items)
