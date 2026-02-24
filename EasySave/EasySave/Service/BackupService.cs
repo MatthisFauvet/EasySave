@@ -100,7 +100,7 @@ public class BackupService : IBackupService
                 executionLogger.Log(
                     DictionaryManager.SingleStringToDictionary(
                         "message",
-                        $"Backup (ID: {backup.Id}) completed successfully."
+                        $"Backup (ID: {backup.Id}) completed successfully, you can find it in your destination source."
                     ),
                     LogType.Info
                 );
