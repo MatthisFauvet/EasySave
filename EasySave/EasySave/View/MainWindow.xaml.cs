@@ -399,10 +399,10 @@ namespace EasySave.View
                 Style = (Style)FindResource("PrimaryButton"),
                 Margin = new Thickness(0, 0, 10, 0)
             };
-            
-            btnCreateWork.SetBinding(Button.CommandProperty, 
+
+            btnCreateWork.SetBinding(Button.CommandProperty,
                 new Binding("OpenCreateBackupDialogCommand"));
-            
+
             btnPanel.Children.Add(btnCreateWork);
 
             var btnExecuteWorks = new Button
@@ -410,10 +410,10 @@ namespace EasySave.View
                 Content = LanguageManager.Get("Saves.ExecuteWorks"),
                 Margin = new Thickness(0, 0, 10, 0)
             };
-            
-            btnExecuteWorks.SetBinding(Button.CommandProperty, 
+
+            btnExecuteWorks.SetBinding(Button.CommandProperty,
                 new Binding("ExecuteBackupsCommand"));
-            
+
             btnPanel.Children.Add(btnExecuteWorks);
             content.Children.Add(btnPanel);
 
@@ -429,27 +429,110 @@ namespace EasySave.View
             listTitle.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             content.Children.Add(listTitle);
 
-            var tmpBackups = _vm.Backups;
-            foreach (var tmpBackup in tmpBackups)
+            
+
+            // =========================
+            // LIST PANEL (NEW)
+            // =========================
+            var listPanel = new StackPanel();
+            content.Children.Add(listPanel);
+
+            void RenderPage()
             {
-                AddWorkItemFromBackup(content, tmpBackup);
+                listPanel.Children.Clear();
+
+                // Backups = page courante (selon les modifs VM)
+                foreach (var b in _vm.Backups)
+                {
+                    AddWorkItemFromBackup(listPanel, b);
+                }
             }
 
-            _vm.Backups.CollectionChanged += (s, e) =>
+            // =========================
+            // PAGINATION BAR (NEW)
+            // =========================
+            var pager = new StackPanel
             {
-                if (e.NewItems != null)
-                {
-                    foreach (Backup newBackup in e.NewItems)
-                    {
-                        AddWorkItemFromBackup(content, newBackup);
-                    }
-                }
+                Orientation = Orientation.Horizontal,
+                Margin = new Thickness(0, 25, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Center 
             };
-            
+
+            var btnPrev = new Button
+            {
+                Content = "◀",                 // ASCII => toujours supporté
+                Width = 40,                    // un peu plus large que 36
+                Height = 32,                   // important si ton template est compact
+                Margin = new Thickness(0, 0, 8, 0),
+                Foreground = Brushes.White,
+                Padding = new Thickness(0),    // évite que le contenu soit “poussé” hors zone
+                FontSize = 16,                 // rend le signe lisible
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                VerticalContentAlignment = VerticalAlignment.Center,
+                ClipToBounds = false
+            };
+            btnPrev.Width = 48;
+            btnPrev.Height = 32;
+            btnPrev.FontSize = 18;
+            btnPrev.ClipToBounds = false;
+            btnPrev.SetBinding(Button.CommandProperty, new Binding("PreviousPageCommand"));
+            pager.Children.Add(btnPrev);
+
+            var pageText = new TextBlock
+            {
+                VerticalAlignment = VerticalAlignment.Center,
+                FontFamily = (FontFamily)FindResource("AppFont")
+            };
+            pageText.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
+            pageText.SetBinding(TextBlock.TextProperty, new Binding("PageIndex") { StringFormat = "Page {0}" });
+            pager.Children.Add(pageText);
+
+            var sep = new TextBlock
+            {
+                Text = " / ",
+                VerticalAlignment = VerticalAlignment.Center,
+                FontFamily = (FontFamily)FindResource("AppFont")
+            };
+            sep.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
+            pager.Children.Add(sep);
+
+            var totalPagesText = new TextBlock
+            {
+                VerticalAlignment = VerticalAlignment.Center,
+                FontFamily = (FontFamily)FindResource("AppFont")
+            };
+            totalPagesText.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
+            totalPagesText.SetBinding(TextBlock.TextProperty, new Binding("TotalPages"));
+            pager.Children.Add(totalPagesText);
+
+            var btnNext = new Button
+            {
+                Content = "▶",                 // ASCII => toujours supporté
+                Width = 40,                    // un peu plus large que 36
+                Height = 32,                   // important si ton template est compact
+                Margin = new Thickness(8, 0, 0, 0),
+                Foreground = Brushes.White,
+                Padding = new Thickness(0),    // évite que le contenu soit “poussé” hors zone
+                FontSize = 16,                 // rend le signe lisible
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                VerticalContentAlignment = VerticalAlignment.Center,
+                ClipToBounds = false
+            };
+            btnNext.SetBinding(Button.CommandProperty, new Binding("NextPageCommand"));
+            pager.Children.Add(btnNext);
+
+            content.Children.Add(pager);
+
+            // First render
+            RenderPage();
+
+            // When page items change => re-render
+            _vm.Backups.CollectionChanged += (s, e) => RenderPage();
+
             SetContent(content);
             // AddConsoleLog("Navigation vers Sauvegardes.", "info");
         }
-        
+
         private void AddWorkItemFromBackup(StackPanel content, Backup backup)
         {
             AddWorkItem(

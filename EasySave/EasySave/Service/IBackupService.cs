@@ -47,5 +47,7 @@ public interface IBackupService
     /// </summary>
     /// <param name="backup">Backup we want to modify with modification</param>
     public void UpdateBackup(Backup backup);
-    
+
+    PagedResult<Backup> GetBackupsPage(int pageIndex, int pageSize);
+
 }
