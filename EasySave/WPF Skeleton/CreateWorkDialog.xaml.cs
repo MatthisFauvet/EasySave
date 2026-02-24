@@ -1,9 +1,9 @@
-﻿using System.IO;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
 
-namespace EasySave.View.Dialog
+namespace WpfSkeleton
 {
     public partial class CreateWorkDialog : Window
     {

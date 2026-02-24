@@ -16,4 +16,13 @@ EasySave/bin/
 /dataSources/
 /dataSources.local.xml
 # Editor-based HTTP Client requests
-/httpRequests/
+/httpRequests/. v s / 
+ 
+ O u t p u t F o l d e r / 
+ 
+ d o t n e t - t o o l s . j s o n 
+ 
+**/.vs/
+**/OutputFolder/
+dotnet-tools.json
+ 

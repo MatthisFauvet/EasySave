@@ -1,6 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Threading;
 using EasySave.Model;
 using EasySave.Service;
 using EasySave.ViewModel.Command;
@@ -11,11 +13,15 @@ public class MainViewModel : INotifyPropertyChanged
 {
     private readonly IBackupService _backupService;
 
+    // Capture the UI thread dispatcher at construction time
+    // The ViewModel is always created on the UI thread, so this is safe
+    private readonly Dispatcher _dispatcher = Application.Current.Dispatcher;
+
     private int _pageIndex = 0;
     private int _pageSize = 50;
 
     // ==========================
-    // Commands
+    // Commands     
     // ==========================
 
     public RelayCommand ExecuteBackupsCommand { get; }
@@ -39,8 +45,35 @@ public class MainViewModel : INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+    // Tracks whether backups are currently running
+    // Used to disable the Execute button while running
+    private bool _isExecuting;
+    public bool IsExecuting
+    {
+        get => _isExecuting;
+        private set
+        {
+            _isExecuting = value;
+            OnPropertyChanged();
+            // Tell the command to re-evaluate CanExecute
+            // so the button enables/disables automatically
+            ExecuteBackupsCommand.RaiseCanExecuteChanged();
+        }
+    }
+    // Feedback message shown in the UI during/after execution
+    private string _executionStatus = "";
+    public string ExecutionStatus
+    {
+        get => _executionStatus;
+        private set
+        {
+            _executionStatus = value;
+            OnPropertyChanged();
+        }
+    }
 
-    // 🔥 ObservableCollection pour le dynamisme
+
+    //  ObservableCollection pour le dynamisme
     public ObservableCollection<Backup> Backups { get; }
 
     public List<BackupType> BackupTypes { get; }
@@ -61,12 +94,21 @@ public class MainViewModel : INotifyPropertyChanged
 
         LoadBackups();
 
-        OpenCreateBackupDialogCommand = new RelayCommand(() =>
-            OpenCreateBackupDialogRequested?.Invoke());
+        // Pass canExecute so the button disables while backups are running
+        ExecuteBackupsCommand = new RelayCommand(
+            execute: ExecuteBackup,
+            canExecute: () => !IsExecuting
+        );
 
-        ExecuteBackupsCommand = new RelayCommand(ExecuteBackup);
+        CreateBackupCommand = new RelayCommand(
+            execute: CreateBackup,
+            canExecute: () => !IsExecuting
+        );
 
-        CreateBackupCommand = new RelayCommand(CreateBackup);
+        // ✅ AJOUTER : Commande pour ouvrir le dialogue de création
+        OpenCreateBackupDialogCommand = new RelayCommand(
+            execute: () => OpenCreateBackupDialogRequested?.Invoke()
+        );
     }
 
     // ==========================
@@ -100,18 +142,76 @@ public class MainViewModel : INotifyPropertyChanged
         BackupCreateRequest = new BackupCreateRequest("", "", "", BackupType.Full);
     }
 
-
     private void ExecuteBackup()
     {
-        _backupService.ExecuteBackup(Backups.ToList());
-    }
+        // Fire and forget on a background thread
+        // 'async void' is acceptable here because this is a UI event handler
+        // We don't want to block the UI thread while backups run
+        Task.Run(async () =>
+        {
+            // Switch IsExecuting to true on the UI thread
+            // This disables the button immediately
+            RunOnUiThread(() =>
+            {
+                IsExecuting = true;
+                ExecutionStatus = "Backups running...";
+            });
 
+            try
+            {
+                // This now runs ALL backups in parallel on background threads
+                // The UI remains fully responsive during this call
+                bool success = _backupService.ExecuteBackup(Backups.ToList());
+
+                // All backups done — update UI from UI thread
+                RunOnUiThread(() =>
+                {
+                    ExecutionStatus = success
+                        ? "All backups completed successfully."
+                        : "Some backups failed. Check logs for details.";
+
+                    // ❌ SUPPRIMER CETTE LIGNE - Elle cause les doublons!
+                    // LoadBackups();
+                });
+            }
+            catch (Exception ex)
+            {
+                RunOnUiThread(() =>
+                {
+                    ExecutionStatus = $"Execution failed: {ex.Message}";
+                });
+            }
+            finally
+            {
+                // Always re-enable the button, even if something threw
+                RunOnUiThread(() => IsExecuting = false);
+            }
+        });
+    }
+    /// <summary>
+    /// Helper to safely dispatch any action back to the UI thread.
+    /// Checks first if we're already on the UI thread to avoid
+    /// unnecessary dispatching overhead.
+    /// </summary>
+    private void RunOnUiThread(Action action)
+    {
+        if (_dispatcher.CheckAccess())
+        {
+            // Already on UI thread — run directly
+            action();
+        }
+        else
+        {
+            // On background thread — marshal to UI thread
+            _dispatcher.Invoke(action);
+        }
+    }
     // ==========================
     // INotifyPropertyChanged
     // ==========================
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null) =>
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 }
