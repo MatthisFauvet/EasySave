@@ -2,7 +2,12 @@
 
 public class BackupCreateRequest
 {
-    public BackupCreateRequest(string name, string sourceFilePath, string destinationFilePath, BackupType type)
+    public BackupCreateRequest(
+        string name,
+        string sourceFilePath,
+        string destinationFilePath,
+        BackupType type
+    )
     {
         Name = name;
         SourceFilePath = sourceFilePath;
@@ -10,9 +15,7 @@ public class BackupCreateRequest
         Type = type;
     }
 
-    public BackupCreateRequest()
-    {
-    }
+    public BackupCreateRequest() { }
 
     public string Name { get; set; }
     public string SourceFilePath { get; set; }

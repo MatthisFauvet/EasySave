@@ -13,7 +13,11 @@ namespace EasySave.View
         {
             _currentLanguage = language;
             string fileName = language == "Français" ? "fr.json" : "en.json";
-            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", fileName);
+            string filePath = Path.Combine(
+                AppDomain.CurrentDomain.BaseDirectory,
+                "Resources",
+                fileName
+            );
 
             try
             {
@@ -40,7 +44,8 @@ namespace EasySave.View
             try
             {
                 var keys = key.Split('.');
-                if (keys.Length == 0) return key;
+                if (keys.Length == 0)
+                    return key;
 
                 if (!_translations.ContainsKey(keys[0]))
                     return key;

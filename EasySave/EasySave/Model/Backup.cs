@@ -2,11 +2,16 @@
 
 public class Backup
 {
-    public Backup()
-    {
-    }
+    public Backup() { }
 
-    public Backup(int id, string name, string sourceFilePath, string destinationFilePath, DateTime lastBackupDateTime, BackupType type)
+    public Backup(
+        int id,
+        string name,
+        string sourceFilePath,
+        string destinationFilePath,
+        DateTime lastBackupDateTime,
+        BackupType type
+    )
     {
         Id = id;
         Name = name;
@@ -16,8 +21,14 @@ public class Backup
         Type = type;
     }
 
-    public Backup(int id, string name, string sourceFilePath, string destinationFilePath, string type)
-    { 
+    public Backup(
+        int id,
+        string name,
+        string sourceFilePath,
+        string destinationFilePath,
+        string type
+    )
+    {
         Id = id;
         Name = name;
         SourceFilePath = sourceFilePath;
@@ -31,5 +42,6 @@ public class Backup
     public string DestinationFilePath { get; set; }
     public DateTime LastBackupDateTime { get; set; }
     public BackupType Type { get; set; }
+    
     public bool IsSelected { get; set; }
 }

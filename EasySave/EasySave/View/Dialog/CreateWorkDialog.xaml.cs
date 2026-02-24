@@ -16,7 +16,7 @@ namespace EasySave.View.Dialog
         {
             InitializeComponent();
             LoadTranslations();
-            
+
             // D�sactiver le bouton au d�part
             CreateButton.IsEnabled = false;
             ValidateForm();
@@ -50,12 +50,13 @@ namespace EasySave.View.Dialog
                 Title = LanguageManager.Get("CreateWork.SourcePath"),
                 CheckFileExists = false,
                 CheckPathExists = true,
-                FileName = "Select Folder"
+                FileName = "Select Folder",
             };
 
             if (dialog.ShowDialog() == true)
             {
-                SourcePathTextBox.Text = System.IO.Path.GetDirectoryName(dialog.FileName) ?? string.Empty;
+                SourcePathTextBox.Text =
+                    System.IO.Path.GetDirectoryName(dialog.FileName) ?? string.Empty;
                 ValidateForm();
             }
         }
@@ -67,12 +68,13 @@ namespace EasySave.View.Dialog
                 Title = LanguageManager.Get("CreateWork.DestinationPath"),
                 CheckFileExists = false,
                 CheckPathExists = true,
-                FileName = "Select Folder"
+                FileName = "Select Folder",
             };
 
             if (dialog.ShowDialog() == true)
             {
-                DestinationPathTextBox.Text = System.IO.Path.GetDirectoryName(dialog.FileName) ?? string.Empty;
+                DestinationPathTextBox.Text =
+                    System.IO.Path.GetDirectoryName(dialog.FileName) ?? string.Empty;
                 ValidateForm();
             }
         }
@@ -89,7 +91,8 @@ namespace EasySave.View.Dialog
             // Validate Work Name
             if (string.IsNullOrWhiteSpace(WorkNameTextBox.Text))
             {
-                WorkNameError.Text = $"? {LanguageManager.Get("CreateWork.ErrorWorkName")} {LanguageManager.Get("CreateWork.ErrorRequired")}";
+                WorkNameError.Text =
+                    $"? {LanguageManager.Get("CreateWork.ErrorWorkName")} {LanguageManager.Get("CreateWork.ErrorRequired")}";
                 WorkNameError.Visibility = Visibility.Visible;
                 isValid = false;
             }
@@ -101,13 +104,15 @@ namespace EasySave.View.Dialog
             // Validate Source Path
             if (string.IsNullOrWhiteSpace(SourcePathTextBox.Text))
             {
-                SourcePathError.Text = $"? {LanguageManager.Get("CreateWork.ErrorSourcePath")} {LanguageManager.Get("CreateWork.ErrorRequired")}";
+                SourcePathError.Text =
+                    $"? {LanguageManager.Get("CreateWork.ErrorSourcePath")} {LanguageManager.Get("CreateWork.ErrorRequired")}";
                 SourcePathError.Visibility = Visibility.Visible;
                 isValid = false;
             }
             else if (!Directory.Exists(SourcePathTextBox.Text))
             {
-                SourcePathError.Text = $"? {LanguageManager.Get("CreateWork.ErrorSourceNotExists")} {LanguageManager.Get("CreateWork.ErrorNotExists")}";
+                SourcePathError.Text =
+                    $"? {LanguageManager.Get("CreateWork.ErrorSourceNotExists")} {LanguageManager.Get("CreateWork.ErrorNotExists")}";
                 SourcePathError.Visibility = Visibility.Visible;
                 isValid = false;
             }
@@ -119,19 +124,22 @@ namespace EasySave.View.Dialog
             // Validate Destination Path
             if (string.IsNullOrWhiteSpace(DestinationPathTextBox.Text))
             {
-                DestinationPathError.Text = $"? {LanguageManager.Get("CreateWork.ErrorDestPath")} {LanguageManager.Get("CreateWork.ErrorRequired")}";
+                DestinationPathError.Text =
+                    $"? {LanguageManager.Get("CreateWork.ErrorDestPath")} {LanguageManager.Get("CreateWork.ErrorRequired")}";
                 DestinationPathError.Visibility = Visibility.Visible;
                 isValid = false;
             }
             else if (!Directory.Exists(DestinationPathTextBox.Text))
             {
-                DestinationPathError.Text = $"? {LanguageManager.Get("CreateWork.ErrorDestNotExists")} {LanguageManager.Get("CreateWork.ErrorNotExists")}";
+                DestinationPathError.Text =
+                    $"? {LanguageManager.Get("CreateWork.ErrorDestNotExists")} {LanguageManager.Get("CreateWork.ErrorNotExists")}";
                 DestinationPathError.Visibility = Visibility.Visible;
                 isValid = false;
             }
             else if (SourcePathTextBox.Text == DestinationPathTextBox.Text)
             {
-                DestinationPathError.Text = $"? {LanguageManager.Get("CreateWork.ErrorSameFolder")}";
+                DestinationPathError.Text =
+                    $"? {LanguageManager.Get("CreateWork.ErrorSameFolder")}";
                 DestinationPathError.Visibility = Visibility.Visible;
                 isValid = false;
             }
