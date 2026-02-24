@@ -1,4 +1,7 @@
-﻿using EasyLog;
+﻿using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.IO;
+using EasyLog;
 using EasyLog.entity;
 using EasyLog.utils;
 using EasySave.Model;
@@ -67,8 +70,9 @@ public class BackupService : IBackupService
     }
 
     /// <summary>
-    /// Exécute une liste de backups.
-    /// Retourne true si tous les backups ont réussi, false sinon.
+    /// Executes all backups in parallel.
+    /// Each backup runs on its own thread.
+    /// If business software is detected, ALL backups are cancelled via a shared token.
     /// </summary>
     public bool ExecuteBackup(List<Backup> backups)
     {
@@ -78,53 +82,70 @@ public class BackupService : IBackupService
         bool isSuccessful = true;
         // Liste des IDs des backups ayant échoué
         List<int> unvalidBackUps = new List<int>();
-        
+
+        // ConcurrentBag is a thread-safe collection
+        // Multiple threads can add to it simultaneously without corruption
+        // Replaces the original List<int> which is NOT thread-safe
+        ConcurrentBag<int> failedBackupIds = new ConcurrentBag<int>();
+
+        // One shared "stop button" for all backup tasks
+        // If any backup detects the business software, it cancels this source
+        // and ALL other running backups receive the cancellation signal
+        using CancellationTokenSource cts = new CancellationTokenSource();
+
         // Initialisation du logger global pour l'exécution des backups
         Logger executionLogger = new Logger();
         SelectLogType(executionLogger, "logs", "Execution of backups");
         
         executionLogger.Log(
-            DictionaryManager.SingleStringToDictionary(
-                "message",
-                "Starting execution of backups."
-            ),
+            DictionaryManager.SingleStringToDictionary("message", "Starting execution of backups."),
             LogType.Info
         );
 
-        // Parcours de chaque backup à exécuter
-        foreach (Backup backup in backups)
+        // Create one Task per backup — each runs on a thread pool thread
+        List<Task> tasks = backups.Select(backup => Task.Run(() =>
         {
             try
             {
-                // Exécution d'un backup individuel
-                ExecuteSingleBackup(backup);
+                // Pass the token down so ExecuteSingleBackup can check it
+                ExecuteSingleBackup(backup, cts.Token);
 
-                // Log de succès
                 executionLogger.Log(
                     DictionaryManager.SingleStringToDictionary(
                         "message",
-                        $"Backup (ID : {backup.Id}) completed successfully."
+                        $"Backup (ID: {backup.Id}) completed successfully, you can find it in your destination source."
                     ),
                     LogType.Info
                 );
             }
-            catch (Exception ex)
-            {
-                // Log d'erreur en cas d'échec
+            catch (OperationCanceledException)
+            {// This backup was cancelled because business software was detected
+                // either by itself or by another backup task
                 executionLogger.Log(
                     DictionaryManager.SingleStringToDictionary(
                         "message",
-                        $"Backup (ID : {backup.Id}) failed : {ex.Message}"
+                        $"Backup (ID: {backup.Id}) was cancelled — business software detected."
+                    ),
+                    LogType.Warning
+                );
+                failedBackupIds.Add(backup.Id);
+            }
+            catch (Exception ex)
+            {
+                executionLogger.Log(
+                    DictionaryManager.SingleStringToDictionary(
+                        "message",
+                        $"Backup (ID: {backup.Id}) failed: {ex.Message}"
                     ),
                     LogType.Error
                 );
-
-                // Ajout de l'ID du backup échoué
-                unvalidBackUps.Add(backup.Id);
-                // Marque l'exécution globale comme échouée
-                isSuccessful = false;
+                failedBackupIds.Add(backup.Id);
             }
-        }
+        }, cts.Token)).ToList();
+        // Block here until ALL backup tasks have finished (success or failure)
+        Task.WhenAll(tasks).Wait();
+        
+        isSuccessful = failedBackupIds.IsEmpty;
 
         // Si au moins un backup a échoué, on log la liste des backups concernés
         if (!isSuccessful)
@@ -132,7 +153,7 @@ public class BackupService : IBackupService
             executionLogger.Log(
                 DictionaryManager.SingleStringToDictionary(
                     "message",
-                    $"The following backup(s) failed to execute: {string.Join(", ", unvalidBackUps)}"
+                    $"The following backup(s) failed to execute: {string.Join(", ", failedBackupIds)}"
                 ),
                 LogType.Error
             );
@@ -140,16 +161,135 @@ public class BackupService : IBackupService
 
         // Fin de l'exécution globale
         executionLogger.Log(
-            DictionaryManager.SingleStringToDictionary(
-                "message",
-                "Finished execution of backups."
-            ),
+            DictionaryManager.SingleStringToDictionary("message", "Finished execution of backups."),
             LogType.Info
         );
 
         return isSuccessful;
     }
 
+    /// <summary>
+    /// Executes a single backup with cancellation support.
+    /// Checks the token before each file copy — if cancelled, stops immediately.
+    /// If business software is detected mid-backup, cancels the shared token
+    /// so all other running backups also stop.
+    /// </summary>
+    private void ExecuteSingleBackup(Backup backup, CancellationToken token)
+    {
+        Logger backupLogger = new Logger();
+        SelectLogType(backupLogger,
+            backup.DestinationFilePath,
+            $"Execution du backup {backup.Id}");
+
+        backupLogger.Log(
+            DictionaryManager.SingleStringToDictionary(
+                "message",
+                $"Starting backup execution (ID: {backup.Id}, Type: {backup.Type})"
+            ),
+            LogType.Info
+        );
+
+        // Check before even starting — no point starting if already cancelled
+        // or if business software is already running
+        token.ThrowIfCancellationRequested();
+
+        if (IsBusinessSoftwareRunning())
+        {
+            backupLogger.Log(
+                DictionaryManager.SingleStringToDictionary(
+                    "message",
+                    $"Backup blocked before start — business software detected ({_businessProcessName})"
+                ),
+                LogType.Warning
+            );
+            throw new InvalidOperationException(
+                $"Backup cannot start — business software detected ({_businessProcessName})"
+            );
+        }
+
+        if (!Directory.Exists(backup.SourceFilePath))
+        {
+            backupLogger.Log(
+                DictionaryManager.SingleStringToDictionary(
+                    "message",
+                    $"Source directory not found: {backup.SourceFilePath}"
+                ),
+                LogType.Error
+            );
+            throw new DirectoryNotFoundException($"Source not found: {backup.SourceFilePath}");
+        }
+
+        Directory.CreateDirectory(backup.DestinationFilePath);
+
+        DirectoryInfo sourceDirectory = new DirectoryInfo(backup.SourceFilePath);
+        FileInfo[] files = sourceDirectory.GetFiles("*", SearchOption.AllDirectories);
+
+        foreach (FileInfo sourceFile in files)
+        {
+            // Check the token BEFORE each file
+            // If another backup already cancelled the token, we stop here
+            // This is the key integration point between parallel tasks
+            token.ThrowIfCancellationRequested();
+
+            string relativePath = Path.GetRelativePath(backup.SourceFilePath, sourceFile.FullName);
+            string destinationFilePath = Path.Combine(backup.DestinationFilePath, relativePath);
+            Directory.CreateDirectory(Path.GetDirectoryName(destinationFilePath)!);
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            try
+            {
+                sourceFile.CopyTo(destinationFilePath, true);
+                stopwatch.Stop();
+
+                Dictionary<string, string> logs = new Dictionary<string, string>
+                {
+                    { "sourcePath", sourceFile.FullName },
+                    { "destinationPath", destinationFilePath },
+                    { "fileSize", sourceFile.Length.ToString() },
+                    { "transferTimeMs", stopwatch.ElapsedMilliseconds.ToString() },
+                    { "backupName", backup.Name },
+                };
+
+                backupLogger.Log(logs);
+
+                // Check AFTER each file copy too
+                // If business software appeared during the copy, signal ALL tasks to stop
+                if (IsBusinessSoftwareRunning())
+                {
+                    backupLogger.Log(
+                        DictionaryManager.SingleStringToDictionary(
+                            "message",
+                            $"Business software detected after copying {sourceFile.Name} — cancelling all backups."
+                        ),
+                        LogType.Warning
+                    );
+
+                    // This signals ALL other backup tasks to stop at their next token check
+                    throw new OperationCanceledException(token);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Re-throw so the task catches it as a cancellation, not a generic error
+                throw;
+            }
+            catch
+            {
+                stopwatch.Stop();
+                Dictionary<string, string> logs = new Dictionary<string, string>
+                {
+                    { "sourcePath", sourceFile.FullName },
+                    { "fileSize", sourceFile.Length.ToString() },
+                    { "transferTimeMs", stopwatch.ElapsedMilliseconds.ToString() },
+                    { "backupName", backup.Name },
+                };
+                backupLogger.Log(logs, LogType.Error);
+            }
+        }
+    }
+
+    // --- Repository methods unchanged ---
     public void CreateBackup(BackupCreateRequest backupCreateRequest)
     {
         _backupRepository.CreateBackup(backupCreateRequest);
@@ -167,141 +307,12 @@ public class BackupService : IBackupService
 
     public List<Backup> GetBackups(int pageIndex, int pageSize)
     {
-        return _backupRepository.GetAllBackups(); 
+        return _backupRepository.GetAllBackups();
     }
 
     public void UpdateBackup(Backup backup)
     {
         _backupRepository.UpdateBackup(backup);
-    }
-
-    /// <summary>
-    /// Exécute un backup individuel :
-    /// copie récursivement tous les fichiers du dossier source vers le dossier destination.
-    /// </summary>
-    private void ExecuteSingleBackup(Backup backup)
-    {
-        // Initialisation du logger spécifique à ce backup
-        Logger backupLogger = new Logger();
-        SelectLogType(backupLogger,
-            backup.DestinationFilePath,
-            $"Execution du backup {backup.Id}");
-
-        backupLogger.Log(
-            DictionaryManager.SingleStringToDictionary(
-                "message",
-                $"Starting backup execution (ID: {backup.Id}, Type: {backup.Type})"
-            ),
-            LogType.Info
-        );
-
-        // Vérification du logiciel métier avant démarrage
-        if (IsBusinessSoftwareRunning())
-        {
-            backupLogger.Log(
-                DictionaryManager.SingleStringToDictionary(
-                    "message",
-                    $"Backup will be stopped : business software detected ({_businessProcessName})"
-                ),
-                LogType.Warning
-            );
-           throw new InvalidOperationException(
-                $"Backup cannot be executed : business software detected ({_businessProcessName})"
-            );
-        }
-
-        // Vérifie que le dossier source existe
-        if (!Directory.Exists(backup.SourceFilePath))
-        {
-            backupLogger.Log(
-                DictionaryManager.SingleStringToDictionary(
-                    "message",
-                    $"Source directory not found : {backup.SourceFilePath}"
-                ),
-                LogType.Error
-            );
-            // Stoppe l'exécution du backup
-            throw new DirectoryNotFoundException(
-                $"Source not found : {backup.SourceFilePath}"
-            );
-        }
-
-        // Crée le dossier de destination s'il n'existe pas
-        Directory.CreateDirectory(backup.DestinationFilePath);
-
-        // Récupère tous les fichiers du dossier source (récursivement)
-        DirectoryInfo sourceDirectory = new DirectoryInfo(backup.SourceFilePath);
-        FileInfo[] files = sourceDirectory.GetFiles("*", SearchOption.AllDirectories);
-
-        // Parcours de chaque fichier à sauvegarder
-        foreach (FileInfo sourceFile in files)
-        {
-            // Calcul du chemin relatif du fichier
-            string relativePath = Path.GetRelativePath(
-                backup.SourceFilePath,
-                sourceFile.FullName
-            );
-
-            // Construction du chemin de destination
-            string destinationFilePath = Path.Combine(
-                backup.DestinationFilePath,
-                relativePath
-            );
-
-            // Création du dossier parent du fichier de destination
-            Directory.CreateDirectory(
-                Path.GetDirectoryName(destinationFilePath)!
-            );
-
-            // Démarrage du chronomètre pour mesurer le temps de transfert
-            Stopwatch stopwatch = Stopwatch.StartNew();
-
-            try
-            {
-                // Copie du fichier (écrase s'il existe déjà)
-                sourceFile.CopyTo(destinationFilePath, true);
-                stopwatch.Stop();
-
-                // Log du succès du transfert
-                Dictionary<string, string> logs = new Dictionary<string, string>
-                {
-                    { "sourcePath", sourceFile.FullName },
-                    { "destinationPath", destinationFilePath },
-                    { "fileSize", sourceFile.Length.ToString() },
-                    { "transferTimeMs", stopwatch.ElapsedMilliseconds.ToString() },
-                    { "backupName", backup.Name }
-                };
-
-                backupLogger.Log(logs);
-
-                // Vérification du logiciel métier après chaque fichier copié
-                if (IsBusinessSoftwareRunning())
-                {
-                    backupLogger.Log(
-                        DictionaryManager.SingleStringToDictionary(
-                            "message",
-                            $"Backup stopped after finishing file {sourceFile.FullName} : business software detected ({_businessProcessName})"
-                        ),
-                        LogType.Error
-                    );
-                    return;
-                }
-            }
-            catch
-            {
-                stopwatch.Stop();
-                // Log d'erreur si la copie échoue
-                Dictionary<string, string> logs = new Dictionary<string, string>
-                {
-                    { "sourcePath", sourceFile.FullName },
-                    { "fileSize", sourceFile.Length.ToString() },
-                    { "transferTimeMs", stopwatch.ElapsedMilliseconds.ToString() },
-                    { "backupName", backup.Name }
-                };
-
-                backupLogger.Log(logs, LogType.Error);
-            }
-        }
     }
     
     public bool ExecuteFromFlag(string flag)

@@ -21,7 +21,7 @@
         /// Sauvegarde séquentielle (différentielle) :
         /// seuls les fichiers nouveaux ou modifiés depuis la dernière sauvegarde sont copiés.
         /// </summary>
-        Sequential
+        Sequential,
     }
 
     /// <summary>
@@ -40,7 +40,7 @@
                 "1" => BackupType.Full,
                 "sequential" => BackupType.Sequential,
                 "2" => BackupType.Sequential,
-                _ => BackupType.Unknown
+                _ => BackupType.Unknown,
             };
         }
     }
