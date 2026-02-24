@@ -246,7 +246,7 @@ namespace EasySave.View
             statsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(12) });
             statsGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-            AddStatCard(statsGrid, 0, _vm.Backups.Count().ToString(), LanguageManager.Get("Home.AmountOfBackup"), "#34D399");
+            AddStatCard(statsGrid, 0, _vm.TotalCount.ToString(), LanguageManager.Get("Home.AmountOfBackup"), "#34D399");
             //AddStatCard(statsGrid, 2, "128", LanguageManager.Get("Home.Completed"), "#60A5FA");
 
             content.Children.Add(statsGrid);
