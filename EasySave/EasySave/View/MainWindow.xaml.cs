@@ -16,6 +16,9 @@ namespace EasySave.View
         private bool _isInitializing = true;
         private string _currentSection = "home";
         private MainViewModel _vm;
+        
+        // ✅ AJOUTER CETTE LIGNE
+        private System.Collections.Specialized.NotifyCollectionChangedEventHandler? _backupsChangedHandler;
 
         public MainWindow()
         {
@@ -420,7 +423,14 @@ namespace EasySave.View
         {
             UpdateNavStyles("saves");
 
+            // ✅ DÉSABONNER l'ancien handler s'il existe (UNE SEULE FOIS!)
+            if (_backupsChangedHandler != null)
+            {
+                _vm.Backups.CollectionChanged -= _backupsChangedHandler;
+            }
+
             var content = new StackPanel();
+            content.DataContext = _vm;
 
             var title = new TextBlock
             {
@@ -456,12 +466,7 @@ namespace EasySave.View
                 Style = (Style)FindResource("PrimaryButton"),
                 Margin = new Thickness(0, 0, 10, 0),
             };
-
-            btnCreateWork.SetBinding(
-                Button.CommandProperty,
-                new Binding("OpenCreateBackupDialogCommand")
-            );
-
+            btnCreateWork.SetBinding(Button.CommandProperty, new Binding("OpenCreateBackupDialogCommand"));
             btnPanel.Children.Add(btnCreateWork);
 
             var btnExecuteWorks = new Button
@@ -469,14 +474,10 @@ namespace EasySave.View
                 Content = LanguageManager.Get("Saves.ExecuteWorks"),
                 Margin = new Thickness(0, 0, 10, 0),
             };
-
-            btnExecuteWorks.SetBinding(
-                Button.CommandProperty,
-                new Binding("ExecuteBackupsCommand")
-            );
-
+            btnExecuteWorks.SetBinding(Button.CommandProperty, new Binding("ExecuteBackupsCommand"));
             btnPanel.Children.Add(btnExecuteWorks);
             content.Children.Add(btnPanel);
+
             var statusText = new TextBlock
             {
                 FontSize = 12,
@@ -486,7 +487,7 @@ namespace EasySave.View
             statusText.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
             statusText.SetBinding(TextBlock.TextProperty, new Binding("ExecutionStatus"));
             content.Children.Add(statusText);
-            // Works list header
+
             var listTitle = new TextBlock
             {
                 Text = LanguageManager.Get("Saves.WorksList"),
@@ -498,13 +499,14 @@ namespace EasySave.View
             listTitle.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             content.Children.Add(listTitle);
 
-            var tmpBackups = _vm.Backups;
-            foreach (var tmpBackup in tmpBackups)
+            // Afficher les backups existants
+            foreach (var tmpBackup in _vm.Backups)
             {
                 AddWorkItemFromBackup(content, tmpBackup);
             }
 
-            _vm.Backups.CollectionChanged += (s, e) =>
+            // ✅ CRÉER et STOCKER le handler (pas une lambda anonyme!)
+            _backupsChangedHandler = (s, e) =>
             {
                 if (e.NewItems != null)
                 {
@@ -515,8 +517,10 @@ namespace EasySave.View
                 }
             };
 
+            // ✅ S'ABONNER avec le handler stocké
+            _vm.Backups.CollectionChanged += _backupsChangedHandler;
+
             SetContent(content);
-            // AddConsoleLog("Navigation vers Sauvegardes.", "info");
         }
 
         private void AddWorkItemFromBackup(StackPanel content, Backup backup)

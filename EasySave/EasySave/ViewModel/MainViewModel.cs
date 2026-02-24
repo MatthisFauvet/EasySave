@@ -21,7 +21,7 @@ public class MainViewModel : INotifyPropertyChanged
     private int _pageSize = 50;
 
     // ==========================
-    // Commands
+    // Commands     
     // ==========================
 
     public RelayCommand ExecuteBackupsCommand { get; }
@@ -104,6 +104,11 @@ public class MainViewModel : INotifyPropertyChanged
             execute: CreateBackup,
             canExecute: () => !IsExecuting
         );
+
+        // ✅ AJOUTER : Commande pour ouvrir le dialogue de création
+        OpenCreateBackupDialogCommand = new RelayCommand(
+            execute: () => OpenCreateBackupDialogRequested?.Invoke()
+        );
     }
 
     // ==========================
@@ -165,8 +170,8 @@ public class MainViewModel : INotifyPropertyChanged
                         ? "All backups completed successfully."
                         : "Some backups failed. Check logs for details.";
 
-                    // Reload the list to reflect any LastBackupDate updates
-                    LoadBackups();
+                    // ❌ SUPPRIMER CETTE LIGNE - Elle cause les doublons!
+                    // LoadBackups();
                 });
             }
             catch (Exception ex)
