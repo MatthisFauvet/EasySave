@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Specialized;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -13,22 +14,21 @@ namespace EasySave.View
     public partial class MainWindow : Window
     {
         private AppSettings _settings;
+
         private bool _isInitializing = true;
+
         private string _currentSection = "home";
+
         private MainViewModel _vm;
-        
-        // ✅ AJOUTER CETTE LIGNE
-        private System.Collections.Specialized.NotifyCollectionChangedEventHandler? _backupsChangedHandler;
+
+        private NotifyCollectionChangedEventHandler? _backupsChangedHandler;
 
         public MainWindow()
         {
             _vm = new MainViewModel();
             DataContext = _vm;
 
-            _vm.OpenCreateBackupDialogRequested += () =>
-            {
-                BtnCreateWork_Click();
-            };
+            _vm.OpenCreateBackupDialogRequested += () => { BtnCreateWork_Click(); };
 
             InitializeComponent();
 
@@ -423,7 +423,6 @@ namespace EasySave.View
         {
             UpdateNavStyles("saves");
 
-            // ✅ DÉSABONNER l'ancien handler s'il existe (UNE SEULE FOIS!)
             if (_backupsChangedHandler != null)
             {
                 _vm.Backups.CollectionChanged -= _backupsChangedHandler;
@@ -499,13 +498,11 @@ namespace EasySave.View
             listTitle.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             content.Children.Add(listTitle);
 
-            // Afficher les backups existants
             foreach (var tmpBackup in _vm.Backups)
             {
                 AddWorkItemFromBackup(content, tmpBackup);
             }
 
-            // ✅ CRÉER et STOCKER le handler (pas une lambda anonyme!)
             _backupsChangedHandler = (s, e) =>
             {
                 if (e.NewItems != null)
@@ -517,7 +514,6 @@ namespace EasySave.View
                 }
             };
 
-            // ✅ S'ABONNER avec le handler stocké
             _vm.Backups.CollectionChanged += _backupsChangedHandler;
 
             SetContent(content);
@@ -525,16 +521,10 @@ namespace EasySave.View
 
         private void AddWorkItemFromBackup(StackPanel content, Backup backup)
         {
-            AddWorkItem(content, $"{backup.Name}", $"{backup.Type}", "warning", 100);
+            AddWorkItem(content, backup);
         }
 
-        private void AddWorkItem(
-            StackPanel parent,
-            string name,
-            string status,
-            string type,
-            int progress
-        )
+        private void AddWorkItem(StackPanel parent, Backup backup)
         {
             var card = new Border
             {
@@ -548,73 +538,91 @@ namespace EasySave.View
 
             var stack = new StackPanel();
 
-            // Top row: name + status
             var topRow = new Grid();
-            topRow.ColumnDefinitions.Add(
-                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
-            );
+            topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
             var nameBlock = new TextBlock
             {
-                Text = name,
-                FontSize = 13,
+                Text = backup.Name,
+                FontSize = 16,
                 FontWeight = FontWeights.SemiBold,
-                FontFamily = (FontFamily)FindResource("AppFont"),
+                VerticalAlignment = VerticalAlignment.Center
             };
             nameBlock.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             Grid.SetColumn(nameBlock, 0);
             topRow.Children.Add(nameBlock);
 
-            Color statusColor;
-            switch (type)
+            Color statusColor = backup.Type.ToString() switch
             {
-                case "success":
-                    statusColor = (Color)ColorConverter.ConvertFromString("#34D399");
-                    break;
-                case "warning":
-                    statusColor = (Color)ColorConverter.ConvertFromString("#FBBF24");
-                    break;
-                default:
-                    statusColor = (Color)ColorConverter.ConvertFromString("#60A5FA");
-                    break;
-            }
+                "Full" => (Color)ColorConverter.ConvertFromString("#90D5FF"),
+                "Sequential" => (Color)ColorConverter.ConvertFromString("#88E788"),
+                _ => (Color)ColorConverter.ConvertFromString("#60A5FA")
+            };
 
-            // Status badge
             var badge = new Border
             {
                 CornerRadius = new CornerRadius(10),
                 Padding = new Thickness(8, 3, 8, 3),
-                Background = new SolidColorBrush(
-                    Color.FromArgb(30, statusColor.R, statusColor.G, statusColor.B)
-                ),
+                Background = new SolidColorBrush(statusColor),
+                Margin = new Thickness(8, 0, 0, 0),
+                VerticalAlignment = VerticalAlignment.Center
             };
+
             var statusText = new TextBlock
             {
-                Text = status,
-                FontSize = 10,
-                Foreground = new SolidColorBrush(statusColor),
+                Text = backup.Type.ToString(),
+                FontSize = 14,
                 FontWeight = FontWeights.SemiBold,
-                FontFamily = (FontFamily)FindResource("AppFont"),
+                VerticalAlignment = VerticalAlignment.Center
             };
+
             badge.Child = statusText;
             Grid.SetColumn(badge, 1);
             topRow.Children.Add(badge);
-            stack.Children.Add(topRow);
 
-            // Progress bar
-            if (progress > 0 && progress < 100)
+            var deleteButton = new Button
             {
-                var progressBar = new ProgressBar
-                {
-                    Value = progress,
-                    Maximum = 100,
-                    Height = 3,
-                    Margin = new Thickness(0, 8, 0, 0),
-                };
-                stack.Children.Add(progressBar);
-            }
+                Width = 30,
+                Height = 30,
+                Margin = new Thickness(8, 0, 0, 0),
+                VerticalAlignment = VerticalAlignment.Center,
+                Cursor = Cursors.Hand,
+                Background = Brushes.Transparent,
+                BorderBrush = Brushes.Transparent,
+                BorderThickness = new Thickness(0),
+                Padding = new Thickness(0)
+            };
 
+            // Template minimal pour s'assurer que le contenu s'affiche
+            var contentPresenterFactory = new FrameworkElementFactory(typeof(ContentPresenter));
+            contentPresenterFactory.SetValue(HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            contentPresenterFactory.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center);
+
+            deleteButton.Template = new ControlTemplate(typeof(Button))
+            {
+                VisualTree = contentPresenterFactory
+            };
+
+            deleteButton.Content = new TextBlock
+            {
+                Text = "🗑",
+                FontSize = 16,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+
+            deleteButton.Click += (s, e) =>
+            {
+                _vm.RemoveBackup(backup);
+                parent.Children.Remove(card);
+            };
+
+            Grid.SetColumn(deleteButton, 2);
+            topRow.Children.Add(deleteButton);
+
+            stack.Children.Add(topRow);
             card.Child = stack;
             parent.Children.Add(card);
         }
