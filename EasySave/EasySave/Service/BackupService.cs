@@ -6,13 +6,18 @@ using EasySave.Repository;
 using EasySave.Service;
 using System.Diagnostics;
 using System.IO;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using EasyLog.writers;
 
 // Service responsable de l'exécution des sauvegardes
 public class BackupService : IBackupService
 {
     // Logger utilisé pour écrire les logs
     private readonly Logger _logger;
-
+    
+    private Settings _settings;
+    
     private IBackupRepository _backupRepository;
 
     // Nom du processus du logiciel métier (ex: "Calculatrice" pour démonstration)
@@ -23,12 +28,14 @@ public class BackupService : IBackupService
     {
         _logger = logger;
         InitializeBackupRepository();
+        LoadSettings();
     }
 
     public BackupService()
     {
         _logger = new Logger();
         InitializeBackupRepository();
+        LoadSettings();
     }
 
     private void InitializeBackupRepository()
@@ -65,14 +72,17 @@ public class BackupService : IBackupService
     /// </summary>
     public bool ExecuteBackup(List<Backup> backups)
     {
+        LoadSettings();
+        
         // Indique si l'exécution globale est un succès
         bool isSuccessful = true;
         // Liste des IDs des backups ayant échoué
         List<int> unvalidBackUps = new List<int>();
-
+        
         // Initialisation du logger global pour l'exécution des backups
         Logger executionLogger = new Logger();
-        executionLogger.InitWriters("logs", "Execution of backups");
+        SelectLogType(executionLogger, "logs", "Execution of backups");
+        
         executionLogger.Log(
             DictionaryManager.SingleStringToDictionary(
                 "message",
@@ -173,10 +183,9 @@ public class BackupService : IBackupService
     {
         // Initialisation du logger spécifique à ce backup
         Logger backupLogger = new Logger();
-        backupLogger.InitWriters(
+        SelectLogType(backupLogger,
             backup.DestinationFilePath,
-            $"Execution du backup {backup.Id}"
-        );
+            $"Execution du backup {backup.Id}");
 
         backupLogger.Log(
             DictionaryManager.SingleStringToDictionary(
@@ -292,6 +301,122 @@ public class BackupService : IBackupService
 
                 backupLogger.Log(logs, LogType.Error);
             }
+        }
+    }
+    
+    public bool ExecuteFromFlag(string flag)
+    {
+        if (string.IsNullOrWhiteSpace(flag))
+            throw new ArgumentException("Flag cannot be empty.");
+
+        flag = flag.Trim().ToLower();
+
+        List<Backup> backupsToExecute = new List<Backup>();
+        List<Backup> allBackups = _backupRepository.GetAllBackups();
+
+        // ALL
+        if (flag == "all")
+        {
+            backupsToExecute = allBackups;
+        }
+
+        // SINGLE NUMBER (ex: "1")
+        else if (Regex.IsMatch(flag, @"^\d+$"))
+        {
+            int id = int.Parse(flag);
+            Backup? backup = _backupRepository.GetBackupById(id);
+
+            if (backup == null)
+                throw new ArgumentException($"Backup with id {id} not found.");
+
+            backupsToExecute.Add(backup);
+        }
+
+        // RANGE (ex: "1-3")
+        else if (Regex.IsMatch(flag, @"^\d+\s*-\s*\d+$"))
+        {
+            string[] parts = flag.Split('-');
+            int start = int.Parse(parts[0].Trim());
+            int end = int.Parse(parts[1].Trim());
+
+            if (start > end)
+                throw new ArgumentException("Invalid range: start must be <= end.");
+
+            backupsToExecute = allBackups
+                .Where(b => b.Id >= start && b.Id <= end)
+                .ToList();
+        }
+
+        // MULTIPLE IDS (ex: "1;3;4")
+        else if (Regex.IsMatch(flag, @"^(\d+\s*;\s*)+\d+$"))
+        {
+            string[] parts = flag.Split(';');
+
+            foreach (string part in parts)
+            {
+                int id = int.Parse(part.Trim());
+                Backup? backup = _backupRepository.GetBackupById(id);
+
+                if (backup == null)
+                    throw new ArgumentException($"Backup with id {id} not found.");
+
+                backupsToExecute.Add(backup);
+            }
+        }
+
+        else
+        {
+            throw new ArgumentException("Invalid flag format.");
+        }
+
+        if (!backupsToExecute.Any())
+            throw new ArgumentException("No backups match the given flag.");
+
+        return ExecuteBackup(backupsToExecute);
+    }
+    
+    private void LoadSettings()
+    {
+        try
+        {
+            string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string settingsPath = Path.Combine(appDataPath, "EasySave", "settings.json");
+
+            if (File.Exists(settingsPath))
+            {
+                string json = File.ReadAllText(settingsPath);
+
+                _settings = JsonSerializer.Deserialize<Settings>(json)
+                            ?? new Settings();
+            }
+            else
+            {
+                _logger.Log(DictionaryManager.SingleStringToDictionary(
+                    "File error", "Fichier settings.json introuvable."),
+                    LogType.Error
+                );
+                _settings = new Settings();
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(DictionaryManager.SingleStringToDictionary(
+                "Error message",
+                $"Erreur lors du chargement des settings : {ex.Message}"),
+                LogType.Error);
+            _settings = new Settings();
+        }
+    }
+
+    private void SelectLogType(Logger logger, string path, string context)
+    {
+        if (_settings.LogFileType == "JSON")
+        {
+            logger.AddWriter(new JsonFileWriter(path, context));
+        }
+        else
+        {
+            logger.AddWriter(new XmlFileWriter(path, context));
         }
     }
 }

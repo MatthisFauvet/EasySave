@@ -5,18 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="312a440a-7f95-4f25-9659-337b41e1dee6" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/EasySave/Assets/UML - Diagramme de séquence - Execution de backups.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/Model/PagedResult.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/Repository/IBackupIdFactory.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/EasySave/Repository/IncrementalBackupIdFactory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasySave/App.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/App.xaml.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasySave/Repository/IBackupRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/Repository/IBackupRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasySave/Repository/JsonBackupRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/Repository/JsonBackupRepository.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/EasySave/Model/Settings.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.AssemblyInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.AssemblyInfoInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EasySave/Service/BackupService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/Service/BackupService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfo.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfoInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasySave/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/rider.project.model.nuget.info" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EasySave/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/rider.project.restore.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave_MarkupCompile.i.cache" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,6 +51,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/409b97df534040328e0626509141b869378910/c4/3f04344b/IQueryable`1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EasySave/Model/Backup.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EasySave/Model/BackupType.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/EasySave/Model/Settings.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EasySave/Repository/IBackupRepository.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EasySave/Repository/JsonBackupRepository.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/EasySave/Service/IBackupService.cs" root0="FORCE_HIGHLIGHTING" />
@@ -87,7 +85,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "com.github.patou.gitmoji.migration-offered": "true",
-    "git-widget-placeholder": "Merging feature/merged-new-ui-and-solution",
+    "git-widget-placeholder": "feature/json-xml-preferences",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "configurable.group.appearance",
     "vue.rearranger.settings.migration": "true"
@@ -135,6 +133,11 @@
       <workItem from="1770967919167" duration="417000" />
       <workItem from="1770968481305" duration="512000" />
       <workItem from="1771017040532" duration="595000" />
+      <workItem from="1771022623144" duration="350000" />
+      <workItem from="1771247866081" duration="1229000" />
+      <workItem from="1771494327155" duration="142000" />
+      <workItem from="1771834212722" duration="8357000" />
+      <workItem from="1771919102811" duration="5797000" />
     </task>
     <task id="LOCAL-00001" summary=":see_no_evil: Added .gitignore">
       <option name="closed" value="true" />
@@ -293,6 +296,32 @@
           <properties exception="System.Threading.ThreadAbortException" breakIfHandledByOtherCode="false" displayValue="System.Threading.ThreadAbortException" />
           <option name="timeStamp" value="3" />
         </breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/EasySave/Service/BackupService.cs</url>
+          <line>384</line>
+          <properties documentPath="C:\Users\matth\Documents\repo-cesi\EasySave\EasySave\EasySave\Service\BackupService.cs" containingFunctionPresentation="Method 'LoadSettings'">
+            <startOffsets>
+              <option value="12382" />
+            </startOffsets>
+            <endOffsets>
+              <option value="12412" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/EasySave/Service/BackupService.cs</url>
+          <line>388</line>
+          <properties documentPath="C:\Users\matth\Documents\repo-cesi\EasySave\EasySave\EasySave\Service\BackupService.cs" containingFunctionPresentation="Method 'LoadSettings'">
+            <startOffsets>
+              <option value="12506" />
+            </startOffsets>
+            <endOffsets>
+              <option value="12607" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="8" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
