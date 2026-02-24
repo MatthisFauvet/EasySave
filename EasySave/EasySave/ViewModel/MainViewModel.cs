@@ -11,7 +11,6 @@ public class MainViewModel : INotifyPropertyChanged
 {
     private readonly IBackupService _backupService;
 
-    // 1-based paging (IMPORTANT)
     private int _pageIndex = 1;
     private int _pageSize = 5;
 
