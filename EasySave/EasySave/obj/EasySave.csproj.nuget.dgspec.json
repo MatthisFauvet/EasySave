@@ -1,32 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\kaout\\Desktop\\ko\\EasySave\\EasySave\\EasySave\\EasySave.csproj": {}
+    "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasySave\\EasySave\\EasySave.csproj": {}
   },
   "projects": {
-    "C:\\Users\\kaout\\Desktop\\ko\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj": {
+    "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\kaout\\Desktop\\ko\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj",
+        "projectUniqueName": "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj",
         "projectName": "EasyLog",
-        "projectPath": "C:\\Users\\kaout\\Desktop\\ko\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj",
-        "packagesPath": "C:\\Users\\kaout\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\kaout\\Desktop\\ko\\EasySave\\EasyLog\\EasyLog\\obj\\",
+        "projectPath": "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj",
+        "packagesPath": "C:\\Users\\matth\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasyLog\\EasyLog\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\kaout\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\matth\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -66,7 +59,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Users\\matth\\.dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",
@@ -344,37 +337,30 @@
         }
       }
     },
-    "C:\\Users\\kaout\\Desktop\\ko\\EasySave\\EasySave\\EasySave\\EasySave.csproj": {
+    "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasySave\\EasySave\\EasySave.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\kaout\\Desktop\\ko\\EasySave\\EasySave\\EasySave\\EasySave.csproj",
+        "projectUniqueName": "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasySave\\EasySave\\EasySave.csproj",
         "projectName": "EasySave",
-        "projectPath": "C:\\Users\\kaout\\Desktop\\ko\\EasySave\\EasySave\\EasySave\\EasySave.csproj",
-        "packagesPath": "C:\\Users\\kaout\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\kaout\\Desktop\\ko\\EasySave\\EasySave\\EasySave\\obj\\",
+        "projectPath": "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasySave\\EasySave\\EasySave.csproj",
+        "packagesPath": "C:\\Users\\matth\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasySave\\EasySave\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\kaout\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\matth\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0-windows"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net10.0-windows7.0": {
             "targetAlias": "net10.0-windows",
             "projectReferences": {
-              "C:\\Users\\kaout\\Desktop\\ko\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj": {
-                "projectPath": "C:\\Users\\kaout\\Desktop\\ko\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj"
+              "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj": {
+                "projectPath": "C:\\Users\\matth\\Documents\\repo-cesi\\EasySave\\EasyLog\\EasyLog\\EasyLog.csproj"
               }
             }
           }
@@ -413,7 +399,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Users\\matth\\.dotnet\\sdk\\10.0.102/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",

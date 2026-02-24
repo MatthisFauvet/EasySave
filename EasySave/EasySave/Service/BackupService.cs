@@ -144,7 +144,8 @@ public class BackupService : IBackupService
         }, cts.Token)).ToList();
         // Block here until ALL backup tasks have finished (success or failure)
         Task.WhenAll(tasks).Wait();
-        bool isSuccessful = failedBackupIds.IsEmpty;
+        
+        isSuccessful = failedBackupIds.IsEmpty;
 
         // Si au moins un backup a échoué, on log la liste des backups concernés
         if (!isSuccessful)
