@@ -491,13 +491,13 @@ namespace EasySave.View
 
             var btnPrev = new Button
             {
-                Content = "◀",                 // ASCII => toujours supporté
-                Width = 40,                    // un peu plus large que 36
-                Height = 32,                   // important si ton template est compact
+                Content = "◀",                
+                Width = 40,                  
+                Height = 32,                  
                 Margin = new Thickness(0, 0, 8, 0),
                 Foreground = Brushes.White,
-                Padding = new Thickness(0),    // évite que le contenu soit “poussé” hors zone
-                FontSize = 16,                 // rend le signe lisible
+                Padding = new Thickness(0),    
+                FontSize = 16,                 
                 HorizontalContentAlignment = HorizontalAlignment.Center,
                 VerticalContentAlignment = VerticalAlignment.Center,
                 ClipToBounds = false
@@ -538,13 +538,13 @@ namespace EasySave.View
 
             var btnNext = new Button
             {
-                Content = "▶",                 // ASCII => toujours supporté
-                Width = 40,                    // un peu plus large que 36
-                Height = 32,                   // important si ton template est compact
+                Content = "▶",                 
+                Width = 40,                    
+                Height = 32,                   
                 Margin = new Thickness(8, 0, 0, 0),
                 Foreground = Brushes.White,
-                Padding = new Thickness(0),    // évite que le contenu soit “poussé” hors zone
-                FontSize = 16,                 // rend le signe lisible
+                Padding = new Thickness(0),    
+                FontSize = 16,                 
                 HorizontalContentAlignment = HorizontalAlignment.Center,
                 VerticalContentAlignment = VerticalAlignment.Center,
                 ClipToBounds = false
