@@ -9,29 +9,103 @@ using EasySave.ViewModel.Command;
 
 namespace EasySave.ViewModel;
 
+/// <summary>
+/// Wraps a Backup with live progress data polled from StateService.
+/// Implements INotifyPropertyChanged so the UI updates automatically.
+/// </summary>
+public class BackupProgressItem : INotifyPropertyChanged
+{
+    private readonly StateService _stateService;
+
+    public Backup Backup { get; }
+
+    private int _progress;
+    public int Progress
+    {
+        get => _progress;
+        set { _progress = value; OnPropertyChanged(); }
+    }
+
+    private int _filesUploaded;
+    public int FilesUploaded
+    {
+        get => _filesUploaded;
+        set { _filesUploaded = value; OnPropertyChanged(); }
+    }
+
+    private int _totalFiles;
+    public int TotalFiles
+    {
+        get => _totalFiles;
+        set { _totalFiles = value; OnPropertyChanged(); }
+    }
+
+    private BackupStatus _status = BackupStatus.Idle;
+    public BackupStatus Status
+    {
+        get => _status;
+        set
+        {
+            _status = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(IsPaused));
+            OnPropertyChanged(nameof(IsRunning));
+        }
+    }
+
+    public bool IsPaused  => _status == BackupStatus.Paused;
+    public bool IsRunning => _status == BackupStatus.Running;
+
+    public BackupProgressItem(Backup backup, StateService stateService)
+    {
+        Backup = backup;
+        _stateService = stateService;
+    }
+
+    /// <summary>
+    /// Polls state.json for this backup and refreshes all bound properties.
+    /// Called by the DispatcherTimer on the UI thread — no marshalling needed.
+    /// </summary>
+    public void Refresh()
+    {
+        var state = _stateService.GetState(Backup.Name);
+        if (state == null) return;
+
+        Progress      = state.ProgressPercent;
+        FilesUploaded = state.FilesUploaded;
+        TotalFiles    = state.TotalFiles;
+        Status        = state.Status;
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
+    private void OnPropertyChanged([CallerMemberName] string? name = null)
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+}
+
 public class MainViewModel : INotifyPropertyChanged
 {
     private readonly IBackupService _backupService;
+    private readonly StateService   _stateService;
+
+    // Timer that polls state.json every 500ms and refreshes all BackupProgressItems
+    private readonly DispatcherTimer _progressTimer;
 
     // Capture the UI thread dispatcher at construction time
-    // The ViewModel is always created on the UI thread, so this is safe
     private readonly Dispatcher _dispatcher = Application.Current.Dispatcher;
-    
+
     private int _pageIndex = 1;
-    private int _pageSize = 5;
+    private int _pageSize  = 5;
     private int _totalCount;
-    
+
     // ==========================
     // Commands
     // ==========================
-    
-    public RelayCommand ExecuteBackupsCommand { get; }
-    public RelayCommand CreateBackupCommand { get; }
-    public RelayCommand OpenCreateBackupDialogCommand { get; }
 
-    // NEW: Pagination commands
-    public RelayCommand NextPageCommand { get; }
-    public RelayCommand PreviousPageCommand { get; }
+    public RelayCommand ExecuteBackupsCommand          { get; }
+    public RelayCommand CreateBackupCommand            { get; }
+    public RelayCommand OpenCreateBackupDialogCommand  { get; }
+    public RelayCommand NextPageCommand                { get; }
+    public RelayCommand PreviousPageCommand            { get; }
 
     public event Action? OpenCreateBackupDialogRequested;
 
@@ -55,13 +129,10 @@ public class MainViewModel : INotifyPropertyChanged
             if (_searchQuery == value) return;
             _searchQuery = value;
             OnPropertyChanged();
-
-            // Recherche live : revenir à la page 1 quand la saisie change
             LoadPage(1);
         }
     }
-    // Tracks whether backups are currently running
-    // Used to disable the Execute button while running
+
     private bool _isExecuting;
     public bool IsExecuting
     {
@@ -70,30 +141,34 @@ public class MainViewModel : INotifyPropertyChanged
         {
             _isExecuting = value;
             OnPropertyChanged();
-            // Tell the command to re-evaluate CanExecute
-            // so the button enables/disables automatically
             ExecuteBackupsCommand.RaiseCanExecuteChanged();
+
+            // Start / stop polling with execution state
+            if (_isExecuting)
+                _progressTimer.Start();
+            else
+                _progressTimer.Stop();
         }
     }
-    // Feedback message shown in the UI during/after execution
+
     private string _executionStatus = "";
     public string ExecutionStatus
     {
         get => _executionStatus;
-        private set
-        {
-            _executionStatus = value;
-            OnPropertyChanged();
-        }
+        private set { _executionStatus = value; OnPropertyChanged(); }
     }
 
+    /// <summary>
+    /// Observable list of progress wrappers, one per backup on the current page.
+    /// The view binds directly to these items.
+    /// </summary>
+    public ObservableCollection<BackupProgressItem> BackupItems { get; } = new();
 
-    //  ObservableCollection pour le dynamisme
-    public ObservableCollection<Backup> Backups { get; }
+    // Keep a plain Backup list for service calls (ExecuteBackup, etc.)
+    public ObservableCollection<Backup> Backups { get; } = new();
 
     public List<BackupType> BackupTypes { get; }
 
-    // NEW: Paging state exposed for the View bindings (PageIndex / TotalPages)
     public int PageIndex
     {
         get => _pageIndex;
@@ -114,11 +189,8 @@ public class MainViewModel : INotifyPropertyChanged
         {
             if (_pageSize == value) return;
             if (value < 1) value = 1;
-
             _pageSize = value;
             OnPropertyChanged();
-
-            // Reset to first page when page size changes
             LoadPage(1);
         }
     }
@@ -136,10 +208,9 @@ public class MainViewModel : INotifyPropertyChanged
         }
     }
 
-    public int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
-
+    public int TotalPages    => (int)Math.Ceiling((double)TotalCount / PageSize);
     public bool CanGoPrevious => PageIndex > 1;
-    public bool CanGoNext => PageIndex < TotalPages;
+    public bool CanGoNext     => PageIndex < TotalPages;
 
     // ==========================
     // Constructor
@@ -148,101 +219,114 @@ public class MainViewModel : INotifyPropertyChanged
     public MainViewModel()
     {
         _backupService = new BackupService();
+        _stateService  = new StateService();
 
-        Backups = new ObservableCollection<Backup>();
         BackupCreateRequest = new BackupCreateRequest("", "", "", BackupType.Full);
         BackupTypes = Enum.GetValues(typeof(BackupType)).Cast<BackupType>().ToList();
-        
+
+        // Poll every 500ms — fast enough to feel live, cheap enough not to stutter
+        _progressTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+        _progressTimer.Tick += (_, _) =>
+        {
+            foreach (var item in BackupItems)
+                item.Refresh();
+        };
+
         PreviousPageCommand = new RelayCommand(
-            execute: () => LoadPage(PageIndex - 1),
+            execute:    () => LoadPage(PageIndex - 1),
             canExecute: () => CanGoPrevious);
 
         NextPageCommand = new RelayCommand(
-            execute: () => LoadPage(PageIndex + 1),
+            execute:    () => LoadPage(PageIndex + 1),
             canExecute: () => CanGoNext);
-        
+
         ExecuteBackupsCommand = new RelayCommand(
-            execute: ExecuteBackup,
-            canExecute: () => !IsExecuting
-        );
-        
+            execute:    ExecuteBackup,
+            canExecute: () => !IsExecuting);
+
         CreateBackupCommand = new RelayCommand(
-            execute: CreateBackup,
-            canExecute: () => !IsExecuting
-        );
+            execute:    CreateBackup,
+            canExecute: () => !IsExecuting);
 
         OpenCreateBackupDialogCommand = new RelayCommand(
-            execute: () => OpenCreateBackupDialogRequested?.Invoke()
-        );
-        
+            execute: () => OpenCreateBackupDialogRequested?.Invoke());
+
         LoadPage(1);
+    }
+
+    // ==========================
+    // Pause / Resume
+    // ==========================
+
+    public void PauseBackup(Backup backup)
+    {
+        _backupService.PauseBackup(backup);
+    }
+
+    public void ResumeBackup(Backup backup)
+    {
+        _backupService.ResumeBackup(backup);
     }
 
     // ==========================
     // Methods
     // ==========================
+
     private void LoadPage(int pageIndex)
     {
         if (pageIndex < 1) pageIndex = 1;
 
-        // IMPORTANT: needs a paged result (Items + TotalCount)
         var page = _backupService.SearchBackupsPage(SearchQuery, pageIndex, PageSize);
 
         Backups.Clear();
+        BackupItems.Clear();
+
         foreach (var b in page.Items)
+        {
             Backups.Add(b);
+            BackupItems.Add(new BackupProgressItem(b, _stateService));
+        }
 
         TotalCount = page.TotalCount;
-        PageIndex = page.PageIndex;
+        PageIndex  = page.PageIndex;
 
-        // Refresh buttons enabled state
         PreviousPageCommand.RaiseCanExecuteChanged();
         NextPageCommand.RaiseCanExecuteChanged();
     }
 
     public void RemoveBackup(Backup backup)
     {
-        if (backup == null)
-            return;
+        if (backup == null) return;
 
         _backupService.RemoveBackup(backup);
 
-        if (Backups.Contains(backup))
-            Backups.Remove(backup);
+        var item = BackupItems.FirstOrDefault(i => i.Backup == backup);
+        if (item != null) BackupItems.Remove(item);
+
+        if (Backups.Contains(backup)) Backups.Remove(backup);
     }
 
     private void CreateBackup()
     {
         _backupService.CreateBackup(BackupCreateRequest);
-
-        // After create, reload current page to stay consistent (ordering, counts, etc.)
         LoadPage(PageIndex);
-
         BackupCreateRequest = new BackupCreateRequest("", "", "", BackupType.Full);
     }
 
     private void ExecuteBackup()
     {
-        // Fire and forget on a background thread
-        // 'async void' is acceptable here because this is a UI event handler
-        // We don't want to block the UI thread while backups run
-        Task.Run(async () =>
+        Task.Run(() =>
         {
-            // Switch IsExecuting to true on the UI thread
-            // This disables the button immediately
             RunOnUiThread(() =>
             {
-                IsExecuting = true;
+                IsExecuting     = true;
                 ExecutionStatus = "Backups running...";
             });
 
             try
             {
-                // This now runs ALL backups in parallel on background threads
-                // The UI remains fully responsive during this call
                 bool success = _backupService.ExecuteBackup(Backups.ToList());
 
-                // All backups done — update UI from UI thread
                 RunOnUiThread(() =>
                 {
                     ExecutionStatus = success
@@ -252,14 +336,10 @@ public class MainViewModel : INotifyPropertyChanged
             }
             catch (Exception ex)
             {
-                RunOnUiThread(() =>
-                {
-                    ExecutionStatus = $"Execution failed: {ex.Message}";
-                });
+                RunOnUiThread(() => ExecutionStatus = $"Execution failed: {ex.Message}");
             }
             finally
             {
-                // Always re-enable the button, even if something threw
                 RunOnUiThread(() => IsExecuting = false);
             }
         });
@@ -267,18 +347,10 @@ public class MainViewModel : INotifyPropertyChanged
 
     private void RunOnUiThread(Action action)
     {
-        if (_dispatcher.CheckAccess())
-        {
-            // Already on UI thread — run directly
-            action();
-        }
-        else
-        {
-            // On background thread — marshal to UI thread
-            _dispatcher.Invoke(action);
-        }
+        if (_dispatcher.CheckAccess()) action();
+        else _dispatcher.Invoke(action);
     }
-    
+
     // ==========================
     // INotifyPropertyChanged
     // ==========================
