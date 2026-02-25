@@ -7,8 +7,6 @@ using EasyLog.utils;
 using EasySave.Model;
 using EasySave.Repository;
 using EasySave.Service;
-using System.Diagnostics;
-using System.IO;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using EasyLog.writers;
@@ -16,17 +14,12 @@ using EasyLog.writers;
 // Service responsable de l'exécution des sauvegardes
 public class BackupService : IBackupService
 {
-    // Logger utilisé pour écrire les logs
     private readonly Logger _logger;
-    
     private Settings _settings;
-    
     private IBackupRepository _backupRepository;
 
-    // Nom du processus du logiciel métier (ex: "Calculatrice" pour démonstration)
     private readonly string _businessProcessName = "CalculatorApp";
 
-    // Constructeur avec injection du logger
     public BackupService(Logger logger)
     {
         _logger = logger;
@@ -46,14 +39,10 @@ public class BackupService : IBackupService
         _backupRepository = new JsonBackupRepository();
     }
 
-    /// <summary>
-    /// Détecte si le logiciel métier est en cours d'exécution
-    /// </summary>
     private bool IsBusinessSoftwareRunning()
     {
         try
         {
-            // Vérifie si le processus du logiciel métier est en cours d'exécution
             return Process.GetProcessesByName(_businessProcessName).Any();
         }
         catch (Exception ex)
@@ -69,58 +58,39 @@ public class BackupService : IBackupService
         }
     }
 
-    /// <summary>
-    /// Executes all backups in parallel.
-    /// Each backup runs on its own thread.
-    /// If business software is detected, ALL backups are cancelled via a shared token.
-    /// </summary>
     public bool ExecuteBackup(List<Backup> backups)
     {
         LoadSettings();
-        
-        // Indique si l'exécution globale est un succès
-        bool isSuccessful = true;
-        // Liste des IDs des backups ayant échoué
-        List<int> unvalidBackUps = new List<int>();
 
-        // ConcurrentBag is a thread-safe collection
-        // Multiple threads can add to it simultaneously without corruption
-        // Replaces the original List<int> which is NOT thread-safe
+        bool isSuccessful = true;
         ConcurrentBag<int> failedBackupIds = new ConcurrentBag<int>();
 
-        // One shared "stop button" for all backup tasks
-        // If any backup detects the business software, it cancels this source
-        // and ALL other running backups receive the cancellation signal
         using CancellationTokenSource cts = new CancellationTokenSource();
 
-        // Initialisation du logger global pour l'exécution des backups
         Logger executionLogger = new Logger();
         SelectLogType(executionLogger, "logs", "Execution of backups");
-        
+
         executionLogger.Log(
             DictionaryManager.SingleStringToDictionary("message", "Starting execution of backups."),
             LogType.Info
         );
 
-        // Create one Task per backup — each runs on a thread pool thread
         List<Task> tasks = backups.Select(backup => Task.Run(() =>
         {
             try
             {
-                // Pass the token down so ExecuteSingleBackup can check it
                 ExecuteSingleBackup(backup, cts.Token);
 
                 executionLogger.Log(
                     DictionaryManager.SingleStringToDictionary(
                         "message",
-                        $"Backup (ID: {backup.Id}) completed successfully, you can find it in your destination source."
+                        $"Backup (ID: {backup.Id}) completed successfully."
                     ),
                     LogType.Info
                 );
             }
             catch (OperationCanceledException)
-            {// This backup was cancelled because business software was detected
-                // either by itself or by another backup task
+            {
                 executionLogger.Log(
                     DictionaryManager.SingleStringToDictionary(
                         "message",
@@ -142,24 +112,22 @@ public class BackupService : IBackupService
                 failedBackupIds.Add(backup.Id);
             }
         }, cts.Token)).ToList();
-        // Block here until ALL backup tasks have finished (success or failure)
+
         Task.WhenAll(tasks).Wait();
-        
+
         isSuccessful = failedBackupIds.IsEmpty;
 
-        // Si au moins un backup a échoué, on log la liste des backups concernés
         if (!isSuccessful)
         {
             executionLogger.Log(
                 DictionaryManager.SingleStringToDictionary(
                     "message",
-                    $"The following backup(s) failed to execute: {string.Join(", ", failedBackupIds)}"
+                    $"The following backup(s) failed: {string.Join(", ", failedBackupIds)}"
                 ),
                 LogType.Error
             );
         }
 
-        // Fin de l'exécution globale
         executionLogger.Log(
             DictionaryManager.SingleStringToDictionary("message", "Finished execution of backups."),
             LogType.Info
@@ -168,12 +136,6 @@ public class BackupService : IBackupService
         return isSuccessful;
     }
 
-    /// <summary>
-    /// Executes a single backup with cancellation support.
-    /// Checks the token before each file copy — if cancelled, stops immediately.
-    /// If business software is detected mid-backup, cancels the shared token
-    /// so all other running backups also stop.
-    /// </summary>
     private void ExecuteSingleBackup(Backup backup, CancellationToken token)
     {
         Logger backupLogger = new Logger();
@@ -189,8 +151,6 @@ public class BackupService : IBackupService
             LogType.Info
         );
 
-        // Check before even starting — no point starting if already cancelled
-        // or if business software is already running
         token.ThrowIfCancellationRequested();
 
         if (IsBusinessSoftwareRunning())
@@ -224,11 +184,25 @@ public class BackupService : IBackupService
         DirectoryInfo sourceDirectory = new DirectoryInfo(backup.SourceFilePath);
         FileInfo[] files = sourceDirectory.GetFiles("*", SearchOption.AllDirectories);
 
+        // ===========================
+        // PRIORITY EXTENSIONS LOGIC
+        // ===========================
+        if (_settings?.PriorityExtensions != null && _settings.PriorityExtensions.Any())
+        {
+            HashSet<string> priorityExtensions = new HashSet<string>(
+                _settings.PriorityExtensions
+                    .Where(ext => !string.IsNullOrWhiteSpace(ext))
+                    .Select(ext => ext.ToLowerInvariant())
+            );
+
+            files = files
+                .OrderByDescending(f => priorityExtensions.Contains(f.Extension.ToLowerInvariant()))
+                .ToArray();
+        }
+        // ===========================
+
         foreach (FileInfo sourceFile in files)
         {
-            // Check the token BEFORE each file
-            // If another backup already cancelled the token, we stop here
-            // This is the key integration point between parallel tasks
             token.ThrowIfCancellationRequested();
 
             string relativePath = Path.GetRelativePath(backup.SourceFilePath, sourceFile.FullName);
@@ -253,8 +227,6 @@ public class BackupService : IBackupService
 
                 backupLogger.Log(logs);
 
-                // Check AFTER each file copy too
-                // If business software appeared during the copy, signal ALL tasks to stop
                 if (IsBusinessSoftwareRunning())
                 {
                     backupLogger.Log(
@@ -265,13 +237,11 @@ public class BackupService : IBackupService
                         LogType.Warning
                     );
 
-                    // This signals ALL other backup tasks to stop at their next token check
                     throw new OperationCanceledException(token);
                 }
             }
             catch (OperationCanceledException)
             {
-                // Re-throw so the task catches it as a cancellation, not a generic error
                 throw;
             }
             catch
@@ -289,7 +259,6 @@ public class BackupService : IBackupService
         }
     }
 
-    // --- Repository methods unchanged ---
     public void CreateBackup(BackupCreateRequest backupCreateRequest)
     {
         _backupRepository.CreateBackup(backupCreateRequest);
@@ -309,18 +278,20 @@ public class BackupService : IBackupService
     {
         return _backupRepository.GetAllBackups();
     }
+
     public PagedResult<Backup> GetBackupsPage(int pageIndex, int pageSize)
     {
         return _backupRepository.GetBackupsPage(pageIndex, pageSize);
     }
+
     public PagedResult<Backup> SearchBackupsPage(string? query, int pageIndex, int pageSize)
-    => _backupRepository.SearchBackupsPage(query, pageIndex, pageSize);
+        => _backupRepository.SearchBackupsPage(query, pageIndex, pageSize);
 
     public void UpdateBackup(Backup backup)
     {
         _backupRepository.UpdateBackup(backup);
     }
-    
+
     public bool ExecuteFromFlag(string flag)
     {
         if (string.IsNullOrWhiteSpace(flag))
@@ -331,13 +302,10 @@ public class BackupService : IBackupService
         List<Backup> backupsToExecute = new List<Backup>();
         List<Backup> allBackups = _backupRepository.GetAllBackups();
 
-        // ALL
         if (flag == "all")
         {
             backupsToExecute = allBackups;
         }
-
-        // SINGLE NUMBER (ex: "1")
         else if (Regex.IsMatch(flag, @"^\d+$"))
         {
             int id = int.Parse(flag);
@@ -348,8 +316,6 @@ public class BackupService : IBackupService
 
             backupsToExecute.Add(backup);
         }
-
-        // RANGE (ex: "1-3")
         else if (Regex.IsMatch(flag, @"^\d+\s*-\s*\d+$"))
         {
             string[] parts = flag.Split('-');
@@ -357,14 +323,12 @@ public class BackupService : IBackupService
             int end = int.Parse(parts[1].Trim());
 
             if (start > end)
-                throw new ArgumentException("Invalid range: start must be <= end.");
+                throw new ArgumentException("Invalid range.");
 
             backupsToExecute = allBackups
                 .Where(b => b.Id >= start && b.Id <= end)
                 .ToList();
         }
-
-        // MULTIPLE IDS (ex: "1;3;4")
         else if (Regex.IsMatch(flag, @"^(\d+\s*;\s*)+\d+$"))
         {
             string[] parts = flag.Split(';');
@@ -380,7 +344,6 @@ public class BackupService : IBackupService
                 backupsToExecute.Add(backup);
             }
         }
-
         else
         {
             throw new ArgumentException("Invalid flag format.");
@@ -391,7 +354,7 @@ public class BackupService : IBackupService
 
         return ExecuteBackup(backupsToExecute);
     }
-    
+
     private void LoadSettings()
     {
         try
@@ -402,25 +365,15 @@ public class BackupService : IBackupService
             if (File.Exists(settingsPath))
             {
                 string json = File.ReadAllText(settingsPath);
-
-                _settings = JsonSerializer.Deserialize<Settings>(json)
-                            ?? new Settings();
+                _settings = JsonSerializer.Deserialize<Settings>(json) ?? new Settings();
             }
             else
             {
-                _logger.Log(DictionaryManager.SingleStringToDictionary(
-                    "File error", "Fichier settings.json introuvable."),
-                    LogType.Error
-                );
                 _settings = new Settings();
             }
         }
-        catch (Exception ex)
+        catch
         {
-            _logger.Log(DictionaryManager.SingleStringToDictionary(
-                "Error message",
-                $"Erreur lors du chargement des settings : {ex.Message}"),
-                LogType.Error);
             _settings = new Settings();
         }
     }
@@ -428,12 +381,8 @@ public class BackupService : IBackupService
     private void SelectLogType(Logger logger, string path, string context)
     {
         if (_settings.LogFileType == "JSON")
-        {
             logger.AddWriter(new JsonFileWriter(path, context));
-        }
         else
-        {
             logger.AddWriter(new XmlFileWriter(path, context));
-        }
     }
 }
