@@ -14,21 +14,21 @@ namespace EasySave.View
     public partial class MainWindow : Window
     {
         private AppSettings _settings;
-
         private bool _isInitializing = true;
-
         private string _currentSection = "home";
-
         private MainViewModel _vm;
-
-        private NotifyCollectionChangedEventHandler? _backupsChangedHandler;
+        
+        private System.Collections.Specialized.NotifyCollectionChangedEventHandler? _backupsChangedHandler;
 
         public MainWindow()
         {
             _vm = new MainViewModel();
             DataContext = _vm;
 
-            _vm.OpenCreateBackupDialogRequested += () => { BtnCreateWork_Click(); };
+            _vm.OpenCreateBackupDialogRequested += () =>
+            {
+                BtnCreateWork_Click();
+            };
 
             InitializeComponent();
 
@@ -281,13 +281,7 @@ namespace EasySave.View
                 new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
             );
 
-            AddStatCard(
-                statsGrid,
-                0,
-                _vm.Backups.Count().ToString(),
-                LanguageManager.Get("Home.AmountOfBackup"),
-                "#34D399"
-            );
+            AddStatCard(statsGrid, 0, _vm.TotalCount.ToString(), LanguageManager.Get("Home.AmountOfBackup"), "#34D399");
             //AddStatCard(statsGrid, 2, "128", LanguageManager.Get("Home.Completed"), "#60A5FA");
 
             content.Children.Add(statsGrid);
@@ -498,27 +492,175 @@ namespace EasySave.View
             listTitle.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             content.Children.Add(listTitle);
 
-            foreach (var tmpBackup in _vm.Backups)
+            
+            var searchRow = new StackPanel
             {
-                AddWorkItemFromBackup(content, tmpBackup);
-            }
-
-            _backupsChangedHandler = (s, e) =>
-            {
-                if (e.NewItems != null)
-                {
-                    foreach (Backup newBackup in e.NewItems)
-                    {
-                        AddWorkItemFromBackup(content, newBackup);
-                    }
-                }
+                Orientation = Orientation.Horizontal,
+                Margin = new Thickness(0, 0, 0, 14)
             };
 
-            _vm.Backups.CollectionChanged += _backupsChangedHandler;
+            var tbSearch = new TextBox
+            {
+                Width = 260,
+                MinHeight = 32,
+                Margin = new Thickness(0, 0, 10, 0)
+            };
 
+            // Live search
+            tbSearch.SetBinding(TextBox.TextProperty, new Binding("SearchQuery")
+            {
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+
+            searchRow.Children.Add(tbSearch);
+
+            var btnClear = new Button
+            {
+                Content = "Reset",
+                MinHeight = 32
+            };
+            btnClear.Click += (_, __) => _vm.SearchQuery = "";
+
+            searchRow.Children.Add(btnClear);
+
+            content.Children.Add(searchRow);
+
+            _vm.Backups.CollectionChanged += _backupsChangedHandler;
+            
+            // =========================
+            // LIST PANEL (NEW)
+            // =========================
+            
+            var listPanel = new StackPanel();
+            content.Children.Add(listPanel);
+            
+            
+            // Afficher les backups existants
+            foreach (var tmpBackup in _vm.Backups)
+            {
+                AddWorkItemFromBackup(listPanel, tmpBackup);
+            }
+            
+            _backupsChangedHandler = (s, e) =>
+            {
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        foreach (Backup newBackup in e.NewItems)
+                            AddWorkItemFromBackup(listPanel, newBackup);
+                        break;
+
+                    case NotifyCollectionChangedAction.Remove:
+                        foreach (Backup oldBackup in e.OldItems)
+                            RemoveWorkItemFromBackup(listPanel, oldBackup);
+                        break;
+
+                    case NotifyCollectionChangedAction.Reset:
+                        listPanel.Children.Clear();
+                        break;
+
+                    case NotifyCollectionChangedAction.Replace:
+                        foreach (Backup oldBackup in e.OldItems)
+                            RemoveWorkItemFromBackup(listPanel, oldBackup);
+                        foreach (Backup newBackup in e.NewItems)
+                            AddWorkItemFromBackup(listPanel, newBackup);
+                        break;
+                }
+            };
+            
+            _vm.Backups.CollectionChanged += _backupsChangedHandler;
+            
+            
+            // =========================
+            // PAGINATION BAR (NEW)
+            // =========================
+            var pager = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                Margin = new Thickness(0, 25, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Center 
+            };
+
+            var btnPrev = new Button
+            {
+                Content = "◀",
+                Width = 40,
+                Height = 32,
+                Margin = new Thickness(0, 0, 8, 0),
+                Foreground = Brushes.White,
+                Padding = new Thickness(0),
+                FontSize = 16,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                VerticalContentAlignment = VerticalAlignment.Center,
+                ClipToBounds = false
+            };
+            
+            btnPrev.Width = 48;
+            btnPrev.Height = 32;
+            btnPrev.FontSize = 18;
+            btnPrev.ClipToBounds = false;
+            btnPrev.SetBinding(Button.CommandProperty, new Binding("PreviousPageCommand"));
+            pager.Children.Add(btnPrev);
+
+            var pageText = new TextBlock
+            {
+                VerticalAlignment = VerticalAlignment.Center,
+                FontFamily = (FontFamily)FindResource("AppFont")
+            };
+            pageText.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
+            pageText.SetBinding(TextBlock.TextProperty, new Binding("PageIndex") { StringFormat = "Page {0}" });
+            pager.Children.Add(pageText);
+
+            var sep = new TextBlock
+            {
+                Text = " / ",
+                VerticalAlignment = VerticalAlignment.Center,
+                FontFamily = (FontFamily)FindResource("AppFont")
+            };
+            sep.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
+            pager.Children.Add(sep);
+
+            var totalPagesText = new TextBlock
+            {
+                VerticalAlignment = VerticalAlignment.Center,
+                FontFamily = (FontFamily)FindResource("AppFont")
+            };
+            totalPagesText.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
+            totalPagesText.SetBinding(TextBlock.TextProperty, new Binding("TotalPages"));
+            pager.Children.Add(totalPagesText);
+
+            var btnNext = new Button
+            {
+                Content = "▶",
+                Width = 40,
+                Height = 32,
+                Margin = new Thickness(8, 0, 0, 0),
+                Foreground = Brushes.White,
+                Padding = new Thickness(0),
+                FontSize = 16,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                VerticalContentAlignment = VerticalAlignment.Center,
+                ClipToBounds = false
+            };
+            
+            btnNext.SetBinding(Button.CommandProperty, new Binding("NextPageCommand"));
+            pager.Children.Add(btnNext);
+
+            content.Children.Add(pager);
+            
             SetContent(content);
         }
 
+        private void RemoveWorkItemFromBackup(StackPanel listPanel, Backup backup)
+        {
+            var control = listPanel.Children
+                .Cast<UIElement>()
+                .FirstOrDefault(c => c is FrameworkElement fe && fe.Tag == backup);
+
+            if (control != null)
+                listPanel.Children.Remove(control);
+        }
+        
         private void AddWorkItemFromBackup(StackPanel content, Backup backup)
         {
             AddWorkItem(content, backup);

@@ -4,6 +4,7 @@ namespace EasySave.Service;
 
 public interface IBackupService
 {
+    
     /// <summary>
     /// This method execute a save method on all created backup
     /// </summary>
@@ -37,7 +38,6 @@ public interface IBackupService
     /// <param name="pageIndex">The page we want to retrieve all element for</param>
     /// <param name="pageSize">Amount of element per page</param>
     /// <returns>List of backups</returns>
-    /// TODO In the future, or we can keep using this return type but we also could consider use a custom page object.
     public List<Backup> GetBackups(int pageIndex, int pageSize);
 
     /// <summary>
@@ -46,4 +46,23 @@ public interface IBackupService
     /// </summary>
     /// <param name="backup">Backup we want to modify with modification</param>
     public void UpdateBackup(Backup backup);
+
+    /// <summary>
+    /// This methods return a custom object with total amount of Backups
+    /// And paginated backup list
+    /// </summary>
+    /// <param name="pageIndex">Page indexe</param>
+    /// <param name="pageSize">Element per page</param>
+    /// <returns></returns>
+    PagedResult<Backup> GetBackupsPage(int pageIndex, int pageSize);
+
+    /// <summary>
+    /// This methods return a PageResult objects of name matching backups
+    /// </summary>
+    /// <param name="query">Name of the search backup</param>
+    /// <param name="pageIndex">Page index</param>
+    /// <param name="pageSize">Elements per page</param>
+    /// <returns></returns>
+    PagedResult<Backup> SearchBackupsPage(string? query, int pageIndex, int pageSize);
+
 }
