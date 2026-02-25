@@ -16,17 +16,22 @@ public class MainViewModel : INotifyPropertyChanged
     // Capture the UI thread dispatcher at construction time
     // The ViewModel is always created on the UI thread, so this is safe
     private readonly Dispatcher _dispatcher = Application.Current.Dispatcher;
-
-    private int _pageIndex = 0;
-    private int _pageSize = 50;
-
+    
+    private int _pageIndex = 1;
+    private int _pageSize = 5;
+    private int _totalCount;
+    
     // ==========================
-    // Commands     
+    // Commands
     // ==========================
-
+    
     public RelayCommand ExecuteBackupsCommand { get; }
     public RelayCommand CreateBackupCommand { get; }
     public RelayCommand OpenCreateBackupDialogCommand { get; }
+
+    // NEW: Pagination commands
+    public RelayCommand NextPageCommand { get; }
+    public RelayCommand PreviousPageCommand { get; }
 
     public event Action? OpenCreateBackupDialogRequested;
 
@@ -39,10 +44,21 @@ public class MainViewModel : INotifyPropertyChanged
     public BackupCreateRequest BackupCreateRequest
     {
         get => _backupCreateRequest;
+        set { _backupCreateRequest = value; OnPropertyChanged(); }
+    }
+
+    private string _searchQuery = "";
+    public string SearchQuery
+    {
+        get => _searchQuery;
         set
         {
-            _backupCreateRequest = value;
+            if (_searchQuery == value) return;
+            _searchQuery = value;
             OnPropertyChanged();
+
+            // Recherche live : revenir à la page 1 quand la saisie change
+            LoadPage(1);
         }
     }
     // Tracks whether backups are currently running
@@ -78,6 +94,54 @@ public class MainViewModel : INotifyPropertyChanged
 
     public List<BackupType> BackupTypes { get; }
 
+    // NEW: Paging state exposed for the View bindings (PageIndex / TotalPages)
+    public int PageIndex
+    {
+        get => _pageIndex;
+        private set
+        {
+            if (_pageIndex == value) return;
+            _pageIndex = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(CanGoPrevious));
+            OnPropertyChanged(nameof(CanGoNext));
+        }
+    }
+
+    public int PageSize
+    {
+        get => _pageSize;
+        set
+        {
+            if (_pageSize == value) return;
+            if (value < 1) value = 1;
+
+            _pageSize = value;
+            OnPropertyChanged();
+
+            // Reset to first page when page size changes
+            LoadPage(1);
+        }
+    }
+
+    public int TotalCount
+    {
+        get => _totalCount;
+        private set
+        {
+            if (_totalCount == value) return;
+            _totalCount = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(TotalPages));
+            OnPropertyChanged(nameof(CanGoNext));
+        }
+    }
+
+    public int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
+
+    public bool CanGoPrevious => PageIndex > 1;
+    public bool CanGoNext => PageIndex < TotalPages;
+
     // ==========================
     // Constructor
     // ==========================
@@ -87,57 +151,62 @@ public class MainViewModel : INotifyPropertyChanged
         _backupService = new BackupService();
 
         Backups = new ObservableCollection<Backup>();
-
         BackupCreateRequest = new BackupCreateRequest("", "", "", BackupType.Full);
-
         BackupTypes = Enum.GetValues(typeof(BackupType)).Cast<BackupType>().ToList();
+        
+        PreviousPageCommand = new RelayCommand(
+            execute: () => LoadPage(PageIndex - 1),
+            canExecute: () => CanGoPrevious);
 
-        LoadBackups();
-
-        // Pass canExecute so the button disables while backups are running
+        NextPageCommand = new RelayCommand(
+            execute: () => LoadPage(PageIndex + 1),
+            canExecute: () => CanGoNext);
+        
         ExecuteBackupsCommand = new RelayCommand(
             execute: ExecuteBackup,
             canExecute: () => !IsExecuting
         );
-
+        
         CreateBackupCommand = new RelayCommand(
             execute: CreateBackup,
             canExecute: () => !IsExecuting
         );
 
-        // ✅ AJOUTER : Commande pour ouvrir le dialogue de création
         OpenCreateBackupDialogCommand = new RelayCommand(
             execute: () => OpenCreateBackupDialogRequested?.Invoke()
         );
+        
+        LoadPage(1);
     }
 
     // ==========================
     // Methods
     // ==========================
-
-    private void LoadBackups()
+    private void LoadPage(int pageIndex)
     {
+        if (pageIndex < 1) pageIndex = 1;
+
+        // IMPORTANT: needs a paged result (Items + TotalCount)
+        var page = _backupService.SearchBackupsPage(SearchQuery, pageIndex, PageSize);
+
         Backups.Clear();
+        foreach (var b in page.Items)
+            Backups.Add(b);
 
-        var backupsFromService = _backupService.GetBackups(_pageIndex, _pageSize);
+        TotalCount = page.TotalCount;
+        PageIndex = page.PageIndex;
 
-        foreach (var backup in backupsFromService)
-        {
-            Backups.Add(backup);
-        }
+        // Refresh buttons enabled state
+        PreviousPageCommand.RaiseCanExecuteChanged();
+        NextPageCommand.RaiseCanExecuteChanged();
     }
 
     private void CreateBackup()
     {
         _backupService.CreateBackup(BackupCreateRequest);
 
-        foreach (var backup in _backupService.GetBackups(_pageIndex, _pageSize))
-        {
-            if (!Backups.Contains(backup))
-            {
-                Backups.Add(backup);
-            }
-        }
+        // After create, reload current page to stay consistent (ordering, counts, etc.)
+        LoadPage(PageIndex);
 
         BackupCreateRequest = new BackupCreateRequest("", "", "", BackupType.Full);
     }
