@@ -54,7 +54,9 @@
     "Title": "SECURITY - Encryption",
     "Subtitle": "Select backups to encrypt",
     "Encrypt": "Encrypt",
-    "Succes": "Backups encrypted successfully"
+    "Decrypt": "Decrypt",
+    "Succes": "Backups encrypted successfully",
+    "SuccessDecrypt": "Backups decrypted successfully"
   },
   "Settings": {
     "Title": "SETTINGS",

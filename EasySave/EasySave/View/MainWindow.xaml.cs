@@ -18,6 +18,8 @@ namespace EasySave.View
         private bool _isInitializing = true;
         private string _currentSection = "home";
         private MainViewModel _vm;
+        private List<CheckBox> _securityCheckboxes = new List<CheckBox>();
+        private Button _encryptedButton, _decryptedButton;
         private readonly HashSet<Backup> _selectedBackups = new();
         
         private System.Collections.Specialized.NotifyCollectionChangedEventHandler? _backupsChangedHandler;
@@ -802,8 +804,9 @@ namespace EasySave.View
 
             cb.Checked += (_, __) =>
             {
-                _selectedBackups.Add(backup);
-                _encryptedButton.IsEnabled = _selectedBackups.Count > 0;
+               _selectedBackups.Add(backup);
+               _encryptedButton.IsEnabled  = _selectedBackups.Count > 0;
+               _decryptedButton.IsEnabled = _selectedBackups.Count > 0;
             };
 
             cb.Unchecked += (_, __) =>
@@ -979,9 +982,6 @@ namespace EasySave.View
             card.Child = grid;
             parent.Children.Add(card);
         }
-
-        private List<CheckBox> _securityCheckboxes = new List<CheckBox>();
-        private Button _encryptedButton;
         
 
         private void SectionSecurity()
@@ -1014,8 +1014,17 @@ namespace EasySave.View
                 IsEnabled = false
             };
 
+            _decryptedButton = new Button
+            {
+                Content = LanguageManager.Get("Security.Decrypt"),
+                Margin = new Thickness(0, 20, 0, 0),
+                IsEnabled = false
+            };
+
             _encryptedButton.Click += EncryptSelectedBackups;
+            _decryptedButton.Click += DecryptSelectedBackups;
             content.Children.Add(_encryptedButton);
+            content.Children.Add(_decryptedButton);
             SetContent(content);
         }
 
@@ -1065,6 +1074,49 @@ namespace EasySave.View
             }
 
             MessageBox.Show(LanguageManager.Get("Security.Success"));
+        }
+
+        private void DecryptSelectedBackups(object sender, RoutedEventArgs e)
+        {
+            string password = Microsoft.VisualBasic.Interaction.InputBox(
+                 "Entrez le mot de passe de chiffrement :",
+                 "Chiffrement",
+                 "",
+                 -1,
+                 -1
+             );
+
+            foreach (var backup in _selectedBackups)
+            {
+                string root = backup.DestinationFilePath;
+
+                if (!Directory.Exists(root))
+                    continue;
+
+                var encryptedFiles = Directory.GetFiles(root, "*.enc", SearchOption.AllDirectories);
+
+                foreach (var encFile in encryptedFiles)
+                {
+                    try
+                    {
+                        string outputFile = encFile.Substring(0, encFile.Length - 4); // enlève .enc
+
+                        CryptoSoft.Encrypter.DecryptFile(
+                            encFile,
+                            outputFile,
+                            password
+                        );
+
+                        File.Delete(encFile);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Erreur décryptage:\n{encFile}\n{ex.Message}");
+                    }
+                }
+            }
+
+            MessageBox.Show(LanguageManager.Get("Security.SuccessDecrypt"));
         }
 
         private void SectionSettings()

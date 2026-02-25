@@ -53,7 +53,9 @@
     "Title": "SECURITE - Chiffrement",
     "Subtitle": "Sélectionnez les backups à chiffer",
     "Encrypt": "Chiffrer",
-    "Success": "Backups chiffrés avec succès"
+    "Decrypt": "Dechiffrer",
+    "Success": "Backups chiffrés avec succès",
+    "SuccessDecrypt": "Backups dechiffrés avec succès"
   },
   "Settings": {
     "Title": "PARAMETRES",
