@@ -7,6 +7,8 @@ public class Settings
     public string Language { get; set; }
     public bool AutoExecute { get; set; }
     public string LogFileType { get; set; }
+    public List<string> PriorityExtensions { get; set; }
+    public List<string> CustomExtensions { get; set; }
 
     public Settings()
     {
