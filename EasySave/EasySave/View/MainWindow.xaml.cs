@@ -8,6 +8,7 @@ using System.Windows.Media;
 using EasySave.Model;
 using EasySave.View.Dialog;
 using EasySave.ViewModel;
+using CryptoSoft;
 
 namespace EasySave.View
 {
@@ -17,6 +18,7 @@ namespace EasySave.View
         private bool _isInitializing = true;
         private string _currentSection = "home";
         private MainViewModel _vm;
+        private readonly HashSet<Backup> _selectedBackups = new();
         
         private System.Collections.Specialized.NotifyCollectionChangedEventHandler? _backupsChangedHandler;
 
@@ -140,11 +142,13 @@ namespace EasySave.View
             BtnHome1.Content = LanguageManager.Get("Navigation.Home");
             BtnSaves1.Content = LanguageManager.Get("Navigation.Saves");
             BtnHistory1.Content = LanguageManager.Get("Navigation.History");
+            BtnSecurity1.Content = LanguageManager.Get("Navigation.Security");
             BtnSettings1.Content = LanguageManager.Get("Navigation.Settings");
 
             BtnHome2.Content = LanguageManager.Get("Navigation.Home");
             BtnSaves2.Content = LanguageManager.Get("Navigation.Saves");
             BtnHistory2.Content = LanguageManager.Get("Navigation.History");
+            BtnSecurity2.Content = LanguageManager.Get("Navigation.Security");
             BtnSettings2.Content = LanguageManager.Get("Navigation.Settings");
 
             StorageTitleBlock.Text = LanguageManager.Get("Storage.Title");
@@ -217,6 +221,11 @@ namespace EasySave.View
         private void NavHistory_Click(object sender, RoutedEventArgs e)
         {
             SectionHistory();
+        }
+
+        private void NavSecurity_Click(object sender, RoutedEventArgs e)
+        {
+            SectionSecurity();
         }
 
         private void NavSettings_Click(object sender, RoutedEventArgs e)
@@ -665,6 +674,95 @@ namespace EasySave.View
             AddWorkItem(content, $"{backup.Name}", $"{backup.Type}", "warning", 100);
         }
 
+        private void AddSecurityItemFromBackup(StackPanel content, Backup backup)
+        {
+            AddSecurityItem(content, backup);
+        }
+
+        private void AddSecurityItem(StackPanel parent, Backup backup)
+        {
+            var card = new Border
+            {
+                CornerRadius = new CornerRadius(6),
+                Padding = new Thickness(16,12,16,12),
+                Margin = new Thickness(0, 0, 0, 8),
+                BorderThickness = new Thickness(1),
+                Tag = backup
+            };
+            card.SetResourceReference(Border.BackgroundProperty, "CardBrush");
+            card.SetResourceReference(Border.BorderBrushProperty, "BorderSubtleBrush");
+
+            var stack = new StackPanel();
+            var topRow = new Grid();
+            topRow.ColumnDefinitions.Add(
+                new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+            );
+            topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+            var nameBlock = new TextBlock
+            {
+                Text = backup.Name,
+                FontSize = 16,
+                FontWeight = FontWeights.SemiBold,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+
+            nameBlock.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
+            Grid.SetColumn(nameBlock, 0);
+            topRow.Children.Add(nameBlock);
+
+            Color statusColor = backup.Type.ToString() switch
+            {
+                "Full" => (Color)ColorConverter.ConvertFromString("#90D5FF"),
+                "Sequential" => (Color)ColorConverter.ConvertFromString("#88E788"),
+            };
+
+            var badge = new Border
+            {
+                CornerRadius = new CornerRadius(10),
+                Padding = new Thickness(8, 3, 8, 3),
+                Background = new SolidColorBrush(statusColor),
+                Margin = new Thickness(8,0,12,0),
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            var statusText = new TextBlock
+            {
+                Text = backup.Type.ToString(),
+                FontSize = 14,
+                FontWeight = FontWeights.SemiBold,
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+
+            badge.Child = statusText;
+            Grid.SetColumn(badge, 1);
+            topRow.Children.Add(badge);
+
+            var cb = new CheckBox
+            {
+                VerticalAlignment = VerticalAlignment.Center,
+            };
+
+            cb.Checked += (_, __) =>
+            {
+               _selectedBackups.Add(backup);
+               _encryptedButton.IsEnabled  = _selectedBackups.Count > 0;
+            };
+
+            cb.Unchecked += (_, __) =>
+            {
+                _selectedBackups.Remove(backup);
+                _encryptedButton.IsEnabled  = _selectedBackups.Count > 0;
+            };
+
+            Grid.SetColumn(cb, 2);
+            topRow.Children.Add(cb);
+
+            stack.Children.Add(topRow);
+            card.Child = stack;
+            parent.Children.Add(card);
+        }
+
         private void AddWorkItem(
             StackPanel parent,
             string name,
@@ -915,6 +1013,93 @@ namespace EasySave.View
 
             card.Child = grid;
             parent.Children.Add(card);
+        }
+
+        private List<CheckBox> _securityCheckboxes = new List<CheckBox>();
+        private Button _encryptedButton;
+        
+
+        private void SectionSecurity()
+        {
+            UpdateNavStyles("security");
+            var content = new StackPanel();
+            var title = new TextBlock
+            {
+                Text = LanguageManager.Get("Security.Title"),
+                FontSize = 26,
+                FontWeight = FontWeights.Bold,
+                Margin = new Thickness(0, 0, 0, 6),
+                FontFamily = (FontFamily)FindResource("AppFont"),
+            };
+            title.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
+            content.Children.Add(title);
+            _securityCheckboxes.Clear();
+            var listPanel = new StackPanel();
+            content.Children.Add(listPanel);
+            foreach (var b in _vm.Backups)
+            {
+               AddSecurityItemFromBackup(listPanel, b);
+            }
+
+            _encryptedButton = new Button
+            {
+                Content = LanguageManager.Get("Security.Encrypt"),
+                Style = (Style)FindResource("PrimaryButton"),
+                Margin = new Thickness(0, 20, 0, 0),
+                IsEnabled = false
+            };
+
+            _encryptedButton.Click += EncryptSelectedBackups;
+            content.Children.Add(_encryptedButton);
+            SetContent(content);
+        }
+
+        private void SecurityCheckboxChanged(object sender, RoutedEventArgs e)
+        {
+            _encryptedButton.IsEnabled = _securityCheckboxes.Any(cb => cb.IsChecked == true);
+        }
+
+        private void EncryptSelectedBackups(object sender, RoutedEventArgs e)
+        {
+            string password = Microsoft.VisualBasic.Interaction.InputBox(
+                "Entrez le mot de passe de chiffrement :",
+                "Chiffrement",
+                "",
+                -1,
+                -1
+            );
+
+            foreach (var backup in _selectedBackups)
+            {
+                var root = backup.DestinationFilePath;
+                if (!Directory.Exists(root)) continue;
+
+                var files = Directory.GetFiles(root, "*", SearchOption.AllDirectories);
+
+                foreach (var file in files)
+                {
+                    // évite de rechiffrer les fichiers déjà chiffrés
+                    if (file.EndsWith(".enc", StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    try
+                    {
+                        var tmpEnc = file + ".enc";
+
+                        CryptoSoft.Encrypter.EncryptFile(file, tmpEnc, password);
+
+                        // remplace l’original par le chiffré
+                        File.Delete(file);
+                        File.Move(tmpEnc, file + ".enc");
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Erreur chiffrement: {file}\n{ex.Message}");
+                    }
+                }
+            }
+
+            MessageBox.Show(LanguageManager.Get("Security.Success"));
         }
 
         private void SectionSettings()

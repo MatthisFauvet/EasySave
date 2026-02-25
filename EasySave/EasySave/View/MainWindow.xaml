@@ -197,6 +197,14 @@
                   HorizontalAlignment="Stretch"
                 />
                 <Button
+                    x:Name="BtnSecurity1"
+                    Content="Sécurité"
+                    Click="NavSecurity_Click"
+                    Style="{StaticResource NavButton}"
+                    Margin="0,1"
+                    HorizontalAlignment="Stretch"
+                />
+                <Button
                   x:Name="BtnSettings1"
                   Content="Parametres"
                   Click="NavSettings_Click"
@@ -295,6 +303,13 @@
                 Click="NavHistory_Click"
                 Style="{StaticResource NavButton}"
                 Margin="2,6"
+              />
+              <Button
+                 x:Name="BtnSecurity2"
+                 Content="Sécurité"
+                 Click="NavSecurity_Click"
+                 Style="{StaticResource NavButton}"
+                 Margin="2,6"
               />
               <Button
                 x:Name="BtnSettings2"
