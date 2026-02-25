@@ -1,0 +1,66 @@
+﻿@startuml
+title Execution of All Backups WITH Logger
+
+actor User
+participant MainViewModel
+participant BackupService
+participant Logger
+participant ILogWriter
+participant StateService
+participant "Task (per Backup)" as Task
+participant "File System" as FS
+
+== User triggers execution ==
+
+User -> MainViewModel : Click "Execute"
+MainViewModel -> BackupService : ExecuteBackup(List<Backup>)
+
+activate BackupService
+
+BackupService -> Logger : InitWriters(directory, context)
+BackupService -> Logger : Log("Backup execution started", Info)
+
+loop For each Backup
+    BackupService -> Task : Task.Run(ExecuteSingleBackup)
+end
+
+== Parallel Execution ==
+
+par For each Backup in parallel
+
+    Task -> BackupService : ExecuteSingleBackup(backup)
+    activate BackupService
+
+    BackupService -> Logger : Log("Starting backup X", Info)
+
+    BackupService -> FS : Check Source Directory
+    BackupService -> FS : Create Destination Directory
+
+    BackupService -> StateService : Initialize(...)
+    
+    loop For each File
+        BackupService -> FS : Copy File
+        BackupService -> StateService : IncrementProgress(name)
+        BackupService -> Logger : Log("File copied", Info)
+    end
+
+    BackupService -> StateService : MarkCompleted(name)
+    BackupService -> Logger : Log("Backup completed", Info)
+
+    deactivate BackupService
+
+end
+
+== Wait for all tasks ==
+
+BackupService -> BackupService : Task.WhenAll()
+
+BackupService -> Logger : Log("All backups finished", Info)
+BackupService -> Logger : Dispose()
+
+BackupService --> MainViewModel : return bool success
+deactivate BackupService
+
+MainViewModel -> User : Display result
+
+@enduml

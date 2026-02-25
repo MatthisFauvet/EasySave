@@ -1,174 +1,271 @@
 @startuml
+skinparam classAttributeIconSize 0
 
-package EasySave {
+' =====================================================
+' MODEL
+' =====================================================
+package EasySave.Model {
 
-    package Services {
-    
-        interface IBackupService {
-            +ExecuteBackup(backup)
-        }
-    
-        class BackupService {
-            -logger: ILogger
-            +ExecuteBackup(backup)
-            +Add(Backup backup)
-            +Remove(int idBackup)
-            +GetByld(int idBackup) : Backup
-            +GetAlI(int page) : Page<Backup>
-            +Update(Backup backup)
-        }
-    
-    }
-
-    package ViewModel {
-        
-        class ViewModel {
-            -List<Backup> backups;
-            -IBackupService _serviceBackup;
-            +ExecuteBackup(List<Backup> backups);
-            +CreateBackup(CreateBackupRequest createBackupRequest);
-            +ListBackup();
-        }
-        
-        folder Command {
-        
-            class RelayCommand
-            {
-            
-            }
-            
-        }
-    
-    }
-
-    package Model {
-    
-        class Backup {
-            +int Id
-            +string Name
-            +string SourceFilePath
-            +string DestinationFilePath
-            +DateTime LastBackupDate
-        }
-        
-        enum BackupType {
-            Unknown
-            Full
-            Sequential
-        }
-    
-    }
-        
-    package Repository {
-      
-        interface IBackupRepository {
-            +Add(Backup backup)
-            +Remove(int idBackup)
-            +GetByld(int idBackup) : Backup
-            +GetAlI(int page) : Page<Backup>
-            +Update(Backup backup)
-        }
-          
-        class JsonBackupRepository
-        
-    }
-    
-    package Services {
-    
-        interface IBackupService {
-            +ExecuteBackup(Backup backup)
-        }
-    
-        class BackupService {
-            +ExecuteBackup(Backup backup)
-        }
-    
-    }
-    
-    package View {
-    
-        class MainView {
-        
-        }
-    
-    }
-    
+class Backup {
+    +int Id
+    +string Name
+    +string SourceFilePath
+    +string DestinationFilePath
+    +DateTime LastBackupDateTime
+    +BackupType Type
+    +bool IsSelected
 }
 
-package EasyLog
-{
-    
-    enum LogType {
-            ERROR
-            INFO
-            WARN
-        }
-
-    class ConsoleLogWriter {
-        +message: string
-        +logType: LogType
-        +datetime: DateTime
-        +write()
-    }
-
-    class FileLogWriter {
-        +message: string
-        +logType: LogType
-        +datetime: DateTime
-        +write()
-    }
-    
-    class JsonFileLogWriter {
-        +message: string
-        +logType: LogType
-        +datetime: DateTime
-        +write()
-    }
-    
-    class XmlLogWriter {
-        +message: string
-        +logType: LogType
-        +datetime: DateTime
-        +write()
-    }
-
-    interface ILogWriter {
-        +write()
-        +read()
-    }
-
-    class Logger {
-        +InitWriter()
-        +AddWriter()
-        +Log(message: string, logType: LogType)
-    }
-    
+class BackupCreateRequest {
+    +string Name
+    +string SourceFilePath
+    +string DestinationFilePath
+    +BackupType Type
 }
 
-
-package CryptoSoft
-{
-    
+class BackupState {
+    +string Name
+    +string Source
+    +string Destination
+    +int TotalFiles
+    +long TotalSizeBytes
+    +int FilesUploaded
+    +int FilesRemaining
+    +int ProgressPercent
+    +BackupStatus Status
 }
 
+enum BackupStatus {
+    Idle
+    Running
+    Paused
+    Cancelled
+    Error
+    Completed
+}
 
-' Relations
-JsonBackupRepository ..|> IBackupRepository
+enum BackupType {
+    Unknown
+    Full
+    Sequential
+}
 
-BackupService ..|> IBackupService
+class BackupTypeHelper {
+    +BackupType FromString(string type)
+}
 
-ConsoleLogWriter ..|> ILogWriter
-FileLogWriter ..|> ILogWriter
-XmlLogWriter ..|> ILogWriter
-JsonFileLogWriter ..|> ILogWriter
+class PagedResult<T> {
+    +IReadOnlyList<T> Items
+    +int TotalCount
+    +int PageIndex
+    +int PageSize
+    +int TotalPages
+    +bool HasPrevious
+    +bool HasNext
+}
 
+class Settings {
+    +int AppTemplate
+    +string AppTheme
+    +string Language
+    +bool AutoExecute
+    +string LogFileType
+}
 
-IBackupRepository "1" --> "*" Backup
+}
 
-BackupService --> Logger
+' =====================================================
+' REPOSITORY
+' =====================================================
+package EasySave.Repository {
+
+interface IBackupRepository {
+    +void CreateBackup(BackupCreateRequest)
+    +bool RemoveBackup(int)
+    +Backup GetBackupById(int)
+    +List<Backup> GetAllBackups()
+    +bool UpdateBackup(Backup)
+    +PagedResult<Backup> GetBackupsPage(int,int)
+    +PagedResult<Backup> SearchBackupsPage(string,int,int)
+}
+
+interface IBackupIdFactory {
+    +int NextId()
+}
+
+class IncrementalBackupIdFactory {
+    -int _current
+    +int NextId()
+}
+
+class JsonBackupRepository {
+    -List<Backup> _backups
+    -IBackupIdFactory _idFactory
+}
+
+IBackupRepository <|.. JsonBackupRepository
+IBackupIdFactory <|.. IncrementalBackupIdFactory
+
+JsonBackupRepository --> Backup
+JsonBackupRepository --> BackupCreateRequest
+JsonBackupRepository --> PagedResult
+}
+
+' =====================================================
+' SERVICE
+' =====================================================
+package EasySave.Service {
+
+interface IBackupService {
+    +bool ExecuteBackup(List<Backup>)
+    +void CreateBackup(BackupCreateRequest)
+    +void RemoveBackup(Backup)
+    +Backup GetBackupById(int)
+    +List<Backup> GetBackups(int,int)
+    +void UpdateBackup(Backup)
+    +PagedResult<Backup> GetBackupsPage(int,int)
+    +PagedResult<Backup> SearchBackupsPage(string,int,int)
+    +void PauseBackup(Backup)
+    +void ResumeBackup(Backup)
+}
+
+class BackupService {
+    -IBackupRepository _backupRepository
+    -StateService _stateService
+    -Settings _settings
+    -Logger _logger
+}
+
+class StateService {
+    +void Initialize(...)
+    +void IncrementProgress(string)
+    +void MarkCompleted(string)
+    +void MarkCancelled(string)
+    +void MarkError(string)
+    +void MarkPaused(string)
+    +void MarkRunning(string)
+    +BackupState GetState(string)
+    +List<BackupState> GetAllStates()
+}
+
+IBackupService <|.. BackupService
+
 BackupService --> IBackupRepository
-Logger --> ILogWriter
-Logger --> LogType
+BackupService --> StateService
+BackupService --> Backup
+BackupService --> BackupCreateRequest
+BackupService --> Settings
+BackupService --> Logger
+
+StateService --> BackupState
+}
+
+' =====================================================
+' EASYLOG
+' =====================================================
+package EasySave.EasyLog {
+
+class Logger {
+    -List<ILogWriter> _writers
+    +InitWriters(string,string)
+    +AddWriter(ILogWriter)
+    +Log(Dictionary<string,string>, LogType)
+    +Dispose()
+}
+
+interface ILogWriter {
+    +write(LogType,string,Dictionary<string,string>)
+}
+
+class ConsoleLogWriter
+class FileLogWriter
+class JsonFileWriter
+class XmlFileWriter
+
+enum LogType {
+    Error
+    Warning
+    Info
+}
+
+Logger o--> ILogWriter
+ILogWriter <|.. ConsoleLogWriter
+ILogWriter <|.. FileLogWriter
+ILogWriter <|.. JsonFileWriter
+ILogWriter <|.. XmlFileWriter
+BackupService --> Logger
+}
+
+' =====================================================
+' VIEW
+' =====================================================
+package EasySave.View {
+
+class AppSettings {
+    +int AppTemplate
+    +string AppTheme
+    +string Language
+    +bool AutoExecute
+    +string LogFileType
+    +List<string> PriorityExtensions
+    +List<string> CustomExtensions
+}
+
+class ThemeManager {
+    +ApplyTheme(string)
+}
+
+class LanguageManager {
+    +LoadLanguage(string)
+    +string Get(string)
+}
+
+class SettingsManager {
+    +AppSettings Load()
+    +Save(AppSettings)
+}
+
+}
+
+' =====================================================
+' VIEWMODEL
+' =====================================================
+package EasySave.ViewModel {
+
+class BackupProgressItem {
+    +Backup Backup
+    +int Progress
+    +int FilesUploaded
+    +int TotalFiles
+    +BackupStatus Status
+    +bool IsPaused
+    +bool IsRunning
+    +Refresh()
+}
+
+class MainViewModel {
+    +ObservableCollection<BackupProgressItem> BackupItems
+    +ObservableCollection<Backup> Backups
+    +ExecuteBackup()
+    +CreateBackup()
+    +PauseBackup(Backup)
+    +ResumeBackup(Backup)
+}
+
+class RelayCommand {
+    +Execute(object)
+    +bool CanExecute(object)
+    +RaiseCanExecuteChanged()
+}
+
+}
+
+MainViewModel --> IBackupService
+MainViewModel --> StateService
+MainViewModel --> BackupProgressItem
+BackupProgressItem --> Backup
+BackupProgressItem --> StateService
+MainViewModel --> RelayCommand
 
 
 @enduml

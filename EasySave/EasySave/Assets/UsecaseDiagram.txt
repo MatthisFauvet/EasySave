@@ -1,0 +1,40 @@
+﻿@startuml
+title EasySave - Use Case Diagram
+
+actor User
+
+package "Backup Management" {
+    usecase "Create Backup" as UC_Create
+    usecase "Execute Backup" as UC_Execute
+    usecase "Pause Backup" as UC_Pause
+    usecase "Resume Backup" as UC_Resume
+    usecase "Remove Backup" as UC_Remove
+    usecase "View Backup Progress" as UC_ViewProgress
+}
+
+package "Settings Management" {
+    usecase "Change Theme" as UC_ChangeTheme
+    usecase "Change Language" as UC_ChangeLang
+    usecase "Configure AutoExecute" as UC_AutoExec
+}
+
+package "Logging & Monitoring" {
+    usecase "View Logs" as UC_ViewLogs
+}
+
+' ==========================
+' User Interactions
+' ==========================
+User --> UC_Create
+User --> UC_Execute
+User --> UC_Pause
+User --> UC_Resume
+User --> UC_Remove
+User --> UC_ViewProgress
+User --> UC_ChangeTheme
+User --> UC_ChangeLang
+User --> UC_AutoExec
+User --> UC_ViewLogs
+
+
+@enduml
