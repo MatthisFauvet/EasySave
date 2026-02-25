@@ -19,7 +19,14 @@ namespace EasySave.View
                 if (File.Exists(SettingsPath))
                 {
                     string json = File.ReadAllText(SettingsPath);
-                    return JsonSerializer.Deserialize<AppSettings>(json) ?? new AppSettings();
+                    var settings = JsonSerializer.Deserialize<AppSettings>(json)
+                                   ?? new AppSettings();
+
+                    
+                    settings.PriorityExtensions ??= new List<string>();
+                    settings.CustomExtensions ??= new List<string>();
+
+                    return settings;
                 }
             }
             catch (Exception)

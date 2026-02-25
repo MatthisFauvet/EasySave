@@ -587,7 +587,6 @@ namespace EasySave.View
                 Width = 40,
                 Height = 32,
                 Margin = new Thickness(0, 0, 8, 0),
-                Foreground = Brushes.White,
                 Padding = new Thickness(0),
                 FontSize = 16,
                 HorizontalContentAlignment = HorizontalAlignment.Center,
@@ -635,7 +634,6 @@ namespace EasySave.View
                 Width = 40,
                 Height = 32,
                 Margin = new Thickness(8, 0, 0, 0),
-                Foreground = Brushes.White,
                 Padding = new Thickness(0),
                 FontSize = 16,
                 HorizontalContentAlignment = HorizontalAlignment.Center,
@@ -1085,6 +1083,141 @@ namespace EasySave.View
             scrollViewer.Content = content;
             SetContent(scrollViewer);
             // AddConsoleLog("Navigation vers Parametres.", "info");
+
+            // -- Priority files section --
+            AddSectionHeader(content, "Fichiers prioritaires"); 
+
+            var prioCard = new Border
+            {
+                CornerRadius = new CornerRadius(8),
+                Padding = new Thickness(20, 16, 20, 16),
+                Margin = new Thickness(0, 0, 0, 20),
+                BorderThickness = new Thickness(1)
+            };
+            prioCard.SetResourceReference(Border.BackgroundProperty, "CardBrush");
+            prioCard.SetResourceReference(Border.BorderBrushProperty, "BorderBrush");
+
+            var prioStack = new StackPanel();
+
+            // (Optionnel)titre/description 
+            var prioTitle = new TextBlock
+            {
+                Text = "Formats prioritaires",
+                FontSize = 13,
+                FontWeight = FontWeights.Medium,
+                FontFamily = (FontFamily)FindResource("AppFont")
+            };
+            prioTitle.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
+            prioStack.Children.Add(prioTitle);
+
+            var prioDesc = new TextBlock
+            {
+                Text = "Cochez les extensions à traiter en priorité, et ajoutez vos propres formats.",
+                FontSize = 11,
+                Margin = new Thickness(0, 2, 0, 10),
+                FontFamily = (FontFamily)FindResource("AppFont")
+            };
+            prioDesc.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
+            prioStack.Children.Add(prioDesc);
+
+            // Conteneur encadré 
+            var box = new Border
+            {
+                CornerRadius = new CornerRadius(8),
+                Padding = new Thickness(12),
+                BorderThickness = new Thickness(1),
+            };
+            box.SetResourceReference(Border.BorderBrushProperty, "BorderSubtleBrush");
+            box.SetResourceReference(Border.BackgroundProperty, "CardBrush");
+
+            // WrapPanel -> colonnes automatiques
+            var wrap = new WrapPanel
+            {
+                Margin = new Thickness(0, 0, 0, 8)
+            };
+
+            // Liste de formats "par défaut" proposés
+            var defaultExtensions = new[]
+            {
+    ".json", ".xml", ".docx", ".xlsx", ".pptx", ".pdf",
+    ".yml", ".yaml", ".svg", ".xaml", ".exe", ".secret"
+};
+
+            // On affiche : defaults + ceux déjà ajoutés par l'utilisateur
+            _settings.CustomExtensions ??= new List<string>();
+
+            var allExtensions = defaultExtensions
+                .Concat(_settings.CustomExtensions)
+                .Select(NormalizeExtension)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(x => x)
+                .ToList();
+
+            // Générer les checkboxes
+            foreach (var ext in allExtensions)
+            {
+                var cb = new CheckBox
+                {
+                    Content = ext,
+                    Margin = new Thickness(0, 0, 24, 10),
+                    IsChecked = _settings.PriorityExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase)
+                };
+                cb.SetResourceReference(Control.ForegroundProperty, "ForegroundBrush");
+                cb.Checked += (_, __) => SetPriorityExtension(ext, true);
+                cb.Unchecked += (_, __) => SetPriorityExtension(ext, false);
+
+                wrap.Children.Add(cb);
+            }
+
+            // Ligne d'ajout d'un nouveau format
+            var addRow = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                Margin = new Thickness(0, 4, 0, 0)
+            };
+
+            var tbAddExt = new TextBox
+            {
+                Width = 160,
+                MinHeight = 30,
+                Margin = new Thickness(0, 0, 10, 0)
+            };
+
+            var btnAddExt = new Button
+            {
+                Content = "Ajouter",
+                MinHeight = 30
+            };
+            btnAddExt.Click += (_, __) =>
+            {
+                var extToAdd = NormalizeExtension(tbAddExt.Text);
+                if (string.IsNullOrWhiteSpace(extToAdd)) return;
+
+                _settings.CustomExtensions ??= new List<string>();
+
+                if (!_settings.CustomExtensions.Any(x => string.Equals(x, extToAdd, StringComparison.OrdinalIgnoreCase)))
+                    _settings.CustomExtensions.Add(extToAdd);
+
+                SetPriorityExtension(extToAdd, false);
+
+                SettingsManager.Save(_settings);
+
+                SectionSettings(); // refresh UI
+            };
+
+            addRow.Children.Add(tbAddExt);
+            addRow.Children.Add(btnAddExt);
+
+            // Assemble
+            var inner = new StackPanel();
+            inner.Children.Add(wrap);
+            inner.Children.Add(addRow);
+            box.Child = inner;
+
+            prioStack.Children.Add(box);
+            prioCard.Child = prioStack;
+
+            content.Children.Add(prioCard);
         }
 
         private void AddSectionHeader(StackPanel parent, string text)
@@ -1282,6 +1415,49 @@ namespace EasySave.View
             SettingsManager.Save(_settings);
 
             // AddConsoleLog($"Format de log: {_settings.LogFileType}", "info");
+        }
+
+        private string NormalizeExtension(string? input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return "";
+
+            var ext = input.Trim().ToLowerInvariant();
+
+            //accepter "pdf" ou ".pdf"
+            if (!ext.StartsWith("."))
+                ext = "." + ext;
+
+            if (ext.Length < 2) return "";
+            if (ext.Any(char.IsWhiteSpace)) return "";
+
+            return ext;
+        }
+
+        private void SetPriorityExtension(string ext, bool enabled)
+        {
+            if (_isInitializing) return;
+
+            ext = NormalizeExtension(ext);
+            if (string.IsNullOrWhiteSpace(ext)) return;
+
+            _settings.PriorityExtensions ??= new List<string>();
+
+            var existing = _settings.PriorityExtensions
+                .FirstOrDefault(x => string.Equals(x, ext, StringComparison.OrdinalIgnoreCase));
+
+            if (enabled)
+            {
+                if (existing == null)
+                    _settings.PriorityExtensions.Add(ext);
+            }
+            else
+            {
+                if (existing != null)
+                    _settings.PriorityExtensions.Remove(existing);
+            }
+
+            SettingsManager.Save(_settings);
         }
 
         #endregion

@@ -12,5 +12,8 @@ namespace EasySave.View
 
         // Logs
         public string LogFileType { get; set; } = "JSON"; // JSON ou XML
+
+        public List<string> PriorityExtensions { get; set; } = new();        
+        public List<string> CustomExtensions { get; set; } = new();       
     }
 }
