@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Specialized;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -528,6 +529,7 @@ namespace EasySave.View
             // =========================
             // LIST PANEL (NEW)
             // =========================
+            
             var listPanel = new StackPanel();
             content.Children.Add(listPanel);
             
@@ -535,19 +537,38 @@ namespace EasySave.View
             // Afficher les backups existants
             foreach (var tmpBackup in _vm.Backups)
             {
-                AddWorkItemFromBackup(content, tmpBackup);
+                AddWorkItemFromBackup(listPanel, tmpBackup);
             }
             
             _backupsChangedHandler = (s, e) =>
             {
-                if (e.NewItems != null)
+                switch (e.Action)
                 {
-                    foreach (Backup newBackup in e.NewItems)
-                    {
-                        AddWorkItemFromBackup(content, newBackup);
-                    }
+                    case NotifyCollectionChangedAction.Add:
+                        foreach (Backup newBackup in e.NewItems)
+                            AddWorkItemFromBackup(listPanel, newBackup);
+                        break;
+
+                    case NotifyCollectionChangedAction.Remove:
+                        foreach (Backup oldBackup in e.OldItems)
+                            RemoveWorkItemFromBackup(listPanel, oldBackup);
+                        break;
+
+                    case NotifyCollectionChangedAction.Reset:
+                        listPanel.Children.Clear();
+                        break;
+
+                    case NotifyCollectionChangedAction.Replace:
+                        foreach (Backup oldBackup in e.OldItems)
+                            RemoveWorkItemFromBackup(listPanel, oldBackup);
+                        foreach (Backup newBackup in e.NewItems)
+                            AddWorkItemFromBackup(listPanel, newBackup);
+                        break;
                 }
             };
+           
+            _vm.Backups.CollectionChanged += _backupsChangedHandler;
+            
             
             // =========================
             // PAGINATION BAR (NEW)
@@ -561,17 +582,18 @@ namespace EasySave.View
 
             var btnPrev = new Button
             {
-                Content = "◀",                 // ASCII => toujours supporté
-                Width = 40,                    // un peu plus large que 36
-                Height = 32,                   // important si ton template est compact
+                Content = "◀",
+                Width = 40,
+                Height = 32,
                 Margin = new Thickness(0, 0, 8, 0),
                 Foreground = Brushes.White,
-                Padding = new Thickness(0),    // évite que le contenu soit “poussé” hors zone
-                FontSize = 16,                 // rend le signe lisible
+                Padding = new Thickness(0),
+                FontSize = 16,
                 HorizontalContentAlignment = HorizontalAlignment.Center,
                 VerticalContentAlignment = VerticalAlignment.Center,
                 ClipToBounds = false
             };
+            
             btnPrev.Width = 48;
             btnPrev.Height = 32;
             btnPrev.FontSize = 18;
@@ -608,30 +630,36 @@ namespace EasySave.View
 
             var btnNext = new Button
             {
-                Content = "▶",                 // ASCII => toujours supporté
-                Width = 40,                    // un peu plus large que 36
-                Height = 32,                   // important si ton template est compact
+                Content = "▶",
+                Width = 40,
+                Height = 32,
                 Margin = new Thickness(8, 0, 0, 0),
                 Foreground = Brushes.White,
-                Padding = new Thickness(0),    // évite que le contenu soit “poussé” hors zone
-                FontSize = 16,                 // rend le signe lisible
+                Padding = new Thickness(0),
+                FontSize = 16,
                 HorizontalContentAlignment = HorizontalAlignment.Center,
                 VerticalContentAlignment = VerticalAlignment.Center,
                 ClipToBounds = false
             };
+            
             btnNext.SetBinding(Button.CommandProperty, new Binding("NextPageCommand"));
             pager.Children.Add(btnNext);
 
             content.Children.Add(pager);
-
-            // When page items change => re-render
-            _vm.Backups.CollectionChanged += (s, e) => RenderPage();
-
+            
             SetContent(content);
         }
-        
-        
 
+        private void RemoveWorkItemFromBackup(StackPanel listPanel, Backup backup)
+        {
+            var control = listPanel.Children
+                .Cast<UIElement>()
+                .FirstOrDefault(c => c is FrameworkElement fe && fe.Tag == backup);
+
+            if (control != null)
+                listPanel.Children.Remove(control);
+        }
+        
         private void AddWorkItemFromBackup(StackPanel content, Backup backup)
         {
             AddWorkItem(content, $"{backup.Name}", $"{backup.Type}", "warning", 100);

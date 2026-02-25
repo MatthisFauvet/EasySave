@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Net.Mime;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Threading;
 using EasySave.Model;
 using EasySave.Service;
@@ -15,13 +15,12 @@ public class MainViewModel : INotifyPropertyChanged
 
     // Capture the UI thread dispatcher at construction time
     // The ViewModel is always created on the UI thread, so this is safe
-    private readonly Dispatcher _dispatcher = MediaTypeNames.Application.Current.Dispatcher;
-
-    private int _pageIndex = 0;
-    private int _pageSize = 10;
+    private readonly Dispatcher _dispatcher = Application.Current.Dispatcher;
+    
+    private int _pageIndex = 1;
+    private int _pageSize = 5;
     private int _totalCount;
-
-
+    
     // ==========================
     // Commands
     // ==========================
@@ -163,8 +162,6 @@ public class MainViewModel : INotifyPropertyChanged
             execute: () => LoadPage(PageIndex + 1),
             canExecute: () => CanGoNext);
         
-        LoadPage(1);
-        
         ExecuteBackupsCommand = new RelayCommand(
             execute: ExecuteBackup,
             canExecute: () => !IsExecuting
@@ -178,6 +175,8 @@ public class MainViewModel : INotifyPropertyChanged
         OpenCreateBackupDialogCommand = new RelayCommand(
             execute: () => OpenCreateBackupDialogRequested?.Invoke()
         );
+        
+        LoadPage(1);
     }
 
     // ==========================
