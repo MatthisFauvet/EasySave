@@ -64,5 +64,17 @@ public interface IBackupService
     /// <param name="pageSize">Elements per page</param>
     /// <returns></returns>
     PagedResult<Backup> SearchBackupsPage(string? query, int pageIndex, int pageSize);
+    
+    /// <summary>
+    /// This method stop for an unlimited time the thread of an Backup jobs
+    /// </summary>
+    /// <param name="backup"></param>
+    void PauseBackup(Backup backup);
+    
+    /// <summary>
+    /// This methods allow user to resume the jobs of a running backup
+    /// </summary>
+    /// <param name="backup"></param>
+    void ResumeBackup(Backup backup);
 
 }
