@@ -40,7 +40,6 @@ public class MainViewModel : INotifyPropertyChanged
     // ==========================
 
     private BackupCreateRequest _backupCreateRequest;
-
     public BackupCreateRequest BackupCreateRequest
     {
         get => _backupCreateRequest;
@@ -201,6 +200,17 @@ public class MainViewModel : INotifyPropertyChanged
         NextPageCommand.RaiseCanExecuteChanged();
     }
 
+    public void RemoveBackup(Backup backup)
+    {
+        if (backup == null)
+            return;
+
+        _backupService.RemoveBackup(backup);
+
+        if (Backups.Contains(backup))
+            Backups.Remove(backup);
+    }
+
     private void CreateBackup()
     {
         _backupService.CreateBackup(BackupCreateRequest);
@@ -238,9 +248,6 @@ public class MainViewModel : INotifyPropertyChanged
                     ExecutionStatus = success
                         ? "All backups completed successfully."
                         : "Some backups failed. Check logs for details.";
-
-                    // ❌ SUPPRIMER CETTE LIGNE - Elle cause les doublons!
-                    // LoadBackups();
                 });
             }
             catch (Exception ex)
@@ -257,11 +264,7 @@ public class MainViewModel : INotifyPropertyChanged
             }
         });
     }
-    /// <summary>
-    /// Helper to safely dispatch any action back to the UI thread.
-    /// Checks first if we're already on the UI thread to avoid
-    /// unnecessary dispatching overhead.
-    /// </summary>
+
     private void RunOnUiThread(Action action)
     {
         if (_dispatcher.CheckAccess())
@@ -275,6 +278,7 @@ public class MainViewModel : INotifyPropertyChanged
             _dispatcher.Invoke(action);
         }
     }
+    
     // ==========================
     // INotifyPropertyChanged
     // ==========================
