@@ -110,8 +110,13 @@ public class BackupService : IBackupService
         // 'using' ensures the StreamWriter inside JsonFileWriter is disposed
         // (file handle released) as soon as all tasks are done — prevents file locking
         using Logger executionLogger = new Logger();
-        SelectLogType(executionLogger, "logs", "Execution of backups");
 
+            
+        SelectLogType(
+            executionLogger,
+            _settings.DailyLogPath ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "EasySave"),
+            "Execution of backups");
+        
         executionLogger.Log(
             DictionaryManager.SingleStringToDictionary("message", "Starting execution of backups."),
             LogType.Info
@@ -121,7 +126,7 @@ public class BackupService : IBackupService
         {
             try
             {
-                ExecuteSingleBackup(backup, cts.Token);
+                ExecuteSingleBackup(backup, cts.Token, executionLogger);
 
                 executionLogger.Log(
                     DictionaryManager.SingleStringToDictionary(
@@ -187,33 +192,49 @@ public class BackupService : IBackupService
     /// <summary>
     /// Executes a single backup with cancellation support.
     /// State is updated live via StateService after each file copy.
+    /// All logs are written both to the backup-specific log and to the shared daily log.
     /// </summary>
-    private void ExecuteSingleBackup(Backup backup, CancellationToken token)
+    private void ExecuteSingleBackup(Backup backup, CancellationToken token, Logger sharedLogger)
     {
         using Logger backupLogger = new Logger();
         SelectLogType(backupLogger,
             backup.DestinationFilePath,
             $"Execution du backup {backup.Id}");
 
-        backupLogger.Log(
-            DictionaryManager.SingleStringToDictionary(
-                "message",
-                $"Starting backup execution (ID: {backup.Id}, Type: {backup.Type})"
-            ),
-            LogType.Info
-        );
+        void LogInfo(string message)
+        {
+            var entry = DictionaryManager.SingleStringToDictionary("message", message);
+            backupLogger.Log(entry, LogType.Info);
+            sharedLogger.Log(entry, LogType.Info);
+        }
+
+        void LogWarning(string message)
+        {
+            var entry = DictionaryManager.SingleStringToDictionary("message", message);
+            backupLogger.Log(entry, LogType.Warning);
+            sharedLogger.Log(entry, LogType.Warning);
+        }
+
+        void LogError(string message)
+        {
+            var entry = DictionaryManager.SingleStringToDictionary("message", message);
+            backupLogger.Log(entry, LogType.Error);
+            sharedLogger.Log(entry, LogType.Error);
+        }
+
+        void LogFile(Dictionary<string, string> logs, LogType type = LogType.Info)
+        {
+            backupLogger.Log(logs, type);
+            sharedLogger.Log(logs, type);
+        }
+
+        LogInfo($"Starting backup execution (ID: {backup.Id}, Type: {backup.Type})");
 
         token.ThrowIfCancellationRequested();
 
         if (IsBusinessSoftwareRunning())
         {
-            backupLogger.Log(
-                DictionaryManager.SingleStringToDictionary(
-                    "message",
-                    $"Backup blocked before start — business software detected ({_businessProcessName})"
-                ),
-                LogType.Warning
-            );
+            LogWarning($"Backup blocked before start — business software detected ({_businessProcessName})");
             throw new InvalidOperationException(
                 $"Backup cannot start — business software detected ({_businessProcessName})"
             );
@@ -221,13 +242,7 @@ public class BackupService : IBackupService
 
         if (!Directory.Exists(backup.SourceFilePath))
         {
-            backupLogger.Log(
-                DictionaryManager.SingleStringToDictionary(
-                    "message",
-                    $"Source directory not found: {backup.SourceFilePath}"
-                ),
-                LogType.Error
-            );
+            LogError($"Source directory not found: {backup.SourceFilePath}");
             throw new DirectoryNotFoundException($"Source not found: {backup.SourceFilePath}");
         }
 
@@ -240,7 +255,6 @@ public class BackupService : IBackupService
         int  totalFiles = files.Length;
 
         // --- Register a pause gate for this backup ---
-        // Starts in Set state (not blocked) — Reset() will pause, Set() will resume
         ManualResetEventSlim pauseGate = new ManualResetEventSlim(initialState: true);
         _pauseGates[backup.Name] = pauseGate;
 
@@ -256,7 +270,6 @@ public class BackupService : IBackupService
         foreach (FileInfo sourceFile in files)
         {
             // Block here if paused — resumes automatically when Set() is called.
-            // Passes the CancellationToken so a cancel while paused works immediately.
             pauseGate.Wait(token);
 
             token.ThrowIfCancellationRequested();
@@ -266,8 +279,6 @@ public class BackupService : IBackupService
             Directory.CreateDirectory(Path.GetDirectoryName(destinationFilePath)!);
 
             // --- Sequential (differential) : skip files that haven't changed ---
-            // A file is considered unchanged if it already exists in the destination
-            // AND its last write time in the source is not more recent than in the destination.
             if (backup.Type == BackupType.Sequential)
             {
                 FileInfo destFile = new FileInfo(destinationFilePath);
@@ -286,7 +297,6 @@ public class BackupService : IBackupService
                 stopwatch.Stop();
 
                 // Overwrite the copied file's timestamps with the current date/time
-                // so the destination reflects when the backup ran, not the original file date
                 DateTime backupTime = DateTime.Now;
                 File.SetCreationTime(destinationFilePath, backupTime);
                 File.SetLastWriteTime(destinationFilePath, backupTime);
@@ -301,21 +311,14 @@ public class BackupService : IBackupService
                     { "backupName",      backup.Name },
                 };
 
-                backupLogger.Log(logs);
+                LogFile(logs);
 
                 // --- Update progress live after each successful copy ---
                 _stateService.IncrementProgress(backup.Name);
 
                 if (IsBusinessSoftwareRunning())
                 {
-                    backupLogger.Log(
-                        DictionaryManager.SingleStringToDictionary(
-                            "message",
-                            $"Business software detected after copying {sourceFile.Name} — cancelling all backups."
-                        ),
-                        LogType.Warning
-                    );
-
+                    LogWarning($"Business software detected after copying {sourceFile.Name} — cancelling all backups.");
                     throw new OperationCanceledException(token);
                 }
             }
@@ -333,7 +336,7 @@ public class BackupService : IBackupService
                     { "transferTimeMs", stopwatch.ElapsedMilliseconds.ToString() },
                     { "backupName",     backup.Name },
                 };
-                backupLogger.Log(logs, LogType.Error);
+                LogFile(logs, LogType.Error);
             }
         }
 
