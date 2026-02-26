@@ -8,7 +8,8 @@
     "Home": "Accueil",
     "Saves": "Sauvegardes",
     "History": "Historique",
-    "Settings": "Parametres"
+    "Settings": "Parametres",
+    "Security": "Securité"
   },
   "Storage": {
     "Title": "Stockage",
@@ -47,6 +48,14 @@
     "Success": "Succes",
     "Fail": "Echec",
     "Abort": "Annule"
+  },
+  "Security": {
+    "Title": "SECURITE - Chiffrement",
+    "Subtitle": "Sélectionnez les backups à chiffer",
+    "Encrypt": "Chiffrer",
+    "Decrypt": "Dechiffrer",
+    "Success": "Backups chiffrés avec succès",
+    "SuccessDecrypt": "Backups dechiffrés avec succès"
   },
   "Settings": {
     "Title": "PARAMETRES",

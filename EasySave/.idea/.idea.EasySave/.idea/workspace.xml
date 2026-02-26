@@ -7,10 +7,25 @@
     <list default="true" id="312a440a-7f95-4f25-9659-337b41e1dee6" name="Changes" comment="">
       <change afterPath="$PROJECT_DIR$/EasySave/Model/BackupState.cs" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/EasySave/Service/StateService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.AssemblyInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/Debug/net10.0/CryptoSoft.AssemblyInfoInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/rider.project.model.nuget.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/../CryptoSoft/CryptoSoft/obj/rider.project.restore.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../EasyLog" beforeDir="false" afterPath="$PROJECT_DIR$/../EasyLog" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.EasySave/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EasySave/Service/BackupService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/Service/BackupService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EasySave/Service/IBackupService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/Service/IBackupService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EasySave/View/MainWindow.xaml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/View/MainWindow.xaml.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EasySave/ViewModel/MainViewModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/ViewModel/MainViewModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/Debug/net10.0-windows/EasySave.AssemblyInfoInputs.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/obj/EasySave.csproj.nuget.dgspec.json" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/EasySave.csproj.nuget.dgspec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/obj/project.assets.json" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/project.assets.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/obj/project.nuget.cache" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/project.nuget.cache" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/obj/project.packagespec.json" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/project.packagespec.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/rider.project.model.nuget.info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/EasySave/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/EasySave/obj/rider.project.restore.info" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -85,7 +100,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "com.github.patou.gitmoji.migration-offered": "true",
-    "git-widget-placeholder": "feature/pause-backups",
+    "git-widget-placeholder": "#22 on Merging feature/add-secure-backup-option",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "configurable.group.appearance",
     "vue.rearranger.settings.migration": "true"
