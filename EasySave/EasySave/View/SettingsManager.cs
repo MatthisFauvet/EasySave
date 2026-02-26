@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text.Json;
+using EasySave.Model;
 
 namespace EasySave.View
 {
@@ -12,15 +13,15 @@ namespace EasySave.View
             "settings.json"
         );
 
-        public static AppSettings Load()
+        public static Settings Load()
         {
             try
             {
                 if (File.Exists(SettingsPath))
                 {
                     string json = File.ReadAllText(SettingsPath);
-                    var settings = JsonSerializer.Deserialize<AppSettings>(json)
-                                   ?? new AppSettings();
+                    var settings = JsonSerializer.Deserialize<Settings>(json)
+                                   ?? new Settings();
 
                     
                     settings.PriorityExtensions ??= new List<string>();
@@ -33,10 +34,10 @@ namespace EasySave.View
             {
                 // En cas d'erreur, retourner les paramètres par défaut
             }
-            return new AppSettings();
+            return new Settings();
         }
 
-        public static void Save(AppSettings settings)
+        public static void Save(Settings settings)
         {
             try
             {
