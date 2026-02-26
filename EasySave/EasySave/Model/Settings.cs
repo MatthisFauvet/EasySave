@@ -7,6 +7,7 @@ public class Settings
     public string Language { get; set; }
     public bool AutoExecute { get; set; }
     public string LogFileType { get; set; }
+    public string DailyLogPath  { get; set; }
 
     public Settings()
     {
