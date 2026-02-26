@@ -17,8 +17,11 @@ namespace EasySave.Repository
     /// </summary>
     public class JsonBackupRepository : IBackupRepository
     {
-        private static readonly string FILE_PATH =
-            Path.Combine(AppContext.BaseDirectory, "backups", "backups.json");
+        private static readonly string FILE_PATH = Path.Combine(
+            AppContext.BaseDirectory,
+            "backups",
+            "backups.json"
+        );
 
         /// <summary>
         /// In-memory cache of backups.
@@ -158,6 +161,49 @@ namespace EasySave.Repository
                     Items = items,
                     TotalCount = total,
                     PageIndex = pageIndex,
+                    PageSize = pageSize,
+                };
+            }
+        }
+        public PagedResult<Backup> SearchBackupsPage(string? query, int pageIndex, int pageSize)
+        {
+            if (pageIndex < 1) throw new ArgumentOutOfRangeException(nameof(pageIndex));
+            if (pageSize < 1) throw new ArgumentOutOfRangeException(nameof(pageSize));
+
+            query = (query ?? "").Trim();
+
+            lock (_sync)
+            {
+                IEnumerable<Backup> filtered = _backups;
+
+                if (!string.IsNullOrWhiteSpace(query))
+                {
+                    bool isId = int.TryParse(query, out int idExact);
+
+                    filtered = filtered.Where(b =>
+                        // ID exact si la query est un nombre
+                        (isId && b.Id == idExact)
+                        // ou ID partiel (ex: "1" match 10, 21...)
+                        || b.Id.ToString().Contains(query, StringComparison.OrdinalIgnoreCase)
+                        // Name contains (case-insensitive)
+                        || (!string.IsNullOrWhiteSpace(b.Name)
+                            && b.Name.Contains(query, StringComparison.OrdinalIgnoreCase))
+                    );
+                }
+
+                int total = filtered.Count();
+
+                var items = filtered
+                    .OrderBy(b => b.Id)
+                    .Skip((pageIndex - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+
+                return new PagedResult<Backup>
+                {
+                    Items = items,
+                    TotalCount = total,
+                    PageIndex = pageIndex,
                     PageSize = pageSize
                 };
             }
@@ -175,7 +221,7 @@ namespace EasySave.Repository
                     return new List<Backup>();
 
                 return JsonSerializer.Deserialize<List<Backup>>(json, GetJsonOptions())
-                       ?? new List<Backup>();
+                    ?? new List<Backup>();
             }
             catch
             {
@@ -194,20 +240,23 @@ namespace EasySave.Repository
                 Directory.CreateDirectory(directory);
 
             var json = JsonSerializer.Serialize(backups, GetJsonOptions());
-
             var tempPath = FILE_PATH + ".tmp";
+
             File.WriteAllText(tempPath, json);
 
             if (File.Exists(FILE_PATH))
-                File.Delete(FILE_PATH);
-
-            File.Move(tempPath, FILE_PATH);
+            {
+                // Replace is atomic — swaps temp→real in one OS operation
+                // No window where the file is missing or half-written
+                File.Replace(tempPath, FILE_PATH, FILE_PATH + ".bak");
+            }
+            else
+            {
+                File.Move(tempPath, FILE_PATH);
+            }
         }
 
         private static JsonSerializerOptions GetJsonOptions() =>
-            new JsonSerializerOptions
-            {
-                WriteIndented = true
-            };
+            new JsonSerializerOptions { WriteIndented = true };
     }
 }

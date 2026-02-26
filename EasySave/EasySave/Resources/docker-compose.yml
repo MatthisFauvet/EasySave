@@ -1,0 +1,6 @@
+﻿services:
+  storage:
+    image: alpine
+    command: tail -f /dev/null
+    volumes:
+      - C:\Users\matth\logs-easysave:/logs
