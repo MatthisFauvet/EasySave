@@ -1,0 +1,52 @@
+﻿@startuml
+title Backup Creation Sequence
+
+actor User
+
+participant MainViewModel
+participant IBackupService
+participant BackupService
+participant IBackupRepository
+participant JsonBackupRepository
+participant IBackupIdFactory
+participant Logger
+
+== User Action ==
+
+User -> MainViewModel : Click "Create Backup"
+
+MainViewModel -> IBackupService : CreateBackup(request)
+
+activate BackupService
+IBackupService -> BackupService : CreateBackup(request)
+
+BackupService -> Logger : Log("Backup creation started", Info)
+
+== Repository Layer ==
+
+BackupService -> IBackupRepository : CreateBackup(request)
+IBackupRepository -> JsonBackupRepository : CreateBackup(request)
+
+activate JsonBackupRepository
+
+JsonBackupRepository -> IBackupIdFactory : NextId()
+IBackupIdFactory --> JsonBackupRepository : newId
+
+JsonBackupRepository -> JsonBackupRepository : Create Backup object
+JsonBackupRepository -> JsonBackupRepository : Add to _backups list
+JsonBackupRepository -> JsonBackupRepository : Persist to JSON file
+
+deactivate JsonBackupRepository
+
+IBackupRepository --> BackupService : success
+
+== Logging Success ==
+
+BackupService -> Logger : Log("Backup successfully created", Info)
+
+BackupService --> IBackupService : return
+deactivate BackupService
+
+MainViewModel --> User : UI refresh
+
+@enduml
