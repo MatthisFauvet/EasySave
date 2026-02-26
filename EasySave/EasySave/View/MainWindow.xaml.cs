@@ -15,7 +15,7 @@ namespace EasySave.View
 {
     public partial class MainWindow : Window
     {
-        private AppSettings _settings;
+        private Settings _settings;
         private bool _isInitializing = true;
         private string _currentSection = "home";
         private MainViewModel _vm;
@@ -169,20 +169,9 @@ namespace EasySave.View
 
         private void NavHome_Click(object sender, RoutedEventArgs e)     => SectionHome();
         private void NavSaves_Click(object sender, RoutedEventArgs e)    => SectionSaves();
-        private void NavHistory_Click(object sender, RoutedEventArgs e)
-        {
-            SectionHistory();
-        }
-
-        private void NavSecurity_Click(object sender, RoutedEventArgs e)
-        {
-            SectionSecurity();
-        }
-
-        private void NavSettings_Click(object sender, RoutedEventArgs e)
-        {
-            SectionSettings();
-        }
+        private void NavHistory_Click(object sender, RoutedEventArgs e)  => SectionHistory();
+        private void NavSecurity_Click(object sender, RoutedEventArgs e) => SectionSecurity();
+        private void NavSettings_Click(object sender, RoutedEventArgs e) => SectionSettings();
 
         #endregion
 
@@ -420,17 +409,12 @@ namespace EasySave.View
 
             content.Children.Add(searchRow);
 
-            // =========================
-            // LIST PANEL
-            // =========================
             var listPanel = new StackPanel();
             content.Children.Add(listPanel);
 
-            // Render existing items (BackupProgressItem wraps each Backup)
             foreach (var item in _vm.BackupItems)
                 AddWorkItem(listPanel, item);
 
-            // Sync list panel when BackupItems collection changes (page reload, add, remove)
             _backupsChangedHandler = (s, e) =>
             {
                 switch (e.Action)
@@ -439,16 +423,13 @@ namespace EasySave.View
                         foreach (BackupProgressItem newItem in e.NewItems!)
                             AddWorkItem(listPanel, newItem);
                         break;
-
                     case NotifyCollectionChangedAction.Remove:
                         foreach (BackupProgressItem oldItem in e.OldItems!)
                             RemoveWorkItem(listPanel, oldItem);
                         break;
-
                     case NotifyCollectionChangedAction.Reset:
                         listPanel.Children.Clear();
                         break;
-
                     case NotifyCollectionChangedAction.Replace:
                         foreach (BackupProgressItem oldItem in e.OldItems!)
                             RemoveWorkItem(listPanel, oldItem);
@@ -460,9 +441,6 @@ namespace EasySave.View
 
             _vm.BackupItems.CollectionChanged += _backupsChangedHandler;
 
-            // =========================
-            // PAGINATION BAR
-            // =========================
             var pager = new StackPanel
             {
                 Orientation         = Orientation.Horizontal,
@@ -472,12 +450,8 @@ namespace EasySave.View
 
             var btnPrev = new Button
             {
-                Content = "◀",
-                Width = 40,
-                Height = 32,
-                Margin = new Thickness(0, 0, 8, 0),
-                Padding = new Thickness(0),
-                FontSize = 16,
+                Content = "◀", Width = 40, Height = 32, Margin = new Thickness(0, 0, 8, 0),
+                Padding = new Thickness(0), FontSize = 16,
                 HorizontalContentAlignment = HorizontalAlignment.Center,
                 VerticalContentAlignment = VerticalAlignment.Center,
             };
@@ -500,12 +474,8 @@ namespace EasySave.View
 
             var btnNext = new Button
             {
-                Content = "▶",
-                Width = 40,
-                Height = 32,
-                Margin = new Thickness(8, 0, 0, 0),
-                Padding = new Thickness(0),
-                FontSize = 16,
+                Content = "▶", Width = 40, Height = 32, Margin = new Thickness(8, 0, 0, 0),
+                Padding = new Thickness(0), FontSize = 16,
                 HorizontalContentAlignment = HorizontalAlignment.Center,
                 VerticalContentAlignment = VerticalAlignment.Center,
             };
@@ -526,10 +496,6 @@ namespace EasySave.View
                 listPanel.Children.Remove(control);
         }
 
-        /// <summary>
-        /// Builds the card UI for one backup.
-        /// The card DataContext is set to the BackupProgressItem so all bindings are automatic.
-        /// </summary>
         private void AddWorkItem(StackPanel parent, BackupProgressItem item)
         {
             var backup = item.Backup;
@@ -540,34 +506,29 @@ namespace EasySave.View
                 Padding         = new Thickness(16, 12, 16, 12),
                 Margin          = new Thickness(0, 0, 0, 8),
                 BorderThickness = new Thickness(1),
-                Tag             = item,           // used by RemoveWorkItem
-                DataContext     = item            // all bindings inside resolve against BackupProgressItem
+                Tag             = item,
+                DataContext     = item
             };
             card.SetResourceReference(Border.BackgroundProperty, "CardBrush");
             card.SetResourceReference(Border.BorderBrushProperty, "BorderBrush");
 
             var stack = new StackPanel();
 
-            // ── TOP ROW : name / badge / pause / delete ───────────────────────
             var topRow = new Grid();
             topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // type badge
-            topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // pause button
-            topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto }); // delete button
+            topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            topRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
-            // Name
             var nameBlock = new TextBlock
             {
-                Text              = backup.Name,
-                FontSize          = 16,
-                FontWeight        = FontWeights.SemiBold,
+                Text = backup.Name, FontSize = 16, FontWeight = FontWeights.SemiBold,
                 VerticalAlignment = VerticalAlignment.Center
             };
             nameBlock.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             Grid.SetColumn(nameBlock, 0);
             topRow.Children.Add(nameBlock);
 
-            // Type badge
             Color badgeColor = backup.Type.ToString() switch
             {
                 "Full"       => (Color)ColorConverter.ConvertFromString("#90D5FF"),
@@ -576,42 +537,29 @@ namespace EasySave.View
             };
             var badge = new Border
             {
-                CornerRadius      = new CornerRadius(10),
-                Padding           = new Thickness(8, 3, 8, 3),
-                Background        = new SolidColorBrush(badgeColor),
-                Margin            = new Thickness(8, 0, 0, 0),
-                VerticalAlignment = VerticalAlignment.Center
+                CornerRadius = new CornerRadius(10), Padding = new Thickness(8, 3, 8, 3),
+                Background = new SolidColorBrush(badgeColor),
+                Margin = new Thickness(8, 0, 0, 0), VerticalAlignment = VerticalAlignment.Center
             };
-            badge.Child = new TextBlock
-            {
-                Text       = backup.Type.ToString(),
-                FontSize   = 14,
-                FontWeight = FontWeights.SemiBold
-            };
+            badge.Child = new TextBlock { Text = backup.Type.ToString(), FontSize = 14, FontWeight = FontWeights.SemiBold };
             Grid.SetColumn(badge, 1);
             topRow.Children.Add(badge);
 
-            // ── PAUSE / PLAY BUTTON ────────────────────────────────────────────
             var pauseButton = BuildIconButton("⏸", margin: new Thickness(8, 0, 0, 0));
-
-            // The emoji toggles between ⏸ and ▶ based on IsPaused
-            var pauseLabel = (TextBlock)pauseButton.Content;
+            var pauseLabel  = (TextBlock)pauseButton.Content;
             item.PropertyChanged += (_, e) =>
             {
                 if (e.PropertyName is nameof(BackupProgressItem.IsPaused) or nameof(BackupProgressItem.Status))
                     pauseLabel.Text = item.IsPaused ? "▶" : "⏸";
             };
-
             pauseButton.Click += (_, _) =>
             {
                 if (item.IsPaused) _vm.ResumeBackup(backup);
                 else               _vm.PauseBackup(backup);
             };
-
             Grid.SetColumn(pauseButton, 2);
             topRow.Children.Add(pauseButton);
 
-            // ── DELETE BUTTON ─────────────────────────────────────────────────
             var deleteButton = BuildIconButton("🗑", margin: new Thickness(8, 0, 0, 0));
             deleteButton.Click += (_, _) =>
             {
@@ -623,29 +571,21 @@ namespace EasySave.View
 
             stack.Children.Add(topRow);
 
-            // ── PROGRESS ROW ─────────────────────────────────────────────────
             var progressRow = new Grid { Margin = new Thickness(0, 10, 0, 0) };
             progressRow.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             progressRow.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
-            // FIX: set DataContext explicitly — do NOT rely on card.DataContext propagation
-            // because bindings are evaluated at SetBinding() time, before the visual tree is built.
-            // Use BuildColorableProgressBar() so Foreground color changes are actually visible —
-            // the default WPF ProgressBar template ignores Foreground entirely.
             var progressBar = BuildColorableProgressBar();
             progressBar.DataContext = item;
             progressBar.SetBinding(ProgressBar.ValueProperty, new Binding("Progress"));
             Grid.SetColumn(progressBar, 0);
             progressRow.Children.Add(progressBar);
 
-            // "12 / 48 files  (25%)"
             var progressLabel = new TextBlock
             {
-                DataContext       = item,   // explicit for the same reason
-                FontSize          = 11,
-                Margin            = new Thickness(10, 0, 0, 0),
+                DataContext = item, FontSize = 11, Margin = new Thickness(10, 0, 0, 0),
                 VerticalAlignment = VerticalAlignment.Center,
-                FontFamily        = (FontFamily)FindResource("AppFont"),
+                FontFamily = (FontFamily)FindResource("AppFont"),
             };
             progressLabel.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
 
@@ -660,9 +600,6 @@ namespace EasySave.View
 
             stack.Children.Add(progressRow);
 
-            // ── COLOR: change progress bar to green when completed ────────────
-            // WPF ProgressBar ignores Foreground changes after render unless we force
-            // a style override. We listen to PropertyChanged and swap the Foreground brush.
             item.PropertyChanged += (_, e) =>
             {
                 if (e.PropertyName != nameof(BackupProgressItem.Status) &&
@@ -670,11 +607,11 @@ namespace EasySave.View
 
                 progressBar.Foreground = item.Status switch
                 {
-                    BackupStatus.Completed => new SolidColorBrush((Color)ColorConverter.ConvertFromString("#34D399")), // green
-                    BackupStatus.Error     => new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F87171")), // red
-                    BackupStatus.Cancelled => new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FBBF24")), // yellow
-                    BackupStatus.Paused    => new SolidColorBrush((Color)ColorConverter.ConvertFromString("#A78BFA")), // purple
-                    _                      => new SolidColorBrush((Color)ColorConverter.ConvertFromString("#60A5FA")), // blue (running/idle)
+                    BackupStatus.Completed => new SolidColorBrush((Color)ColorConverter.ConvertFromString("#34D399")),
+                    BackupStatus.Error     => new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F87171")),
+                    BackupStatus.Cancelled => new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FBBF24")),
+                    BackupStatus.Paused    => new SolidColorBrush((Color)ColorConverter.ConvertFromString("#A78BFA")),
+                    _                      => new SolidColorBrush((Color)ColorConverter.ConvertFromString("#60A5FA")),
                 };
             };
 
@@ -682,55 +619,20 @@ namespace EasySave.View
             parent.Children.Add(card);
         }
 
-        /// <summary>
-        /// Creates a ProgressBar with a custom template that actually respects Foreground.
-        /// The default WPF ProgressBar template ignores Foreground and uses an internal accent brush,
-        /// so color changes via Foreground have no visible effect without this override.
-        /// </summary>
         private static ProgressBar BuildColorableProgressBar()
         {
-            // The indicator rectangle fills according to the ProgressBar value
-            // We bind its Fill to the ProgressBar's Foreground so we can change the color at runtime
-            var indicatorFill = new FrameworkElementFactory(typeof(Rectangle));
-            indicatorFill.SetValue(Rectangle.RadiusXProperty, 3.0);
-            indicatorFill.SetValue(Rectangle.RadiusYProperty, 3.0);
-            indicatorFill.SetBinding(
-                Rectangle.FillProperty,
-                new Binding("Foreground") { RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent) }
-            );
-
-            // The indicator stretches left-to-right based on the value
-            var indicatorGrid = new FrameworkElementFactory(typeof(Grid));
-            indicatorGrid.SetValue(Grid.HorizontalAlignmentProperty, HorizontalAlignment.Left);
-            indicatorGrid.AppendChild(indicatorFill);
-
-            // A trigger animates Width via TemplatedParent binding — we do it manually instead:
-            // Wrap inside a Grid that clips to the correct width via a ScaleTransform on a border
-            var track = new FrameworkElementFactory(typeof(Border));
-            track.SetValue(Border.CornerRadiusProperty, new CornerRadius(3));
-            track.SetValue(Border.ClipToBoundsProperty, true);
-            track.SetBinding(
-                Border.BackgroundProperty,
-                new Binding("Background") { RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent) }
-            );
-
-            // Inner bar — sized by WPF's built-in PART_Track / PART_Indicator mechanism
             var indicator = new FrameworkElementFactory(typeof(Border));
             indicator.SetValue(FrameworkElement.NameProperty, "PART_Indicator");
             indicator.SetValue(Border.CornerRadiusProperty, new CornerRadius(3));
             indicator.SetValue(FrameworkElement.HorizontalAlignmentProperty, HorizontalAlignment.Left);
-            indicator.SetBinding(
-                Border.BackgroundProperty,
-                new Binding("Foreground") { RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent) }
-            );
+            indicator.SetBinding(Border.BackgroundProperty,
+                new Binding("Foreground") { RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent) });
 
             var trackBorder = new FrameworkElementFactory(typeof(Border));
             trackBorder.SetValue(Border.CornerRadiusProperty, new CornerRadius(3));
             trackBorder.SetValue(Border.ClipToBoundsProperty, true);
-            trackBorder.SetBinding(
-                Border.BackgroundProperty,
-                new Binding("Background") { RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent) }
-            );
+            trackBorder.SetBinding(Border.BackgroundProperty,
+                new Binding("Background") { RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent) });
             trackBorder.SetValue(FrameworkElement.NameProperty, "PART_Track");
             trackBorder.AppendChild(indicator);
 
@@ -740,32 +642,21 @@ namespace EasySave.View
             return new ProgressBar
             {
                 Template          = template,
-                Background        = new SolidColorBrush(Color.FromArgb(40, 96, 165, 250)), // faint blue track
+                Background        = new SolidColorBrush(Color.FromArgb(40, 96, 165, 250)),
                 Foreground        = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#60A5FA")),
-                Height            = 6,
-                Minimum           = 0,
-                Maximum           = 100,
-                Value             = 0,
+                Height            = 6, Minimum = 0, Maximum = 100, Value = 0,
                 VerticalAlignment = VerticalAlignment.Center,
             };
         }
 
-        /// <summary>
-        /// Builds a minimal transparent icon button (emoji label, no border).
-        /// </summary>
         private Button BuildIconButton(string emoji, Thickness margin = default)
         {
             var btn = new Button
             {
-                Width           = 30,
-                Height          = 30,
-                Margin          = margin,
-                VerticalAlignment = VerticalAlignment.Center,
-                Cursor          = Cursors.Hand,
-                Background      = Brushes.Transparent,
-                BorderBrush     = Brushes.Transparent,
-                BorderThickness = new Thickness(0),
-                Padding         = new Thickness(0),
+                Width = 30, Height = 30, Margin = margin,
+                VerticalAlignment = VerticalAlignment.Center, Cursor = Cursors.Hand,
+                Background = Brushes.Transparent, BorderBrush = Brushes.Transparent,
+                BorderThickness = new Thickness(0), Padding = new Thickness(0),
             };
 
             var contentFactory = new FrameworkElementFactory(typeof(ContentPresenter));
@@ -775,29 +666,22 @@ namespace EasySave.View
 
             btn.Content = new TextBlock
             {
-                Text                = emoji,
-                FontSize            = 16,
-                VerticalAlignment   = VerticalAlignment.Center,
+                Text = emoji, FontSize = 16,
+                VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Center
             };
 
             return btn;
         }
 
-        private void AddSecurityItemFromBackup(StackPanel content, Backup backup)
-        {
-            AddSecurityItem(content, backup);
-        }
+        private void AddSecurityItemFromBackup(StackPanel content, Backup backup) => AddSecurityItem(content, backup);
 
         private void AddSecurityItem(StackPanel parent, Backup backup)
         {
             var card = new Border
             {
-                CornerRadius = new CornerRadius(6),
-                Padding = new Thickness(16, 12, 16, 12),
-                Margin = new Thickness(0, 0, 0, 8),
-                BorderThickness = new Thickness(1),
-                Tag = backup
+                CornerRadius = new CornerRadius(6), Padding = new Thickness(16, 12, 16, 12),
+                Margin = new Thickness(0, 0, 0, 8), BorderThickness = new Thickness(1), Tag = backup
             };
             card.SetResourceReference(Border.BackgroundProperty, "CardBrush");
             card.SetResourceReference(Border.BorderBrushProperty, "BorderSubtleBrush");
@@ -809,33 +693,16 @@ namespace EasySave.View
 
             var nameBlock = new TextBlock
             {
-                Text = backup.Name,
-                FontSize = 16,
-                FontWeight = FontWeights.SemiBold,
+                Text = backup.Name, FontSize = 16, FontWeight = FontWeights.SemiBold,
                 VerticalAlignment = VerticalAlignment.Center,
             };
             nameBlock.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             Grid.SetColumn(nameBlock, 0);
             grid.Children.Add(nameBlock);
 
-            var cb = new CheckBox
-            {
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(0, 0, 12, 0)
-            };
-
-            cb.Checked += (_, __) =>
-            {
-               _selectedBackups.Add(backup);
-               _encryptedButton.IsEnabled  = _selectedBackups.Count > 0;
-               _decryptedButton.IsEnabled = _selectedBackups.Count > 0;
-            };
-
-            cb.Unchecked += (_, __) =>
-            {
-                _selectedBackups.Remove(backup);
-                _encryptedButton.IsEnabled = _selectedBackups.Count > 0;
-            };
+            var cb = new CheckBox { VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 12, 0) };
+            cb.Checked   += (_, __) => { _selectedBackups.Add(backup); _encryptedButton.IsEnabled = _decryptedButton.IsEnabled = true; };
+            cb.Unchecked += (_, __) => { _selectedBackups.Remove(backup); _encryptedButton.IsEnabled = _selectedBackups.Count > 0; };
 
             Grid.SetColumn(cb, 1);
             grid.Children.Add(cb);
@@ -843,7 +710,7 @@ namespace EasySave.View
             card.Child = grid;
             parent.Children.Add(card);
         }
-    
+
         private void SectionHistory()
         {
             UpdateNavStyles("history");
@@ -852,21 +719,16 @@ namespace EasySave.View
 
             var title = new TextBlock
             {
-                Text       = LanguageManager.Get("History.Title"),
-                FontSize   = 26,
-                FontWeight = FontWeights.Bold,
-                Margin     = new Thickness(0, 0, 0, 6),
-                FontFamily = (FontFamily)FindResource("AppFont"),
+                Text = LanguageManager.Get("History.Title"), FontSize = 26, FontWeight = FontWeights.Bold,
+                Margin = new Thickness(0, 0, 0, 6), FontFamily = (FontFamily)FindResource("AppFont"),
             };
             title.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             content.Children.Add(title);
 
             var description = new TextBlock
             {
-                Text       = LanguageManager.Get("History.Description"),
-                FontSize   = 13,
-                Margin     = new Thickness(0, 0, 0, 24),
-                FontFamily = (FontFamily)FindResource("AppFont"),
+                Text = LanguageManager.Get("History.Description"), FontSize = 13,
+                Margin = new Thickness(0, 0, 0, 24), FontFamily = (FontFamily)FindResource("AppFont"),
             };
             description.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
             content.Children.Add(description);
@@ -874,79 +736,14 @@ namespace EasySave.View
             SetContent(content);
         }
 
-        private void AddHistoryItem(StackPanel parent, string date, string work, string status, string type, string size, string duration)
-        {
-            var card = new Border
-            {
-                CornerRadius    = new CornerRadius(6),
-                Padding         = new Thickness(14, 10, 14, 10),
-                Margin          = new Thickness(0, 0, 0, 4),
-                BorderThickness = new Thickness(1),
-            };
-            card.SetResourceReference(Border.BackgroundProperty, "CardBrush");
-            card.SetResourceReference(Border.BorderBrushProperty, "BorderSubtleBrush");
-
-            var grid = new Grid();
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(130) });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(80) });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(80) });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(100) });
-
-            void AddCell(int col, string text, string fontKey = "AppFont", string fgKey = "ForegroundSecondaryBrush", int fontSize = 11)
-            {
-                var tb = new TextBlock { Text = text, FontSize = fontSize, VerticalAlignment = VerticalAlignment.Center, FontFamily = (FontFamily)FindResource(fontKey) };
-                tb.SetResourceReference(TextBlock.ForegroundProperty, fgKey);
-                Grid.SetColumn(tb, col);
-                grid.Children.Add(tb);
-            }
-
-            AddCell(0, date, "MonoFont");
-            AddCell(1, work, fontSize: 13, fgKey: "ForegroundBrush");
-            AddCell(2, size, "MonoFont");
-            AddCell(3, duration, "MonoFont");
-
-            Color statusColor = type switch
-            {
-                "success" => (Color)ColorConverter.ConvertFromString("#34D399"),
-                "warning" => (Color)ColorConverter.ConvertFromString("#FBBF24"),
-                "error"   => (Color)ColorConverter.ConvertFromString("#F87171"),
-                _         => (Color)ColorConverter.ConvertFromString("#60A5FA"),
-            };
-            var statusBadge = new Border
-            {
-                CornerRadius        = new CornerRadius(10),
-                Padding             = new Thickness(8, 2, 8, 2),
-                HorizontalAlignment = HorizontalAlignment.Right,
-                Background          = new SolidColorBrush(Color.FromArgb(25, statusColor.R, statusColor.G, statusColor.B)),
-            };
-            statusBadge.Child = new TextBlock
-            {
-                Text       = status,
-                FontSize   = 10,
-                FontWeight = FontWeights.SemiBold,
-                Foreground = new SolidColorBrush(statusColor),
-                FontFamily = (FontFamily)FindResource("AppFont"),
-            };
-            Grid.SetColumn(statusBadge, 4);
-            grid.Children.Add(statusBadge);
-
-            card.Child = grid;
-            parent.Children.Add(card);
-        }
-        
-
         private void SectionSecurity()
         {
             UpdateNavStyles("security");
             var content = new StackPanel();
             var title = new TextBlock
             {
-                Text = LanguageManager.Get("Security.Title"),
-                FontSize = 26,
-                FontWeight = FontWeights.Bold,
-                Margin = new Thickness(0, 0, 0, 6),
-                FontFamily = (FontFamily)FindResource("AppFont"),
+                Text = LanguageManager.Get("Security.Title"), FontSize = 26, FontWeight = FontWeights.Bold,
+                Margin = new Thickness(0, 0, 0, 6), FontFamily = (FontFamily)FindResource("AppFont"),
             };
             title.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             content.Children.Add(title);
@@ -954,25 +751,18 @@ namespace EasySave.View
             var listPanel = new StackPanel();
             content.Children.Add(listPanel);
             foreach (var b in _vm.Backups)
-            {
-               AddSecurityItemFromBackup(listPanel, b);
-            }
+                AddSecurityItemFromBackup(listPanel, b);
 
             _encryptedButton = new Button
             {
-                Content = LanguageManager.Get("Security.Encrypt"),
-                Style = (Style)FindResource("PrimaryButton"),
-                Margin = new Thickness(0, 20, 0, 0),
-                IsEnabled = false
+                Content = LanguageManager.Get("Security.Encrypt"), Style = (Style)FindResource("PrimaryButton"),
+                Margin = new Thickness(0, 20, 0, 0), IsEnabled = false
             };
-
             _decryptedButton = new Button
             {
                 Content = LanguageManager.Get("Security.Decrypt"),
-                Margin = new Thickness(0, 20, 0, 0),
-                IsEnabled = false
+                Margin = new Thickness(0, 20, 0, 0), IsEnabled = false
             };
-
             _encryptedButton.Click += EncryptSelectedBackups;
             _decryptedButton.Click += DecryptSelectedBackups;
             content.Children.Add(_encryptedButton);
@@ -987,87 +777,45 @@ namespace EasySave.View
 
         private void EncryptSelectedBackups(object sender, RoutedEventArgs e)
         {
-            string password = Microsoft.VisualBasic.Interaction.InputBox(
-                "Entrez le mot de passe de chiffrement :",
-                "Chiffrement",
-                "",
-                -1,
-                -1
-            );
-
+            string password = Microsoft.VisualBasic.Interaction.InputBox("Entrez le mot de passe de chiffrement :", "Chiffrement", "", -1, -1);
             foreach (var backup in _selectedBackups)
             {
                 var root = backup.DestinationFilePath;
                 if (!Directory.Exists(root)) continue;
-
-                var files = Directory.GetFiles(root, "*", SearchOption.AllDirectories);
-
-                foreach (var file in files)
+                foreach (var file in Directory.GetFiles(root, "*", SearchOption.AllDirectories))
                 {
-                    // évite de rechiffrer les fichiers déjà chiffrés
-                    if (file.EndsWith(".enc", StringComparison.OrdinalIgnoreCase))
-                        continue;
-
+                    if (file.EndsWith(".enc", StringComparison.OrdinalIgnoreCase)) continue;
                     try
                     {
                         var tmpEnc = file + ".enc";
-
                         CryptoSoft.Encrypter.EncryptFile(file, tmpEnc, password);
-
-                        // remplace l’original par le chiffré
                         File.Delete(file);
                         File.Move(tmpEnc, file + ".enc");
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Erreur chiffrement: {file}\n{ex.Message}");
-                    }
+                    catch (Exception ex) { MessageBox.Show($"Erreur chiffrement: {file}\n{ex.Message}"); }
                 }
             }
-
             MessageBox.Show(LanguageManager.Get("Security.Success"));
         }
 
         private void DecryptSelectedBackups(object sender, RoutedEventArgs e)
         {
-            string password = Microsoft.VisualBasic.Interaction.InputBox(
-                 "Entrez le mot de passe de chiffrement :",
-                 "Chiffrement",
-                 "",
-                 -1,
-                 -1
-             );
-
+            string password = Microsoft.VisualBasic.Interaction.InputBox("Entrez le mot de passe de chiffrement :", "Chiffrement", "", -1, -1);
             foreach (var backup in _selectedBackups)
             {
                 string root = backup.DestinationFilePath;
-
-                if (!Directory.Exists(root))
-                    continue;
-
-                var encryptedFiles = Directory.GetFiles(root, "*.enc", SearchOption.AllDirectories);
-
-                foreach (var encFile in encryptedFiles)
+                if (!Directory.Exists(root)) continue;
+                foreach (var encFile in Directory.GetFiles(root, "*.enc", SearchOption.AllDirectories))
                 {
                     try
                     {
-                        string outputFile = encFile.Substring(0, encFile.Length - 4); // enlève .enc
-
-                        CryptoSoft.Encrypter.DecryptFile(
-                            encFile,
-                            outputFile,
-                            password
-                        );
-
+                        string outputFile = encFile.Substring(0, encFile.Length - 4);
+                        CryptoSoft.Encrypter.DecryptFile(encFile, outputFile, password);
                         File.Delete(encFile);
                     }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show($"Erreur décryptage:\n{encFile}\n{ex.Message}");
-                    }
+                    catch (Exception ex) { MessageBox.Show($"Erreur décryptage:\n{encFile}\n{ex.Message}"); }
                 }
             }
-
             MessageBox.Show(LanguageManager.Get("Security.SuccessDecrypt"));
         }
 
@@ -1080,116 +828,145 @@ namespace EasySave.View
 
             var title = new TextBlock
             {
-                Text       = LanguageManager.Get("Settings.Title"),
-                FontSize   = 26,
-                FontWeight = FontWeights.Bold,
-                Margin     = new Thickness(0, 0, 0, 6),
-                FontFamily = (FontFamily)FindResource("AppFont"),
+                Text = LanguageManager.Get("Settings.Title"), FontSize = 26, FontWeight = FontWeights.Bold,
+                Margin = new Thickness(0, 0, 0, 6), FontFamily = (FontFamily)FindResource("AppFont"),
             };
             title.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             content.Children.Add(title);
 
             var subtitle = new TextBlock
             {
-                Text       = LanguageManager.Get("Settings.Subtitle"),
-                FontSize   = 13,
-                Margin     = new Thickness(0, 0, 0, 28),
-                FontFamily = (FontFamily)FindResource("AppFont"),
+                Text = LanguageManager.Get("Settings.Subtitle"), FontSize = 13,
+                Margin = new Thickness(0, 0, 0, 28), FontFamily = (FontFamily)FindResource("AppFont"),
             };
             subtitle.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
             content.Children.Add(subtitle);
 
+            // ── GENERAL ──────────────────────────────────────────────────────────
             AddSectionHeader(content, LanguageManager.Get("Settings.General"));
 
-            var generalCard = new Border { CornerRadius = new CornerRadius(8), Padding = new Thickness(20, 16, 20, 16), Margin = new Thickness(0, 0, 0, 20), BorderThickness = new Thickness(1) };
-            generalCard.SetResourceReference(Border.BackgroundProperty, "CardBrush");
-            generalCard.SetResourceReference(Border.BorderBrushProperty, "BorderBrush");
-
+            var generalCard  = BuildCard();
             var generalStack = new StackPanel();
 
             var comboTemplate = new ComboBox { Width = 220, MinHeight = 32 };
             comboTemplate.Items.Add(LanguageManager.Get("Settings.Template1"));
             comboTemplate.Items.Add(LanguageManager.Get("Settings.Template2"));
-            comboTemplate.SelectedIndex        = _settings.AppTemplate - 1;
-            comboTemplate.SelectionChanged    += ComboTemplate_Changed;
+            comboTemplate.SelectedIndex     = _settings.AppTemplate - 1;
+            comboTemplate.SelectionChanged += ComboTemplate_Changed;
             AddSettingRow(generalStack, LanguageManager.Get("Settings.TemplateApp"), LanguageManager.Get("Settings.TemplateDescription"), comboTemplate);
 
             var comboTheme = new ComboBox { Width = 220, MinHeight = 32 };
             comboTheme.Items.Add(LanguageManager.Get("Settings.Light"));
             comboTheme.Items.Add(LanguageManager.Get("Settings.Dark"));
-            comboTheme.SelectedIndex        = _settings.AppTheme == "Light" ? 0 : 1;
-            comboTheme.SelectionChanged    += ComboTheme_Changed;
+            comboTheme.SelectedIndex     = _settings.AppTheme == "Light" ? 0 : 1;
+            comboTheme.SelectionChanged += ComboTheme_Changed;
             AddSettingRow(generalStack, LanguageManager.Get("Settings.ThemeApp"), LanguageManager.Get("Settings.ThemeDescription"), comboTheme);
 
             var comboLanguage = new ComboBox { Width = 220, MinHeight = 32 };
             comboLanguage.Items.Add(LanguageManager.Get("Settings.French"));
             comboLanguage.Items.Add(LanguageManager.Get("Settings.English"));
-            comboLanguage.SelectedIndex      = _settings.Language == "Français" ? 0 : 1;
-            comboLanguage.SelectionChanged  += ComboLanguage_Changed;
+            comboLanguage.SelectedIndex     = _settings.Language == "Français" ? 0 : 1;
+            comboLanguage.SelectionChanged += ComboLanguage_Changed;
             AddSettingRow(generalStack, LanguageManager.Get("Settings.Language"), LanguageManager.Get("Settings.LanguageDescription"), comboLanguage, false);
 
             generalCard.Child = generalStack;
             content.Children.Add(generalCard);
 
+            // ── SAVES ─────────────────────────────────────────────────────────────
             AddSectionHeader(content, LanguageManager.Get("Settings.Saves"));
 
-            var savesCard = new Border { CornerRadius = new CornerRadius(8), Padding = new Thickness(20, 16, 20, 16), Margin = new Thickness(0, 0, 0, 20), BorderThickness = new Thickness(1) };
-            savesCard.SetResourceReference(Border.BackgroundProperty, "CardBrush");
-            savesCard.SetResourceReference(Border.BorderBrushProperty, "BorderBrush");
-
+            var savesCard  = BuildCard();
             var savesStack = new StackPanel();
             var comboExecution = new ComboBox { Width = 220, MinHeight = 32 };
             comboExecution.Items.Add(LanguageManager.Get("Settings.Manual"));
             comboExecution.Items.Add(LanguageManager.Get("Settings.Auto"));
-            comboExecution.SelectedIndex      = _settings.AutoExecute ? 1 : 0;
-            comboExecution.SelectionChanged  += ComboExecution_Changed;
+            comboExecution.SelectedIndex     = _settings.AutoExecute ? 1 : 0;
+            comboExecution.SelectionChanged += ComboExecution_Changed;
             AddSettingRow(savesStack, LanguageManager.Get("Settings.ExecutionMode"), LanguageManager.Get("Settings.ExecutionDescription"), comboExecution, false);
-
             savesCard.Child = savesStack;
             content.Children.Add(savesCard);
 
+            // ── LOGS ──────────────────────────────────────────────────────────────
             AddSectionHeader(content, LanguageManager.Get("Settings.Logs"));
 
-            var logsCard = new Border { CornerRadius = new CornerRadius(8), Padding = new Thickness(20, 16, 20, 16), Margin = new Thickness(0, 0, 0, 20), BorderThickness = new Thickness(1) };
-            logsCard.SetResourceReference(Border.BackgroundProperty, "CardBrush");
-            logsCard.SetResourceReference(Border.BorderBrushProperty, "BorderBrush");
+            var logsCard  = BuildCard();
+            var logsStack = new StackPanel();
 
-            var logsStack    = new StackPanel();
+            // Format JSON / XML
             var comboLogType = new ComboBox { Width = 220, MinHeight = 32 };
             comboLogType.Items.Add(LanguageManager.Get("Settings.JSON"));
             comboLogType.Items.Add(LanguageManager.Get("Settings.XML"));
-            comboLogType.SelectedIndex      = _settings.LogFileType == "JSON" ? 0 : 1;
-            comboLogType.SelectionChanged  += ComboLogType_Changed;
-            AddSettingRow(logsStack, LanguageManager.Get("Settings.FileType"), LanguageManager.Get("Settings.FileTypeDescription"), comboLogType, false);
+            comboLogType.SelectedIndex     = _settings.LogFileType == "JSON" ? 0 : 1;
+            comboLogType.SelectionChanged += ComboLogType_Changed;
+            AddSettingRow(logsStack, LanguageManager.Get("Settings.FileType"), LanguageManager.Get("Settings.FileTypeDescription"), comboLogType);
+
+            // Mode : Local / Docker / Les deux
+            var comboStorageMode = new ComboBox { Width = 220, MinHeight = 32 };
+            comboStorageMode.Items.Add("Local uniquement");
+            comboStorageMode.Items.Add("Docker uniquement");
+            comboStorageMode.Items.Add("Local + Docker");
+            comboStorageMode.SelectedIndex = _settings.LogStorageMode switch
+            {
+                LogStorageMode.Docker => 1,
+                LogStorageMode.Both   => 2,
+                _                     => 0,
+            };
+            AddSettingRow(logsStack, "Destination des logs", "Choisissez où stocker le fichier log journalier.", comboStorageMode);
+
+            // Chemin local — affiché si Local ou Both
+            var localPathRow = new StackPanel
+            {
+                Visibility = _settings.LogStorageMode != LogStorageMode.Docker ? Visibility.Visible : Visibility.Collapsed
+            };
+            AddSettingRow(localPathRow, "Dossier local", "Dossier sur cette machine.",
+                BuildPathPicker(
+                    current    : _settings.DailyLogPath,
+                    onSelected : path => { _settings.DailyLogPath = path; SettingsManager.Save(_settings); }
+                ), false);
+            logsStack.Children.Add(localPathRow);
+
+            // Chemin Docker — affiché si Docker ou Both
+            var dockerPathRow = new StackPanel
+            {
+                Visibility = _settings.LogStorageMode != LogStorageMode.Local ? Visibility.Visible : Visibility.Collapsed
+            };
+            AddSettingRow(dockerPathRow, "Dossier Docker", "Dossier local mappé sur le volume Docker (ex: C:\\logs-easysave).",
+                BuildPathPicker(
+                    current    : _settings.DockerLogPath,
+                    onSelected : path => { _settings.DockerLogPath = path; SettingsManager.Save(_settings); }
+                ), false);
+            logsStack.Children.Add(dockerPathRow);
+
+            // Affichage dynamique selon le mode choisi
+            comboStorageMode.SelectionChanged += (_, __) =>
+            {
+                if (_isInitializing) return;
+                _settings.LogStorageMode = comboStorageMode.SelectedIndex switch
+                {
+                    1 => LogStorageMode.Docker,
+                    2 => LogStorageMode.Both,
+                    _ => LogStorageMode.Local,
+                };
+                SettingsManager.Save(_settings);
+                localPathRow.Visibility  = _settings.LogStorageMode != LogStorageMode.Docker ? Visibility.Visible : Visibility.Collapsed;
+                dockerPathRow.Visibility = _settings.LogStorageMode != LogStorageMode.Local   ? Visibility.Visible : Visibility.Collapsed;
+            };
 
             logsCard.Child = logsStack;
             content.Children.Add(logsCard);
 
             scrollViewer.Content = content;
             SetContent(scrollViewer);
-            // AddConsoleLog("Navigation vers Parametres.", "info");
 
-            // -- Priority files section --
-            AddSectionHeader(content, "Fichiers prioritaires"); 
+            // ── PRIORITY FILES ────────────────────────────────────────────────────
+            AddSectionHeader(content, "Fichiers prioritaires");
 
-            var prioCard = new Border
-            {
-                CornerRadius = new CornerRadius(8),
-                Padding = new Thickness(20, 16, 20, 16),
-                Margin = new Thickness(0, 0, 0, 20),
-                BorderThickness = new Thickness(1)
-            };
-            prioCard.SetResourceReference(Border.BackgroundProperty, "CardBrush");
-            prioCard.SetResourceReference(Border.BorderBrushProperty, "BorderBrush");
-
+            var prioCard  = BuildCard();
             var prioStack = new StackPanel();
 
-            // (Optionnel)titre/description 
             var prioTitle = new TextBlock
             {
-                Text = "Formats prioritaires",
-                FontSize = 13,
-                FontWeight = FontWeights.Medium,
+                Text = "Formats prioritaires", FontSize = 13, FontWeight = FontWeights.Medium,
                 FontFamily = (FontFamily)FindResource("AppFont")
             };
             prioTitle.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
@@ -1198,37 +975,19 @@ namespace EasySave.View
             var prioDesc = new TextBlock
             {
                 Text = "Cochez les extensions à traiter en priorité, et ajoutez vos propres formats.",
-                FontSize = 11,
-                Margin = new Thickness(0, 2, 0, 10),
+                FontSize = 11, Margin = new Thickness(0, 2, 0, 10),
                 FontFamily = (FontFamily)FindResource("AppFont")
             };
             prioDesc.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
             prioStack.Children.Add(prioDesc);
 
-            // Conteneur encadré 
-            var box = new Border
-            {
-                CornerRadius = new CornerRadius(8),
-                Padding = new Thickness(12),
-                BorderThickness = new Thickness(1),
-            };
+            var box = new Border { CornerRadius = new CornerRadius(8), Padding = new Thickness(12), BorderThickness = new Thickness(1) };
             box.SetResourceReference(Border.BorderBrushProperty, "BorderSubtleBrush");
             box.SetResourceReference(Border.BackgroundProperty, "CardBrush");
 
-            // WrapPanel -> colonnes automatiques
-            var wrap = new WrapPanel
-            {
-                Margin = new Thickness(0, 0, 0, 8)
-            };
+            var wrap = new WrapPanel { Margin = new Thickness(0, 0, 0, 8) };
 
-            // Liste de formats "par défaut" proposés
-            var defaultExtensions = new[]
-            {
-    ".json", ".xml", ".docx", ".xlsx", ".pptx", ".pdf",
-    ".yml", ".yaml", ".svg", ".xaml", ".exe", ".secret"
-};
-
-            // On affiche : defaults + ceux déjà ajoutés par l'utilisateur
+            var defaultExtensions = new[] { ".json", ".xml", ".docx", ".xlsx", ".pptx", ".pdf", ".yml", ".yaml", ".svg", ".xaml", ".exe", ".secret" };
             _settings.CustomExtensions ??= new List<string>();
 
             var allExtensions = defaultExtensions
@@ -1238,62 +997,36 @@ namespace EasySave.View
                 .OrderBy(x => x)
                 .ToList();
 
-            // Générer les checkboxes
             foreach (var ext in allExtensions)
             {
                 var cb = new CheckBox
                 {
-                    Content = ext,
-                    Margin = new Thickness(0, 0, 24, 10),
+                    Content = ext, Margin = new Thickness(0, 0, 24, 10),
                     IsChecked = _settings.PriorityExtensions.Contains(ext, StringComparer.OrdinalIgnoreCase)
                 };
                 cb.SetResourceReference(Control.ForegroundProperty, "ForegroundBrush");
-                cb.Checked += (_, __) => SetPriorityExtension(ext, true);
+                cb.Checked   += (_, __) => SetPriorityExtension(ext, true);
                 cb.Unchecked += (_, __) => SetPriorityExtension(ext, false);
-
                 wrap.Children.Add(cb);
             }
 
-            // Ligne d'ajout d'un nouveau format
-            var addRow = new StackPanel
-            {
-                Orientation = Orientation.Horizontal,
-                Margin = new Thickness(0, 4, 0, 0)
-            };
-
-            var tbAddExt = new TextBox
-            {
-                Width = 160,
-                MinHeight = 30,
-                Margin = new Thickness(0, 0, 10, 0)
-            };
-
-            var btnAddExt = new Button
-            {
-                Content = "Ajouter",
-                MinHeight = 30
-            };
+            var addRow    = new StackPanel { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 4, 0, 0) };
+            var tbAddExt  = new TextBox { Width = 160, MinHeight = 30, Margin = new Thickness(0, 0, 10, 0) };
+            var btnAddExt = new Button  { Content = "Ajouter", MinHeight = 30 };
             btnAddExt.Click += (_, __) =>
             {
                 var extToAdd = NormalizeExtension(tbAddExt.Text);
                 if (string.IsNullOrWhiteSpace(extToAdd)) return;
-
                 _settings.CustomExtensions ??= new List<string>();
-
                 if (!_settings.CustomExtensions.Any(x => string.Equals(x, extToAdd, StringComparison.OrdinalIgnoreCase)))
                     _settings.CustomExtensions.Add(extToAdd);
-
                 SetPriorityExtension(extToAdd, false);
-
                 SettingsManager.Save(_settings);
-
-                SectionSettings(); // refresh UI
+                SectionSettings();
             };
-
             addRow.Children.Add(tbAddExt);
             addRow.Children.Add(btnAddExt);
 
-            // Assemble
             var inner = new StackPanel();
             inner.Children.Add(wrap);
             inner.Children.Add(addRow);
@@ -1301,19 +1034,77 @@ namespace EasySave.View
 
             prioStack.Children.Add(box);
             prioCard.Child = prioStack;
-
             content.Children.Add(prioCard);
+        }
+
+        // ── Helpers ───────────────────────────────────────────────────────────────
+
+        /// <summary>Builds a standard settings card border.</summary>
+        private Border BuildCard() => new Border
+        {
+            CornerRadius    = new CornerRadius(8),
+            Padding         = new Thickness(20, 16, 20, 16),
+            Margin          = new Thickness(0, 0, 0, 20),
+            BorderThickness = new Thickness(1),
+            Background      = (System.Windows.Media.Brush)FindResource("CardBrush"),
+            BorderBrush     = (System.Windows.Media.Brush)FindResource("BorderBrush"),
+        };
+
+        /// <summary>
+        /// Builds a [path label] + [Browse button] row.
+        /// Calls onSelected with the chosen directory path.
+        /// </summary>
+        private UIElement BuildPathPicker(string? current, Action<string> onSelected)
+        {
+            var row = new Grid();
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
+            var pathBlock = new TextBlock
+            {
+                Text              = string.IsNullOrWhiteSpace(current) ? "Aucun dossier sélectionné" : current,
+                FontSize          = 11,
+                VerticalAlignment = VerticalAlignment.Center,
+                TextTrimming      = TextTrimming.CharacterEllipsis,
+                FontFamily        = (FontFamily)FindResource("AppFont"),
+                Margin            = new Thickness(0, 0, 10, 0),
+            };
+            pathBlock.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
+            Grid.SetColumn(pathBlock, 0);
+            row.Children.Add(pathBlock);
+
+            var btn = new Button { Content = "Parcourir…", MinHeight = 32, MinWidth = 110 };
+            btn.Click += (_, __) =>
+            {
+                var dialog = new Microsoft.Win32.OpenFileDialog
+                {
+                    Title            = "Sélectionnez un dossier",
+                    CheckFileExists  = false,
+                    CheckPathExists  = true,
+                    FileName         = "Select Folder",
+                    InitialDirectory = string.IsNullOrWhiteSpace(current)
+                                           ? Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
+                                           : current,
+                };
+                if (dialog.ShowDialog() == true)
+                {
+                    var selected  = System.IO.Path.GetDirectoryName(dialog.FileName) ?? string.Empty;
+                    pathBlock.Text = selected;
+                    onSelected(selected);
+                }
+            };
+            Grid.SetColumn(btn, 1);
+            row.Children.Add(btn);
+
+            return row;
         }
 
         private void AddSectionHeader(StackPanel parent, string text)
         {
             var header = new TextBlock
             {
-                Text       = text,
-                FontSize   = 15,
-                FontWeight = FontWeights.SemiBold,
-                Margin     = new Thickness(0, 0, 0, 10),
-                FontFamily = (FontFamily)FindResource("AppFont"),
+                Text = text, FontSize = 15, FontWeight = FontWeights.SemiBold,
+                Margin = new Thickness(0, 0, 0, 10), FontFamily = (FontFamily)FindResource("AppFont"),
             };
             header.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             parent.Children.Add(header);
@@ -1326,15 +1117,12 @@ namespace EasySave.View
             row.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
 
             var textStack = new StackPanel { VerticalAlignment = VerticalAlignment.Center };
-
             var labelBlock = new TextBlock { Text = label, FontSize = 13, FontWeight = FontWeights.Medium, FontFamily = (FontFamily)FindResource("AppFont") };
             labelBlock.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundBrush");
             textStack.Children.Add(labelBlock);
-
             var descBlock = new TextBlock { Text = description, FontSize = 11, Margin = new Thickness(0, 2, 0, 0), FontFamily = (FontFamily)FindResource("AppFont") };
             descBlock.SetResourceReference(TextBlock.ForegroundProperty, "ForegroundSecondaryBrush");
             textStack.Children.Add(descBlock);
-
             Grid.SetColumn(textStack, 0);
             row.Children.Add(textStack);
 
@@ -1347,9 +1135,9 @@ namespace EasySave.View
 
             if (hasSeparator)
             {
-                var sep = new Border { Height = 1 };
-                sep.SetResourceReference(Border.BackgroundProperty, "BorderSubtleBrush");
-                parent.Children.Add(sep);
+                var s = new Border { Height = 1 };
+                s.SetResourceReference(Border.BackgroundProperty, "BorderSubtleBrush");
+                parent.Children.Add(s);
             }
         }
 
@@ -1368,7 +1156,6 @@ namespace EasySave.View
         private void BtnCreateWork_Click()
         {
             var dialog = new CreateWorkDialog { Owner = this };
-
             if (dialog.ShowDialog() == true)
             {
                 _vm.BackupCreateRequest = new BackupCreateRequest
@@ -1394,10 +1181,8 @@ namespace EasySave.View
             var combo = (ComboBox)sender;
             _settings.AppTemplate = combo.SelectedIndex + 1;
             SettingsManager.Save(_settings);
-
             var currentSection = ContentTemplate1.Content ?? ContentTemplate2.Content;
             ApplyTemplate(_settings.AppTemplate);
-
             if (currentSection != null)
             {
                 if (Template1.Visibility == Visibility.Visible) ContentTemplate1.Content = currentSection;
@@ -1408,8 +1193,7 @@ namespace EasySave.View
         private void ComboTheme_Changed(object sender, SelectionChangedEventArgs e)
         {
             if (_isInitializing) return;
-            var combo = (ComboBox)sender;
-            _settings.AppTheme = combo.SelectedIndex == 0 ? "Light" : "Dark";
+            _settings.AppTheme = ((ComboBox)sender).SelectedIndex == 0 ? "Light" : "Dark";
             SettingsManager.Save(_settings);
             ThemeManager.ApplyTheme(_settings.AppTheme);
         }
@@ -1417,8 +1201,7 @@ namespace EasySave.View
         private void ComboLanguage_Changed(object sender, SelectionChangedEventArgs e)
         {
             if (_isInitializing) return;
-            var combo = (ComboBox)sender;
-            _settings.Language = combo.SelectedIndex == 0 ? "Français" : "English";
+            _settings.Language = ((ComboBox)sender).SelectedIndex == 0 ? "Français" : "English";
             SettingsManager.Save(_settings);
             LanguageManager.LoadLanguage(_settings.Language);
             UpdateUILanguage();
@@ -1429,59 +1212,35 @@ namespace EasySave.View
         private void ComboExecution_Changed(object sender, SelectionChangedEventArgs e)
         {
             if (_isInitializing) return;
-            var combo = (ComboBox)sender;
-            _settings.AutoExecute = combo.SelectedIndex == 1;
+            _settings.AutoExecute = ((ComboBox)sender).SelectedIndex == 1;
             SettingsManager.Save(_settings);
         }
 
         private void ComboLogType_Changed(object sender, SelectionChangedEventArgs e)
         {
             if (_isInitializing) return;
-            var combo = (ComboBox)sender;
-            _settings.LogFileType = combo.SelectedIndex == 0 ? "JSON" : "XML";
+            _settings.LogFileType = ((ComboBox)sender).SelectedIndex == 0 ? "JSON" : "XML";
             SettingsManager.Save(_settings);
         }
 
         private string NormalizeExtension(string? input)
         {
-            if (string.IsNullOrWhiteSpace(input))
-                return "";
-
+            if (string.IsNullOrWhiteSpace(input)) return "";
             var ext = input.Trim().ToLowerInvariant();
-
-            //accepter "pdf" ou ".pdf"
-            if (!ext.StartsWith("."))
-                ext = "." + ext;
-
-            if (ext.Length < 2) return "";
-            if (ext.Any(char.IsWhiteSpace)) return "";
-
+            if (!ext.StartsWith(".")) ext = "." + ext;
+            if (ext.Length < 2 || ext.Any(char.IsWhiteSpace)) return "";
             return ext;
         }
 
         private void SetPriorityExtension(string ext, bool enabled)
         {
             if (_isInitializing) return;
-
             ext = NormalizeExtension(ext);
             if (string.IsNullOrWhiteSpace(ext)) return;
-
             _settings.PriorityExtensions ??= new List<string>();
-
-            var existing = _settings.PriorityExtensions
-                .FirstOrDefault(x => string.Equals(x, ext, StringComparison.OrdinalIgnoreCase));
-
-            if (enabled)
-            {
-                if (existing == null)
-                    _settings.PriorityExtensions.Add(ext);
-            }
-            else
-            {
-                if (existing != null)
-                    _settings.PriorityExtensions.Remove(existing);
-            }
-
+            var existing = _settings.PriorityExtensions.FirstOrDefault(x => string.Equals(x, ext, StringComparison.OrdinalIgnoreCase));
+            if (enabled) { if (existing == null) _settings.PriorityExtensions.Add(ext); }
+            else         { if (existing != null) _settings.PriorityExtensions.Remove(existing); }
             SettingsManager.Save(_settings);
         }
 
