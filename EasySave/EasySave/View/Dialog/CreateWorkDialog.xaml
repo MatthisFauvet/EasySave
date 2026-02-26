@@ -5,7 +5,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:EasySave.View.Dialog"
         mc:Ignorable="d"
-        Title="CreateWorkDialog" Height="450" Width="800">
+        Title="CreateWorkDialog" Height="450" Width="800"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent">
     
         <Border CornerRadius="10"
             Background="{DynamicResource BackgroundBrush}"
@@ -86,12 +87,16 @@
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="*"/>
 								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="Auto"/>
 							</Grid.ColumnDefinitions>
 							<TextBox x:Name="SourcePathTextBox" Grid.Column="0" MinHeight="36"
                                      Margin="0,0,8,0" VerticalContentAlignment="Center"
                                      TextChanged="OnFieldChanged"/>
-							<Button x:Name="BrowseSourceButton" Grid.Column="1" Content="Parcourir"
-                                    MinWidth="90" Height="36" Click="BrowseSource_Click"
+							<Button x:Name="BrowseSourceFileButton" Grid.Column="1" Content="Fichier"
+                                    MinWidth="80" Height="36" Click="BrowseSourceFile_Click"
+                                    Padding="12,0" Margin="0,0,4,0"/>
+							<Button x:Name="BrowseSourceFolderButton" Grid.Column="2" Content="Dossier"
+                                    MinWidth="80" Height="36" Click="BrowseSourceFolder_Click"
                                     Padding="12,0"/>
 						</Grid>
 						<TextBlock x:Name="SourcePathError" 

@@ -32,4 +32,7 @@ public class Backup
     public DateTime LastBackupDateTime { get; set; }
     public BackupType Type { get; set; }
     public bool IsSelected { get; set; }
+    public BackupStatus Status { get; set; } = BackupStatus.Pending;
+    public bool IsPriority { get; set; } = false;
+    public double Progress { get; set; } = 0;
 }

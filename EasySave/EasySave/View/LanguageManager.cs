@@ -7,12 +7,12 @@ namespace EasySave.View
     public static class LanguageManager
     {
         private static Dictionary<string, JsonElement> _translations = new();
-        private static string _currentLanguage = "Français";
+        private static string _currentLanguage = "French";
 
         public static void LoadLanguage(string language)
         {
             _currentLanguage = language;
-            string fileName = language == "Français" ? "fr.json" : "en.json";
+            string fileName = language == "French" ? "fr.json" : "en.json";
             string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", fileName);
 
             try

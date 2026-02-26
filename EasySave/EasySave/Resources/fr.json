@@ -1,7 +1,7 @@
-{
+﻿{
   "App": {
     "Title": "EasySave",
-    "Version": "v.2"
+    "Version": "v.3"
   },
   "Navigation": {
     "Title": "NAVIGATION",
@@ -39,14 +39,25 @@
     "Work": "Travail",
     "Pending": "En attente",
     "InProgress": "En cours",
-    "Completed": "Termine"
+    "Paused": "En pause",
+    "Error": "Erreur",
+    "Completed": "Termine",
+    "Delete": "Supprimer",
+    "Start": "Demarrer",
+    "SelectAll": "Tout selectionner",
+    "DeselectAll": "Tout deselectionner"
   },
   "History": {
     "Title": "HISTORIQUE - Historique des sauvegardes",
-    "Description": "Historique des actions de sauvegardes",
-    "Success": "Succes",
-    "Fail": "Echec",
-    "Abort": "Annule"
+    "Subtitle": "Liste des travaux de sauvegarde executes",
+    "Empty": "Aucun historique enregistre. Executez une sauvegarde pour la voir ici.",
+    "Files": "fichiers",
+    "Size": "Taille",
+    "Duration": "Duree",
+    "Completed": "Termine",
+    "Error": "Erreur",
+    "Warning": "Avertissement",
+    "ErrorDetail": "Erreur : "
   },
   "Settings": {
     "Title": "PARAMETRES",
@@ -65,11 +76,17 @@
     "French": "Francais",
     "English": "Anglais",
     "Saves": "Sauvegardes",
-    "ExecutionMode": "Mode d'execution",
-    "ExecutionDescription": "Mode d'execution des sauvegardes",
-    "Manual": "Manuel",
-    "Auto": "Automatique",
+    "BandwidthLimit": "Limite de debit",
+    "BandwidthDescription": "Ko/s maximum (0 = illimite)",
     "Logs": "Logs",
+    "LogsFolder": "Dossier des logs",
+    "LogsFolderDescription": "Chemin local ou volume Docker",
+    "LogsFolderBrowse": "Parcourir",
+    "LogsFolderHint": "• Chemin relatif (ex : logs) → stocke dans le dossier de l'application\n• Chemin absolu (ex : C:\\Logs) → utilise tel quel",
+    "DockerTitle": "Docker",
+    "DockerHint": "Montez un volume au demarrage du conteneur :\n  docker run -v /host/logs:/app/logs ...\nPuis entrez /app/logs dans le champ ci-dessus.",
+    "DockerQuickFill": "Utiliser ce chemin (/app/logs)",
+    "LocalQuickFill": "Reinitialiser (logs)",
     "FileType": "Format de fichier de log",
     "FileTypeDescription": "Format des fichiers de log",
     "JSON": "JSON",
@@ -84,6 +101,8 @@
     "Complete": "Complete",
     "Incremental": "Incrementale",
     "Browse": "Parcourir",
+    "BrowseFile": "Fichier",
+    "BrowseFolder": "Dossier",
     "Create": "Creer",
     "Cancel": "Annuler",
     "ErrorRequired": "est requis",
@@ -91,7 +110,7 @@
     "ErrorSameFolder": "La destination doit etre differente de la source",
     "ErrorWorkName": "Le nom du travail",
     "ErrorSourcePath": "Le chemin source",
-    "ErrorSourceNotExists": "Le dossier source",
+    "ErrorSourceNotExists": "Le fichier ou dossier source",
     "ErrorDestPath": "Le chemin destination",
     "ErrorDestNotExists": "Le dossier destination"
   }

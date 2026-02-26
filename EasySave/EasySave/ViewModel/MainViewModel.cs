@@ -14,19 +14,12 @@ public class MainViewModel : INotifyPropertyChanged
     private int _pageIndex = 0;
     private int _pageSize = 50;
 
-    // ==========================
-    // Commands
-    // ==========================
-
     public RelayCommand ExecuteBackupsCommand { get; }
     public RelayCommand CreateBackupCommand { get; }
     public RelayCommand OpenCreateBackupDialogCommand { get; }
 
     public event Action? OpenCreateBackupDialogRequested;
-
-    // ==========================
-    // Bindings
-    // ==========================
+    public event Action<Backup>? BackupUpdated;
 
     private BackupCreateRequest _backupCreateRequest;
 
@@ -40,14 +33,13 @@ public class MainViewModel : INotifyPropertyChanged
         }
     }
 
-    // 🔥 ObservableCollection pour le dynamisme
     public ObservableCollection<Backup> Backups { get; }
 
     public List<BackupType> BackupTypes { get; }
 
-    // ==========================
-    // Constructor
-    // ==========================
+    public int MaxBandwidthKbps { get; set; } = 0;
+    public string LogsDirectory { get; set; } = "logs";
+    public string LogFileType { get; set; } = "JSON";
 
     public MainViewModel()
     {
@@ -68,10 +60,6 @@ public class MainViewModel : INotifyPropertyChanged
 
         CreateBackupCommand = new RelayCommand(CreateBackup);
     }
-
-    // ==========================
-    // Methods
-    // ==========================
 
     private void LoadBackups()
     {
@@ -101,14 +89,65 @@ public class MainViewModel : INotifyPropertyChanged
     }
 
 
-    private void ExecuteBackup()
+    private async void ExecuteBackup()
     {
-        _backupService.ExecuteBackup(Backups.ToList());
+        try
+        {
+            var selected = Backups
+                .Where(b => b.IsSelected)
+                .OrderByDescending(b => b.IsPriority)
+                .ToList();
+
+            if (!selected.Any()) return;
+
+            _backupService.MaxBandwidthKbps = MaxBandwidthKbps;
+            _backupService.LogsDirectory    = LogsDirectory;
+            _backupService.LogFileType      = LogFileType;
+            await _backupService.ExecuteBackupAsync(selected, b => BackupUpdated?.Invoke(b));
+        }
+        catch (Exception)
+        {
+            // Filet de sécurité : évite le crash d'un async void en cas d'exception inattendue
+        }
     }
 
-    // ==========================
-    // INotifyPropertyChanged
-    // ==========================
+    public async Task ExecuteSingleJobAsync(Backup backup, Action<Backup>? onUpdate = null)
+    {
+        _backupService.MaxBandwidthKbps = MaxBandwidthKbps;
+        _backupService.LogsDirectory    = LogsDirectory;
+        _backupService.LogFileType      = LogFileType;
+        await _backupService.ExecuteBackupAsync([backup], onUpdate);
+    }
+
+    public void ToggleBackup(Backup backup)
+    {
+        backup.Status = backup.Status == BackupStatus.InProgress
+            ? BackupStatus.Paused
+            : BackupStatus.InProgress;
+        _backupService.UpdateBackup(backup);
+    }
+
+    public void StartBackup(Backup backup)
+    {
+        backup.Status = BackupStatus.InProgress;
+        _backupService.UpdateBackup(backup);
+    }
+
+    public void DeleteBackup(Backup backup)
+    {
+        _backupService.RemoveBackup(backup);
+        Backups.Remove(backup);
+    }
+
+    public void UpdateBackup(Backup backup)
+    {
+        _backupService.UpdateBackup(backup);
+    }
+
+    public List<HistoryEntry> GetHistory()
+    {
+        return _backupService.GetHistory().OrderByDescending(e => e.StartTime).ToList();
+    }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
